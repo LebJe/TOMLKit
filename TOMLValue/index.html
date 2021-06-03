@@ -25,7 +25,7 @@
     <nav>
         <div class="wrapper">
             <h2>On This Page</h2>
-            <ol><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#tomlvalue.type">type</a></li></ul></li></ol>
+            <ol><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#tomlvalue.type">type</a></li><li class="variable"><a href="#tomlvalue.bool">bool</a></li><li class="variable"><a href="#tomlvalue.int">int</a></li><li class="variable"><a href="#tomlvalue.double">double</a></li><li class="variable"><a href="#tomlvalue.string">string</a></li><li class="variable"><a href="#tomlvalue.date">date</a></li><li class="variable"><a href="#tomlvalue.time">time</a></li><li class="variable"><a href="#tomlvalue.datetime">date​Time</a></li><li class="variable"><a href="#tomlvalue.table">table</a></li><li class="variable"><a href="#tomlvalue.array">array</a></li></ul></li></ol>
         </div>
     </nav>
 
@@ -55,6 +55,114 @@
 <pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">type</span>: <a href="https://lebje.github.io/TOMLKit/TOMLType"><span class="type">TOMLType</span></a>  </body></html></code></pre>
 </div>
 </div>
+<div role="article" class="variable" id="tomlvalue.bool">
+    <h3>
+        <code><a href="#tomlvalue.bool">bool</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">bool</span>: <span class="type">Bool</span>?  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Converts this <code>TOMLValue</code> to a <code>Bool</code>. If the conversion fails, this will return <code>nil</code>.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="tomlvalue.int">
+    <h3>
+        <code><a href="#tomlvalue.int">int</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">int</span>: <span class="type">Int</span>?  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Converts this <code>TOMLValue</code> to an <code>Int</code>. If the conversion fails, this will return <code>nil</code>.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="tomlvalue.double">
+    <h3>
+        <code><a href="#tomlvalue.double">double</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">double</span>: <span class="type">Double</span>?  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Converts this <code>TOMLValue</code> to a <code>Double</code>. If the conversion fails, this will return <code>nil</code>.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="tomlvalue.string">
+    <h3>
+        <code><a href="#tomlvalue.string">string</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">string</span>: <span class="type">String</span>?  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Converts this <code>TOMLValue</code> to a <code>String</code>. If the conversion fails, this will return <code>nil</code>.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="tomlvalue.date">
+    <h3>
+        <code><a href="#tomlvalue.date">date</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">date</span>: <a href="https://lebje.github.io/TOMLKit/TOMLDate"><span class="type">TOMLDate</span></a>?  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Converts this <code>TOMLValue</code> to a <code>TOMLDate</code>. If the conversion fails, this will return <code>nil</code>.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="tomlvalue.time">
+    <h3>
+        <code><a href="#tomlvalue.time">time</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">time</span>: <a href="https://lebje.github.io/TOMLKit/TOMLTime"><span class="type">TOMLTime</span></a>?  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Converts this <code>TOMLValue</code> to a <code>TOMLTime</code>. If the conversion fails, this will return <code>nil</code>.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="tomlvalue.datetime">
+    <h3>
+        <code><a href="#tomlvalue.datetime">date​Time</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">dateTime</span>: <a href="https://lebje.github.io/TOMLKit/TOMLDateTime"><span class="type">TOMLDateTime</span></a>?  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Converts this <code>TOMLValue</code> to a <code>TOMLDateTime</code>. If the conversion fails, this will return <code>nil</code>.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="tomlvalue.table">
+    <h3>
+        <code><a href="#tomlvalue.table">table</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">table</span>: <a href="https://lebje.github.io/TOMLKit/TOMLTable"><span class="type">TOMLTable</span></a>?  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Converts this <code>TOMLValue</code> to a <code>TOMLTable</code>. If the conversion fails, this will return <code>nil</code>.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="tomlvalue.array">
+    <h3>
+        <code><a href="#tomlvalue.array">array</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">array</span>: <a href="https://lebje.github.io/TOMLKit/TOMLArray"><span class="type">TOMLArray</span></a>?  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Converts this <code>TOMLValue</code> to a <code>TOMLArray</code>. If the conversion fails, this will return <code>nil</code>.</p>
+
+</div>
+</div>
     </section>
 
 
@@ -64,7 +172,7 @@
 
     <footer>
         <p>
-    Generated on <time datetime="2021-06-02T09:40:03+0000">June 2, 2021</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+    Generated on <time datetime="2021-06-03T16:19:08+0000">June 3, 2021</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
 </p>
     </footer>
 </body>
