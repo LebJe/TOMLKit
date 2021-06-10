@@ -28,12 +28,14 @@ TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.c
             -   [Times](#times)
             -   [Integers](#integers)
         -   [Retrieving TOML values](#retrieving-toml-values)
+            -   [Tables](#tables-1)
+            -   [Arrays](#arrays-1)
         -   [Encoding](#encoding)
         -   [Decoding](#decoding)
     -   [Dependencies](#dependencies)
     -   [Licenses](#licenses)
 
-<!-- Added by: lebje, at: Thu Jun 10 17:11:00 EDT 2021 -->
+<!-- Added by: lebje, at: Thu Jun 10 17:58:14 EDT 2021 -->
 
 <!--te-->
 
