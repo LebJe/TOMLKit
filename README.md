@@ -222,6 +222,46 @@ Use the `tomlInt` property to quickly create a `TOMLInt` for simple integers, an
 
 ### Retrieving TOML values
 
+#### Tables
+
+```swift
+let table: TOMLTable = ...
+if let string = table["string"]?.string? {
+   print(string)
+}
+
+if let bool = table["bool"]?.bool? {
+   print(bool)
+}
+
+if let double = table["InnerTable"]?["InnerInnerTable"].double? {
+   print(double)
+}
+
+...
+```
+
+#### Arrays
+
+```swift
+let array: TOMLArray = ...
+if let string = array[0]?.string? {
+   print(string)
+}
+
+if let bool = array[1]?.bool? {
+   print(bool)
+}
+
+if let double = array[2]?[0].double? {
+   print(double)
+}
+
+for value in array {
+   print(value)
+}
+```
+
 ### Encoding
 
 ```swift

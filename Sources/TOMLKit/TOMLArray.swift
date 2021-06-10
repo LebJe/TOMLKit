@@ -112,9 +112,11 @@ public class TOMLArray: Equatable, ExpressibleByArrayLiteral, CustomDebugStringC
 	public func next() -> TOMLValue? {
 		guard self.currentIndex <= self.endIndex else { return nil }
 
+		let returnValue = self[currentIndex]?.tomlValue
+
 		self.currentIndex += 1
-		guard let pointer = arrayGetNode(self.arrayPointer, Int64(self.currentIndex)) else { return nil }
-		return TOMLValue(tomlValuePointer: pointer)
+
+		return returnValue
 	}
 
 	public func insertIntoTable(tablePointer: OpaquePointer, key: String) {

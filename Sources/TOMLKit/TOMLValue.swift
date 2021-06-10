@@ -18,7 +18,7 @@ public struct TOMLValue: CustomDebugStringConvertible {
 	public var debugDescription: String {
 		switch self.type {
 			case .table: return self.table?.debugDescription ?? ""
-			case .array: /* return self.array?.debugDescription ?? */ return ""
+			case .array: return self.array?.debugDescription ?? ""
 			case .string: return self.string ?? ""
 			case .int: return self.int != nil ? String(self.int!) : ""
 			case .double: return self.double != nil ? String(self.double!) : ""
