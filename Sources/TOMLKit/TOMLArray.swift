@@ -77,6 +77,7 @@ public class TOMLArray: Equatable, ExpressibleByArrayLiteral, CustomDebugStringC
 		}
 	}
 
+	/// Retrieve a `TOMLValue` from this array at `index`.
 	public subscript(index: Int) -> TOMLValue? {
 		guard let pointer = arrayGetNode(self.arrayPointer, Int64(index)) else { return nil }
 		return TOMLValue(tomlValuePointer: pointer)
@@ -87,6 +88,7 @@ public class TOMLArray: Equatable, ExpressibleByArrayLiteral, CustomDebugStringC
 		value.insertIntoArray(arrayPointer: self.arrayPointer, index: self.endIndex + 1)
 	}
 
+	/// Insert a `value` into this array at `index`.
 	public func insert(_ value: TOMLValueConvertible, at index: Int) {
 		value.insertIntoArray(arrayPointer: self.arrayPointer, index: index)
 	}
