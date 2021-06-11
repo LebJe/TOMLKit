@@ -83,7 +83,7 @@ or a regular table:
 
 ```toml
 # `inline` is false.
-[inlineTable]
+[regularTable]
 field1 = ""
 ...
 ```
