@@ -223,7 +223,7 @@ let table = TOMLTable(["time": time])
 
 #### Integers
 
-Use the [`tomlInt` property in `FixedWidthInteger`](https://lebje.github.io/TOMLKit/FixedWidthInteger/#fixedwidthinteger.tomlint) to quickly create a `TOMLInt` for simple integers, and the `TOML.init(_ value:options:)` initializer the format the integer as an octal, hexadecimal, or binary value.
+Use the [`tomlInt` property in `FixedWidthInteger`](https://lebje.github.io/TOMLKit/FixedWidthInteger/#fixedwidthinteger.tomlint) to quickly create a `TOMLInt` for simple integers, and the `TOMLInt.init(_ value:options:)` initializer the format the integer as an octal, hexadecimal, or binary value.
 
 ### Retrieving TOML values
 
