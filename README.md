@@ -6,6 +6,9 @@
 [![SPM Compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager)
 [![](https://img.shields.io/github/v/tag/LebJe/TOMLKit)](https://github.com/LebJe/TOMLKit/releases)
 [![Build and Test](https://github.com/LebJe/TOMLKit/workflows/Build%20and%20Test/badge.svg)](https://github.com/LebJe/TOMLKit/actions?query=workflow%3A%22Build+and+Test%22)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FLebJe%2FTOMLKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/LebJe/TOMLKit)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FLebJe%2FTOMLKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/LebJe/TOMLKit)
+
 
 TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.com/marzer/tomlplusplus/), allowing you to read and write [TOML](https://toml.io/en/) files in Swift.
 
