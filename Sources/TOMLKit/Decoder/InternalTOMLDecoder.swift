@@ -58,15 +58,10 @@ final class InternalTOMLDecoder: Decoder {
 		var codingPath: [CodingKey]
 		var userInfo: [CodingUserInfoKey: Any] = [:]
 
-		var count: Int? {
-			self.tomlArray.count
-		}
+		var count: Int? { self.tomlArray.count }
 
 		var isAtEnd: Bool {
-			guard let count = self.count else {
-				return true
-			}
-
+			guard let count = self.count else { return true }
 			return self.currentIndex >= count
 		}
 

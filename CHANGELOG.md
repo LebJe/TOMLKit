@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.1](https://github.com/LebJe/TOMLKit/releases/tag/0.0.1) - 2021-06-10
 
+### Fixed
+-	Fixed formatting.
+-   `throw` `DecodingError` instead of crashing when decoding.
+
+## [0.0.1](https://github.com/LebJe/TOMLKit/releases/tag/0.0.1) - 2021-06-10
+
 ### Added
 
 -   Initial release.
