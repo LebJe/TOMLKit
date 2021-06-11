@@ -7,7 +7,7 @@
 import CTOML
 
 ///
-public enum TOMLType: CaseIterable {
+public enum TOMLType: String, CaseIterable {
 	/// A TOML table (inlined or not inlined).
 	case table
 

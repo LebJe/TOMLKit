@@ -123,7 +123,11 @@ extension InternalTOMLDecoder.KDC {
 	}
 
 	func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
-		fatalError()
+		guard let value = self.tomlValue.table?[key.stringValue]?.table?.tomlValue else {
+			throw DecodingError.typeMismatch(TOMLTable.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected a TOMLTable but found a \(self.tomlValue.table?[key.stringValue]?.type.rawValue ?? "No type") instead."))
+		}
+
+		return KeyedDecodingContainer<NestedKey>(InternalTOMLDecoder.KDC<NestedKey>(tomlValue: value, codingPath: self.codingPath, userInfo: self.userInfo))
 	}
 
 	func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
