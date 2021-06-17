@@ -32,7 +32,7 @@ final class InternalTOMLEncoder: Encoder {
 			case let .right((array, index)):
 				let table = TOMLTable()
 				array[index] = table
-				return KeyedEncodingContainer(KEC(array[index]!.tomlValue, parentKey: self.parentKey, codingPath: self.codingPath, userInfo: self.userInfo))
+				return KeyedEncodingContainer(KEC(array[index].tomlValue, parentKey: self.parentKey, codingPath: self.codingPath, userInfo: self.userInfo))
 		}
 	}
 
@@ -44,7 +44,7 @@ final class InternalTOMLEncoder: Encoder {
 					return UEC(value.table![parentKey.stringValue]!.array!, codingPath: self.codingPath, userInfo: self.userInfo)
 				case let .right((containerArray, index)):
 					containerArray[index] = TOMLArray()
-					return UEC(containerArray[index]!.array!, codingPath: self.codingPath, userInfo: self.userInfo)
+					return UEC(containerArray[index].array!, codingPath: self.codingPath, userInfo: self.userInfo)
 			}
 		} else {
 			return UEC(TOMLArray(), codingPath: self.codingPath, userInfo: self.userInfo)

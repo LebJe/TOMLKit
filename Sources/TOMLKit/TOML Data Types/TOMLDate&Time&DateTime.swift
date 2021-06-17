@@ -32,6 +32,8 @@ public struct TOMLDate: Codable, CustomDebugStringConvertible, TOMLValueConverti
 		CTOMLDate(year: UInt16(self.year), month: UInt8(self.month), day: UInt8(self.day))
 	}
 
+	public var tomlValue: TOMLValue { get { .init(self) } set {} }
+
 	public var debugDescription: String {
 		"\(self.year)-\(String(self.month).leftPadding(to: 2))-\(String(self.day).leftPadding(to: 2))"
 	}
@@ -68,14 +70,6 @@ public struct TOMLDate: Codable, CustomDebugStringConvertible, TOMLValueConverti
 		return calendar.date(from: dateComponents)!
 	}
 
-	public func insertIntoTable(tablePointer: OpaquePointer, key: String) {
-		tableInsertDate(tablePointer, strdup(key), self.cTOMLDate)
-	}
-
-	public func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
-		arrayInsertDate(arrayPointer, Int64(index), self.cTOMLDate)
-	}
-
 	public static func == (lhs: TOMLDate, rhs: TOMLDate) -> Bool {
 		lhs.year == rhs.year &&
 			lhs.month == rhs.month &&
@@ -105,6 +99,8 @@ public struct TOMLTime: Codable, CustomDebugStringConvertible, TOMLValueConverti
 		"\(String(self.hour).leftPadding(to: 2)):\(String(self.minute).leftPadding(to: 2)):\(String(self.second).leftPadding(to: 2)).\(String(self.nanoSecond).leftPadding(to: 9))Z"
 	}
 
+	public var tomlValue: TOMLValue { get { .init(self) } set {} }
+
 	public init(hour: Int, minute: Int, second: Int, nanoSecond: Int) {
 		self.hour = hour
 		self.minute = minute
@@ -117,14 +113,6 @@ public struct TOMLTime: Codable, CustomDebugStringConvertible, TOMLValueConverti
 		self.minute = Int(cTOMLTime.minute)
 		self.second = Int(cTOMLTime.second)
 		self.nanoSecond = Int(cTOMLTime.nanoSecond)
-	}
-
-	public func insertIntoTable(tablePointer: OpaquePointer, key: String) {
-		tableInsertTime(tablePointer, strdup(key), self.cTOMLTime)
-	}
-
-	public func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
-		arrayInsertTime(arrayPointer, Int64(index), self.cTOMLTime)
 	}
 
 	public static func == (lhs: TOMLTime, rhs: TOMLTime) -> Bool {
@@ -168,6 +156,8 @@ public struct TOMLDateTime: Codable, CustomDebugStringConvertible, TOMLValueConv
 		return CTOMLDateTime(date: self.date.cTOMLDate, time: self.time.cTOMLTime, offset: offsetPointer)
 	}
 
+	public var tomlValue: TOMLValue { get { .init(self) } set {} }
+
 	public var debugDescription: String {
 		"\(self.date.debugDescription)T\(self.time.debugDescription)"
 	}
@@ -210,14 +200,6 @@ public struct TOMLDateTime: Codable, CustomDebugStringConvertible, TOMLValueConv
 		self.date = date
 		self.time = time
 		self.offset = offset
-	}
-
-	public func insertIntoTable(tablePointer: OpaquePointer, key: String) {
-		tableInsertDateTime(tablePointer, strdup(key), self.cTOMLDateTime)
-	}
-
-	public func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
-		arrayInsertDateTime(arrayPointer, Int64(index), self.cTOMLDateTime)
 	}
 
 	public static func == (lhs: TOMLDateTime, rhs: TOMLDateTime) -> Bool {

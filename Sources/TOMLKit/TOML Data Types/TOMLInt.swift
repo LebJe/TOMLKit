@@ -16,6 +16,21 @@ public struct TOMLInt: ExpressibleByIntegerLiteral, Equatable, TOMLValueConverti
 
 	public private(set) var options: ValueOptions = .none
 
+	public var tomlValue: TOMLValue { get { .init(self) } set {} }
+
+	public var debugDescription: String {
+		switch self.options {
+			case .none:
+				return String(self.value)
+			case .formatAsBinary:
+				return "0b" + String(self.value, radix: 2)
+			case .formatAsOctal:
+				return "0o" + String(self.value, radix: 8)
+			case .formatAsHexadecimal:
+				return "0x" + String(self.value, radix: 16)
+		}
+	}
+
 	/// Create a new `TOMLInt`.
 	/// - Parameters:
 	///   - value: the `Int` that will be inserted into the TOML document.
@@ -36,12 +51,9 @@ public struct TOMLInt: ExpressibleByIntegerLiteral, Equatable, TOMLValueConverti
 	public func insertIntoTable(tablePointer: OpaquePointer, key: String) {
 		tableInsertInt(tablePointer, strdup(key), Int64(self.value), self.options.rawValue)
 	}
-
-	public func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
-		arrayInsertInt(arrayPointer, Int64(index), Int64(self.value), self.options.rawValue)
-	}
 }
 
 public extension FixedWidthInteger {
+	/// Creates a `TOMLInt` from `self`.
 	var tomlInt: TOMLInt { TOMLInt(self) }
 }

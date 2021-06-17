@@ -14,7 +14,7 @@ public struct TOMLSourcePosition: Equatable, CustomDebugStringConvertible {
 	/// The column at which a parsing error occurred.
 	public let column: Int
 
-	public var debugDescription: String { "Line \(self.line), Column \(self.column)" }
+	public var debugDescription: String { "line \(self.line), column \(self.column)" }
 
 	internal init(line: Int, column: Int) {
 		self.line = line
@@ -41,7 +41,7 @@ public struct TOMLSourceRegion: Equatable, CustomDebugStringConvertible {
 		self.end = .init(cTOMLSourcePosition: cEnd)
 	}
 
-	public var debugDescription: String { "Begin: \(self.begin), End: \(self.end)" }
+	public var debugDescription: String { "begin: \(self.begin), end: \(self.end)" }
 }
 
 /// An error that occurs while parsing a TOML document.

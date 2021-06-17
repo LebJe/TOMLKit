@@ -26,16 +26,11 @@ public class TOMLTable:
 	Sequence,
 	IteratorProtocol
 {
-	public typealias Element = (String, TOMLValue)
-
-	private var currentIndex = 0
-
-	private var storedKeys: [String] = []
-	private var storedValues: [TOMLValue] = []
-
+	var currentIndex = 0
+	var storedKeys: [String] = []
 	public var type: TOMLType { .table }
-
 	public var debugDescription: String { self.convert() }
+	public var tomlValue: TOMLValue { get { .init(self) } set {} }
 
 	/// An `Array` of the keys in this table.
 	public var keys: [String] {
@@ -68,22 +63,15 @@ public class TOMLTable:
 	}
 
 	/// A pointer to the underlying `toml::table`.
-	private var tablePointer: OpaquePointer
-
-	var tomlValue: TOMLValue {
-		TOMLValue(tomlValuePointer: self.tablePointer)
-	}
+	internal var tablePointer: OpaquePointer
 
 	/// The amount of elements in the table.
-	public var count: Int {
-		tableSize(self.tablePointer)
-	}
+	public var count: Int { tableSize(self.tablePointer) }
 
 	/// Whether the table is empty or not.
-	public var isEmpty: Bool {
-		tableIsEmpty(self.tablePointer)
-	}
+	public var isEmpty: Bool { tableIsEmpty(self.tablePointer) }
 
+	/// Whether every element in the table is of the same type.
 	public var isHomogeneous: Bool {
 		tableIsHomogeneous(self.tablePointer)
 	}
@@ -116,9 +104,8 @@ public class TOMLTable:
 	/// Creates a `TOMLTable` from a `String` containing a TOML document.
 	/// - Parameters:
 	///   - string: The `String` containing a TOML document.
-	///   - inline: Whether this table will be an [inline table](https://toml.io/en/v1.0.0#inline-table) or not.
 	/// - Throws: `TOMLParseError` if an error occurs during parsing.
-	public init(string: String, inline: Bool = false) throws {
+	public init(string: String) throws {
 		let errorPointer = UnsafeMutablePointer<CTOMLParseError>.allocate(capacity: 1)
 
 		guard let table = string.withCString({ tableCreateFromString($0, errorPointer) }) else {
@@ -126,7 +113,6 @@ public class TOMLTable:
 		}
 
 		self.tablePointer = table
-		self.inline = inline
 	}
 
 	public required init(dictionaryLiteral elements: (String, TOMLValueConvertible)...) {
@@ -143,13 +129,15 @@ public class TOMLTable:
 		tableClear(self.tablePointer)
 	}
 
-	public func insert(_ value: TOMLValueConvertible, at key: String) {
-		value.insertIntoTable(tablePointer: self.tablePointer, key: key)
-	}
-
-	/// Remove the element at `key` from this table.
-	public func remove(at key: String) {
-		tableRemoveElement(self.tablePointer, strdup(key))
+	/// Insert a value into this table.
+	public subscript(key: String) -> TOMLValueConvertible? {
+		get {
+			guard let pointer = tableGetNode(self.tablePointer, strdup(key)) else { return nil }
+			return TOMLValue(tomlValuePointer: pointer)
+		}
+		set(value) {
+			value!.tomlValue.replaceOrInsertInTable(tablePointer: self.tablePointer, key: key)
+		}
 	}
 
 	/// Converts this `TOMLTable` to a JSON or TOML document.
@@ -162,37 +150,10 @@ public class TOMLTable:
 		}
 	}
 
-	/// Insert a value into this table.
-	public subscript(key: String) -> TOMLValueConvertible {
-		get { fatalError("Use \"subscript(key: String) -> TOMLValue?\"") }
-
-		set(value) {
-			value.insertIntoTable(tablePointer: self.tablePointer, key: key)
-		}
-	}
-
 	// MARK: - Protocol Functions
 
 	public static func == (lhs: TOMLTable, rhs: TOMLTable) -> Bool {
 		tableEqual(lhs.tablePointer, rhs.tablePointer)
-	}
-
-	public func next() -> (String, TOMLValue)? {
-		if self.currentIndex == 0 {
-			self.storedKeys = self.keys
-			self.storedValues = self.values
-		}
-		guard self.currentIndex <= self.count else {
-			self.currentIndex = 0
-			self.storedKeys = []
-			self.storedValues = []
-			return nil
-		}
-
-		let v = (self.storedKeys[self.currentIndex], self.storedValues[self.currentIndex])
-		self.currentIndex += 1
-
-		return v
 	}
 
 	public func insertIntoTable(tablePointer: OpaquePointer, key: String) {
@@ -201,10 +162,5 @@ public class TOMLTable:
 
 	public func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
 		arrayInsertTable(arrayPointer, Int64(index), self.tablePointer)
-	}
-
-	public subscript(key: String) -> TOMLValue? {
-		guard let pointer = tableGetNode(self.tablePointer, strdup(key)) else { return nil }
-		return TOMLValue(tomlValuePointer: pointer)
 	}
 }

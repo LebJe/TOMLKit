@@ -41,21 +41,24 @@ final class TOMLKitTests: XCTestCase {
 	"""
 
 	func testTOMLArray() {
-		let arr: TOMLArray = ["Hello", "World", 1234567890, 134509.25043, true]
+		var arr: TOMLArray = ["Hello", "World", 1234567890, 134509.25043, true, false, ["Date": TOMLDate(year: 2021, month: 5, day: 20)] as TOMLTable]
 
-		XCTAssertEqual(arr.count, 5)
+		XCTAssertEqual(arr.count, 7)
 
 		arr.append("Hello")
 
-		XCTAssertEqual(arr.count, 6)
+		XCTAssertEqual(arr.count, 8)
 
-		XCTAssertEqual(arr[5]!.string!, "Hello")
+		XCTAssertEqual(arr[7].string!, "Hello")
 
 		arr.remove(at: 0)
+		arr.removeSubrange(4..<6)
 
-		XCTAssertEqual(arr[0]!.string!, "World")
+		XCTAssertEqual(arr[0].string!, "World")
 
-		XCTAssertEqual(arr, TOMLArray(arrayLiteral: "World", 1234567890, 134509.25043, true, "Hello"))
+		arr.replaceSubrange(2...4, with: [false, "string", TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)])
+
+		XCTAssertEqual(arr, TOMLArray(["World", 1234567890, false, "string", TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)]))
 	}
 
 	func testTOMLTable() throws {
@@ -67,14 +70,43 @@ final class TOMLKitTests: XCTestCase {
 		XCTAssertEqual(self.testTable["Int"]!.int!, 0xEA64)
 		XCTAssertEqual(self.testTable["Double"]!.double!, 50.10475)
 		XCTAssertEqual(self.testTable["Bool"]!.bool!, false)
-		XCTAssertEqual(self.testTable["Array"]!.array![0]!.int!, 1)
+		XCTAssertEqual(self.testTable["Array"]!.array![0].int!, 1)
 	}
 
 	func testTOMLDecoder() throws {
+		let toml = """
+		bool = true
+		double = 3053.53
+		e = 'abc'
+		int = 2093
+		string = 'Hello, World!'
+
+		[b]
+		array = [ 'Hello', 'World!' ]
+		date = 2021-05-20
+		dateTime = 2021-05-20T04:27:05.000000294Z
+		time = 04:27:05.000000294
+
+			[[b.c]]
+			a = 'Hello, World!'
+
+			[[b.c]]
+			a = 'Hello'
+		"""
+
 		enum E: String, Codable, Equatable {
 			case abc
 			case def
 			case ghi
+
+			public static func ==(lhs: E, rhs: E) -> Bool {
+				switch (lhs, rhs) {
+					case (.abc, .abc): return true
+					case (.def, .def): return true
+					case (.ghi, .ghi): return true
+					default: return false
+				}
+			}
 		}
 
 		struct A: Decodable, Equatable {
@@ -93,39 +125,16 @@ final class TOMLKitTests: XCTestCase {
 				let array: [String]
 				let c: [A.B.C]
 
-				struct C: Codable, Equatable {
+				struct C: Decodable, Equatable {
 					let a: String
 				}
 			}
 		}
 
-		let toml = """
-		e = 'abc'
-		string = 'Hello, World!'
-		int = 2093
-		double = 3053.530
-		bool = true
-
-		[b]
-		time = 04:27:05.000000294
-		date = 2021-05-20
-		dateTime = 2021-05-20T04:27:05.000000294Z
-		array = ["Hello", "World!"]
-
-		[[b.c]]
-		a = "Hello, World!"
-
-		[[b.c]]
-		a = "Hello"
-		"""
-
-		XCTAssertNoThrow(try TOMLDecoder().decode(A.self, from: toml))
-
-		// TODO: test equality
-//		A(
+//		let a = A(
 //			string: "Hello, World!",
 //			int: 2093,
-//			double: 3053.530,
+//			double: 3053.53,
 //			bool: true,
 //			e: .abc,
 //			b: A.B(
@@ -136,6 +145,9 @@ final class TOMLKitTests: XCTestCase {
 //				c: [A.B.C(a: "Hello, World!"), A.B.C(a: "Hello")]
 //			)
 //		)
+
+		// TODO: Test Equality
+		XCTAssertNoThrow(try TOMLDecoder().decode(A.self, from: toml))
 	}
 
 	func testTOMLEncoder() throws {
@@ -194,14 +206,14 @@ final class TOMLKitTests: XCTestCase {
 	}
 
 	func testInvalidToml() throws {
-		let invalidToml1 = """
+		let invalidTOML1 = """
 		Array = [
 		Bool = flse
 		Date = 2021-05-20
 		"""
 
 		do {
-			_ = try TOMLTable(string: invalidToml1)
+			_ = try TOMLTable(string: invalidTOML1)
 		} catch let error as TOMLParseError {
 			XCTAssertEqual(error.source.begin.line, 2)
 			XCTAssertEqual(error.source.begin.column, 1)
@@ -210,7 +222,7 @@ final class TOMLKitTests: XCTestCase {
 			XCTAssertEqual(error.source.end.column, 1)
 		}
 
-		let invalidToml2 = """
+		let invalidTOML2 = """
 		Double = 50.10475.
 		Inline-Table = { "String 1" = 'Hello', Time = 24:59:59.000000294 }
 		Int = 60004
@@ -218,7 +230,7 @@ final class TOMLKitTests: XCTestCase {
 		"""
 
 		do {
-			_ = try TOMLTable(string: invalidToml2)
+			_ = try TOMLTable(string: invalidTOML2)
 		} catch let error as TOMLParseError {
 			XCTAssertEqual(error.source.begin.line, 1)
 			XCTAssertEqual(error.source.begin.column, 18)
@@ -227,12 +239,12 @@ final class TOMLKitTests: XCTestCase {
 			XCTAssertEqual(error.source.end.column, 18)
 		}
 
-		let invalidToml3 = """
+		let invalidTOML3 = """
 		String = 'Hello, World!
 		"""
 
 		do {
-			_ = try TOMLTable(string: invalidToml3)
+			_ = try TOMLTable(string: invalidTOML3)
 		} catch let error as TOMLParseError {
 			XCTAssertEqual(error.source.begin.line, 1)
 			XCTAssertEqual(error.source.begin.column, 24)
