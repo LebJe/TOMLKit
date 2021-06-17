@@ -7,6 +7,7 @@
 #include <CTOML/CTOML.h>
 #include "toml.hpp"
 #include "Conversion.hpp"
+#include <string>
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,6 +49,100 @@ extern "C" {
 				// FIXME: This shouldn't happen.
 				return CTOMLNodeType { string };
 		}
+	}
+
+	/// Copies \c n and returns the copy.
+	CTOMLNode * copyNode(CTOMLNode * n) {
+		auto node = reinterpret_cast<toml::node *>(n);
+		switch (node->type()) {
+			case toml::v2::node_type::array: {
+				return reinterpret_cast<CTOMLNode *>( new toml::array(*node->as_array()) );
+				break;
+			}
+			case toml::v2::node_type::table: {
+				return reinterpret_cast<CTOMLNode *>( new toml::table(*node->as_table()) );
+				break;
+			}
+			case toml::v2::node_type::string: {
+				return reinterpret_cast<CTOMLNode *>( new toml::value { *node->as_string() } );
+				break;
+			}
+			case toml::v2::node_type::integer: {
+				return reinterpret_cast<CTOMLNode *>( new toml::value { *node->as_integer() } );
+				break;
+			}
+			case toml::v2::node_type::floating_point: {
+				return reinterpret_cast<CTOMLNode *>( new toml::value { *node->as_floating_point() } );
+				break;
+			}
+			case toml::v2::node_type::boolean: {
+				return reinterpret_cast<CTOMLNode *>( new toml::value { *node->as_boolean() } );
+				break;
+			}
+			case toml::v2::node_type::date: {
+				return reinterpret_cast<CTOMLNode *>( new toml::value { *node->as_date() } );
+				break;
+			}
+			case toml::v2::node_type::time: {
+				return reinterpret_cast<CTOMLNode *>( new toml::value { *node->as_time() } );
+				break;
+			}
+			case toml::v2::node_type::date_time: {
+				return reinterpret_cast<CTOMLNode *>( new toml::value { *node->as_date_time() } );
+				break;
+			}
+			case toml::v2::node_type::none: {
+				// This shouldn't happen.
+				return nullptr;
+			}
+		}
+	}
+
+	// MARK: - Creation
+
+	/// Creates a \c CTOMLNode from \c b .
+	CTOMLNode * _Nonnull nodeFromBool(bool b) {
+		return reinterpret_cast<CTOMLNode *>( new toml::value<bool>(b) );
+	}
+
+	/// Creates a \c CTOMLNode from \c i .
+	CTOMLNode * _Nonnull nodeFromInt(int64_t i) {
+		return reinterpret_cast<CTOMLNode *>( new toml::value(i) );
+	}
+
+	/// Creates a \c CTOMLNode from \c d .
+	CTOMLNode * _Nonnull nodeFromDouble(double d) {
+		return reinterpret_cast<CTOMLNode *>( new toml::value<double>(d) );
+	}
+
+	/// Creates a \c CTOMLNode from \c s .
+	CTOMLNode * _Nonnull nodeFromString(const char * _Nonnull s) {
+		return reinterpret_cast<CTOMLNode *>( new toml::value<std::string>(std::string(s)) );
+	}
+
+	/// Creates a \c CTOMLNode from \c d .
+	CTOMLNode * _Nonnull nodeFromDate(CTOMLDate d) {
+		return reinterpret_cast<CTOMLNode *>( new toml::value<toml::date>(cTOMLDateToTomlDate(d)) );
+	}
+
+	/// Creates a \c CTOMLNode from \c t .
+	CTOMLNode * _Nonnull nodeFromTime(CTOMLTime t) {
+		return reinterpret_cast<CTOMLNode *>( new toml::value<toml::time>(cTOMLTimeToTomlTime(t)) );
+	}
+
+	/// Creates a \c CTOMLNode from \c dt .
+	CTOMLNode * _Nonnull nodeFromDateTime(CTOMLDateTime dt) {
+		return reinterpret_cast<CTOMLNode *>( new toml::value<toml::date_time>(cTOMLDateTimeToTomlDateTime(dt)) );
+	}
+
+	/// Creates a \c CTOMLNode from \c t .
+	CTOMLNode * _Nonnull nodeFromTable(CTOMLTable * _Nonnull t) {
+		return reinterpret_cast<CTOMLNode *>( reinterpret_cast<toml::table *>(t) );
+	}
+
+	/// Creates a \c CTOMLNode from \c a .
+	CTOMLNode * _Nonnull nodeFromArray(CTOMLTable * _Nonnull a) {
+		return reinterpret_cast<CTOMLNode *>( reinterpret_cast<toml::array *>(a) );
 	}
 
 	// MARK: - Value Retrieval

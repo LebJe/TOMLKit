@@ -9,7 +9,6 @@
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FLebJe%2FTOMLKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/LebJe/TOMLKit)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FLebJe%2FTOMLKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/LebJe/TOMLKit)
 
-
 TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.com/marzer/tomlplusplus/), allowing you to read and write [TOML](https://toml.io/en/) files in Swift.
 
 ## Table of Contents
@@ -92,7 +91,7 @@ field1 = ""
 
 **NOTE**
 
-Use `myTable.inline = true // or false` to make a table inline/not inline,
+Use `myTable.inline = true/false` to make a table inline/not inline,
 and `myTable.inline` to check if a table is inlined.
 
 ---
@@ -132,7 +131,7 @@ do {
 }
 ```
 
-To insert values, make sure the value conforms to `TOMLValueConvertible`, then use the `subscript`, or the `insert(_ value:at:)` method:
+To insert values, make sure the value conforms to `TOMLValueConvertible`, then use the `subscript`, or the `insert(_ newElement:at:)` method:
 
 ```swift
 let table = TOMLTable()
@@ -231,16 +230,16 @@ Use the [`tomlInt` property in `FixedWidthInteger`](https://lebje.github.io/TOML
 
 ```swift
 let table: TOMLTable = ...
-if let string = table["string"]?.string? {
+if let string = table["string"]?.string {
    print(string)
 }
 
-if let bool = table["bool"]?.bool? {
+if let bool = table["bool"]?.bool {
    print(bool)
 }
 
-if let double = table["InnerTable"]?["InnerInnerTable"].double? {
-   print(double)
+if let double = table["InnerTable"]?.tomlValue["InnerInnerTable"]?["InnerInnerInnerTable"]?.double {
+print(double)
 }
 
 ...
@@ -250,15 +249,15 @@ if let double = table["InnerTable"]?["InnerInnerTable"].double? {
 
 ```swift
 let array: TOMLArray = ...
-if let string = array[0]?.string? {
+if let string = array[0].string? {
    print(string)
 }
 
-if let bool = array[1]?.bool? {
+if let bool = array[1].bool? {
    print(bool)
 }
 
-if let double = array[2]?[0].double? {
+if let double = array[2][0].double? {
    print(double)
 }
 

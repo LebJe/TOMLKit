@@ -6,11 +6,12 @@
 
 extension InternalTOMLDecoder.UDC {
 	mutating func decodeNil() throws -> Bool {
-		self.tomlArray[self.currentIndex] == nil
+		// There is no `null` in TOML.
+		false
 	}
 
 	mutating func decodeInt(type: Any.Type) throws -> Int {
-		guard let i = self.tomlArray[self.currentIndex]?.int else {
+		guard let i = self.tomlArray[self.currentIndex].int else {
 			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
 		}
 
@@ -20,7 +21,7 @@ extension InternalTOMLDecoder.UDC {
 	}
 
 	mutating func decode(_ type: Bool.Type) throws -> Bool {
-		guard let b = self.tomlArray[self.currentIndex]?.bool else {
+		guard let b = self.tomlArray[self.currentIndex].bool else {
 			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
 		}
 
@@ -30,7 +31,7 @@ extension InternalTOMLDecoder.UDC {
 	}
 
 	mutating func decode(_ type: String.Type) throws -> String {
-		guard let s = self.tomlArray[self.currentIndex]?.string else {
+		guard let s = self.tomlArray[self.currentIndex].string else {
 			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
 		}
 
@@ -40,7 +41,7 @@ extension InternalTOMLDecoder.UDC {
 	}
 
 	mutating func decode(_ type: Double.Type) throws -> Double {
-		guard let d = self.tomlArray[self.currentIndex]?.double else {
+		guard let d = self.tomlArray[self.currentIndex].double else {
 			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
 		}
 
@@ -50,7 +51,7 @@ extension InternalTOMLDecoder.UDC {
 	}
 
 	mutating func decode(_ type: Float.Type) throws -> Float {
-		guard let d = self.tomlArray[self.currentIndex]?.double else {
+		guard let d = self.tomlArray[self.currentIndex].double else {
 			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
 		}
 
@@ -100,12 +101,8 @@ extension InternalTOMLDecoder.UDC {
 	}
 
 	mutating func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
-		guard let v = self.tomlArray[self.currentIndex]?.tomlValue else {
-			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
-		}
+		let decoder = InternalTOMLDecoder(self.tomlArray[self.currentIndex].tomlValue, userInfo: self.userInfo)
 		self.currentIndex += 1
-
-		let decoder = InternalTOMLDecoder(v, userInfo: self.userInfo)
 		return try T(from: decoder)
 	}
 
@@ -114,7 +111,7 @@ extension InternalTOMLDecoder.UDC {
 	}
 
 	mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
-		guard let nestedArray = self.tomlArray[self.currentIndex]?.array else {
+		guard let nestedArray = self.tomlArray[self.currentIndex].array else {
 			throw DecodingError.typeMismatch(TOMLArray.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve an array from the TOML array at index \(self.currentIndex)."))
 		}
 

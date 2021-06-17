@@ -153,26 +153,8 @@ extern "C" {
 
 	// MARK: - Array - Value Manipulation - Insertion
 
-	/// Insert a \c bool into \c array .
-	void arrayInsertBool(CTOMLArray * array, int64_t index, bool boolean);
-
 	/// Insert a \c int64_t into \c array .
 	void arrayInsertInt(CTOMLArray * array, int64_t index, int64_t integer, uint8_t flags);
-
-	/// Insert a \c double into \c array .
-	void arrayInsertDouble(CTOMLArray * array, int64_t index, double d);
-
-	/// Insert a \c char* into \c array .
-	void arrayInsertString(CTOMLArray * array, int64_t index, const char * _Nonnull string);
-
-	/// Insert a \c CTOMLDate into \c array .
-	void arrayInsertDate(CTOMLArray * array, int64_t index, CTOMLDate date);
-
-	/// Insert a \c CTOMLTime into \c array .
-	void arrayInsertTime(CTOMLArray * array, int64_t index, CTOMLTime time);
-
-	/// Insert a \c CTOMLDateTime into \c array .
-	void arrayInsertDateTime(CTOMLArray * array, int64_t index, CTOMLDateTime dateTime);
 
 	/// Insert a \c toml::table into \c array .
 	void arrayInsertTable(CTOMLArray * array, int64_t index, CTOMLTable * _Nonnull table);
@@ -180,9 +162,51 @@ extern "C" {
 	/// Insert a \c toml::array into \c array .
 	void arrayInsertArray(CTOMLArray * array, int64_t index, CTOMLArray * _Nonnull array2);
 
+	/// Insert a \c toml::node into \c array.
+	void arrayInsertNode(CTOMLArray * array, int64_t index, CTOMLNode * _Nonnull node);
+
+	/// Replace the \c bool at \c index with \c b .
+	void arrayReplaceBool(CTOMLArray * array, int64_t index, bool b);
+
+	/// Replace the \c int64_t at \c index with \c i .
+	void arrayReplaceInt(CTOMLArray * array, int64_t index, int64_t i, uint8_t flags);
+
+	/// Replace the \c double at \c index with \c d .
+	void arrayReplaceDouble(CTOMLArray * array, int64_t index, double d);
+
+	/// Replace the \c std::string at \c index with \c s .
+	void arrayReplaceString(CTOMLArray * array, int64_t index, const char * s);
+
+	/// Replace the \c toml::date at \c index with \c date .
+	void arrayReplaceDate(CTOMLArray * array, int64_t index, CTOMLDate date);
+
+	/// Replace the \c toml::time at \c index with \c time .
+	void arrayReplaceTime(CTOMLArray * array, int64_t index, CTOMLTime time);
+
+	/// Replace the \c toml::date_time at \c index with \c dateTime .
+	void arrayReplaceDateTime(CTOMLArray * array, int64_t index, CTOMLDateTime dateTime);
+
+	/// Replace the \c toml::array at \c index with \c arrayToEmplace .
+	void arrayReplaceArray(CTOMLArray * array, int64_t index, CTOMLArray * _Nonnull arrayToEmplace);
+
+	/// Replace the \c toml::table at \c index with \c table .
+	void arrayReplaceTable(CTOMLArray * array, int64_t index, CTOMLTable * _Nonnull table);
+
+	/// Replaces the value at \c key with \c integer .
+	void tableReplaceOrInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags);
+
+	/// Replaces the value at \c key with \c tableToInsert .
+	void tableReplaceOrInsertTable(CTOMLTable * table, const char * key, CTOMLTable * tableToInsert);
+
+	/// Replaces the value at \c key with \c array .
+	void tableReplaceOrInsertArray(CTOMLTable * table, const char * key, CTOMLArray * array);
+
+	// Replaces the value at \c key with \c toml::node .
+	void tableReplaceOrInsertNode(CTOMLTable * table, const char * key, CTOMLNode * node);
+
 	// MARK: - Array - Value Retrieval
 	/// Retrieves a \c toml::node from \c array at \c index .
-	CTOMLNode * _Nullable arrayGetNode(CTOMLArray * array, int64_t index);
+	CTOMLNode * arrayGetNode(CTOMLArray * array, int64_t index);
 
 	// MARK: - Table - Creation and Deletion
 	/// Initializes a new \c toml::table .
@@ -217,38 +241,26 @@ extern "C" {
 	/// The amount of elements in \c table .
 	size_t tableSize(CTOMLTable * table);
 
+	/// Whether the \c table contains \c key .
+	bool tableContains(CTOMLTable * table, const char * key);
+
 	// MARK: - Table - Data Insertion
 
 	/// Clears all the values in \c table.
 	/// @param table The \c toml::table to clear.
 	void tableClear(CTOMLTable * table);
 
-	/// Inserts \c boolean into \c table at \c key .
-	void tableInsertBool(CTOMLTable * table, const char * key, bool boolean);
-
 	/// Inserts \c integer into \c table at \c key .
 	void tableInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags);
-
-	/// Inserts \c d into \c table at \c key .
-	void tableInsertDouble(CTOMLTable * table, const char * key, double d);
-
-	/// Inserts \c string into \c table at \c key .
-	void tableInsertString(CTOMLTable * table, const char * key, const char * string);
-
-	/// Inserts \c date into \c table at \c key .
-	void tableInsertDate(CTOMLTable * table, const char * key, CTOMLDate date);
-
-	/// Inserts \c time into \c table at \c key .
-	void tableInsertTime(CTOMLTable * table, const char * key, CTOMLTime time);
-
-	/// Inserts \c dateTime into \c table at \c key .
-	void tableInsertDateTime(CTOMLTable * table, const char * key, CTOMLDateTime dateTime);
 
 	/// Inserts \c tableToInsert into \c table at \c key .
 	void tableInsertTable(CTOMLTable * table, const char * key, CTOMLTable * tableToInsert);
 
 	/// Inserts \c array into \c table at \c key .
 	void tableInsertArray(CTOMLTable * table, const char * key, CTOMLArray * array);
+
+	/// Inserts \c toml::node into \c table at \c key .
+	void tableInsertNode(CTOMLTable * table, const char * key, CTOMLNode * node);
 
 	// MARK: - Table - Data Retrieval
 
@@ -273,11 +285,43 @@ extern "C" {
 	/// Convert \c table to a JSON document.
 	char * tableConvertToJSON(CTOMLTable * table, uint8_t options);
 
-	// MARK: - Node
+	// MARK: - Node - Information
 	/// The TOML type of \c node .
 	CTOMLNodeType nodeType(CTOMLNode * node);
 
+	/// Copies \c n and returns the copy.
+	CTOMLNode * copyNode(CTOMLNode * n);
+
 	#pragma clang assume_nonnull end
+
+	// MARK: - Node - Creation
+
+	/// Creates a \c CTOMLNode from \c b .
+	CTOMLNode * _Nonnull nodeFromBool(bool b);
+
+	// Creates a \c CTOMLNode from \c i .
+	CTOMLNode * _Nonnull nodeFromInt(int64_t i);
+
+	/// Creates a \c CTOMLNode from \c d .
+	CTOMLNode * _Nonnull nodeFromDouble(double d);
+
+	/// Creates a \c CTOMLNode from \c s .
+	CTOMLNode * _Nonnull nodeFromString(const char * _Nonnull s);
+
+	/// Creates a \c CTOMLNode from \c d .
+	CTOMLNode * _Nonnull nodeFromDate(CTOMLDate d);
+
+	/// Creates a \c CTOMLNode from \c t .
+	CTOMLNode * _Nonnull nodeFromTime(CTOMLTime t);
+
+	/// Creates a \c CTOMLNode from \c dt .
+	CTOMLNode * _Nonnull nodeFromDateTime(CTOMLDateTime dt);
+
+	/// Creates a \c CTOMLNode from \c t .
+	CTOMLNode * _Nonnull nodeFromTable(CTOMLTable * _Nonnull t);
+
+	/// Creates a \c CTOMLNode from \c a .
+	CTOMLNode * _Nonnull nodeFromArray(CTOMLTable * _Nonnull a);
 
 	// MARK: - Node - Data Retrieval
 

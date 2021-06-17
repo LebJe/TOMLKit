@@ -1,7 +1,14 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
-  - repo: https://github.com/hodovani/pre-commit-swift
-    rev: 0551a937b9f98a839fd98d2c3e6ce0b6c0a1e093
-    hooks:
-      - id: swift-format
+    - repo: "https://github.com/hodovani/pre-commit-swift"
+      rev: "0551a937b9f98a839fd98d2c3e6ce0b6c0a1e093"
+      hooks:
+          - id: "swift-format"
+            name: "Format Swift"
+    - repo: "https://github.com/pre-commit/mirrors-prettier"
+      rev: "4309ae0bc8b9f39c207bca9c5040ec8a35561a41"
+      hooks:
+          - id: "prettier"
+            name: "Format Markdown"
+            tags: ["md"]

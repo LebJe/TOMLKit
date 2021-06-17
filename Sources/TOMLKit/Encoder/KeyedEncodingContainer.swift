@@ -7,8 +7,8 @@
 extension InternalTOMLEncoder.KEC {
 	func setupTable() {
 		if let parentKey = self.parentKey {
-			if self.tomlValue.table?[parentKey.stringValue]?.table == nil {
-				self.tomlValue.table?[parentKey.stringValue] = TOMLTable()
+			if self.tomlValue.table?[parentKey.stringValue]?.tomlValue.table == nil {
+				self.tomlValue.table?[parentKey.stringValue] = TOMLTable().tomlValue
 			}
 		}
 	}
@@ -45,154 +45,118 @@ extension InternalTOMLEncoder.KEC {
 	func encode(_ value: Float, forKey key: Key) throws {
 		self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Double(value)
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Double(value).tomlValue
 		} else {
-			self.tomlValue.table?[key.stringValue] = Double(value)
+			self.tomlValue.table?[key.stringValue] = Double(value).tomlValue
 		}
 	}
 
 	func encode(_ value: Int, forKey key: Key) throws {
 		self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value
 		} else {
-			self.tomlValue.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[key.stringValue] = value
 		}
 	}
 
 	func encode(_ value: Int8, forKey key: Key) throws {
 		self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Int(value)
 		} else {
-			self.tomlValue.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[key.stringValue] = Int(value)
 		}
 	}
 
 	func encode(_ value: Int16, forKey key: Key) throws {
 		self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Int(value)
 		} else {
-			self.tomlValue.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[key.stringValue] = Int(value)
 		}
 	}
 
 	func encode(_ value: Int32, forKey key: Key) throws {
 		self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Int(value)
 		} else {
-			self.tomlValue.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[key.stringValue] = Int(value)
 		}
 	}
 
 	func encode(_ value: Int64, forKey key: Key) throws {
 		self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Int(value)
 		} else {
-			self.tomlValue.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[key.stringValue] = Int(value)
 		}
 	}
 
 	func encode(_ value: UInt, forKey key: Key) throws {
 		self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Int(value)
 		} else {
-			self.tomlValue.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[key.stringValue] = Int(value)
 		}
 	}
 
 	func encode(_ value: UInt8, forKey key: Key) throws {
 		self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Int(value)
 		} else {
-			self.tomlValue.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[key.stringValue] = Int(value)
 		}
 	}
 
 	func encode(_ value: UInt16, forKey key: Key) throws {
 		self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Int(value)
 		} else {
-			self.tomlValue.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[key.stringValue] = Int(value)
 		}
 	}
 
 	func encode(_ value: UInt32, forKey key: Key) throws {
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Int(value)
 		} else {
-			self.tomlValue.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[key.stringValue] = Int(value)
 		}
 	}
 
 	func encode(_ value: UInt64, forKey key: Key) throws {
 		self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = Int(value)
 		} else {
-			self.tomlValue.table?[key.stringValue] = value.tomlInt
+			self.tomlValue.table?[key.stringValue] = Int(value)
 		}
 	}
 
 	func encode<T>(_ value: T, forKey key: Key) throws where T: Encodable {
-		switch value {
-			case is TOMLTime:
-				self.setupTable()
-				if let parentKey = self.parentKey {
-					self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value as! TOMLTime
-				} else {
-					self.tomlValue.table?[key.stringValue] = value as! TOMLTime
-				}
-			case is TOMLDate:
-				self.setupTable()
-				if let parentKey = self.parentKey {
-					self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value as! TOMLDate
-				} else {
-					self.tomlValue.table?[key.stringValue] = value as! TOMLDate
-				}
-			case is TOMLDateTime:
-				self.setupTable()
-				if let parentKey = self.parentKey {
-					self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value as! TOMLDateTime
-				} else {
-					self.tomlValue.table?[key.stringValue] = value as! TOMLDateTime
-				}
-			case is TOMLTable:
-				self.setupTable()
-				if let parentKey = self.parentKey {
-					self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value as! TOMLTable
-				} else {
-					self.tomlValue.table?[key.stringValue] = value as! TOMLTable
-				}
-			case is TOMLArray:
-				self.setupTable()
-				if let parentKey = self.parentKey {
-					self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value as! TOMLArray
-				} else {
-					self.tomlValue.table?[key.stringValue] = value as! TOMLArray
-				}
-			case is TOMLInt:
-				self.setupTable()
-				if let parentKey = self.parentKey {
-					self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = value as! TOMLInt
-				} else {
-					self.tomlValue.table?[key.stringValue] = value as! TOMLInt
-				}
-			default:
-				self.setupTable()
-				if let parentKey = self.parentKey {
-					let encoder = InternalTOMLEncoder(.left(self.tomlValue.table![parentKey.stringValue]!.table!.tomlValue), parentKey: key, codingPath: self.codingPath, userInfo: self.userInfo)
-					try value.encode(to: encoder)
-				} else {
-					let encoder = InternalTOMLEncoder(.left(self.tomlValue), parentKey: key, codingPath: self.codingPath, userInfo: self.userInfo)
-					try value.encode(to: encoder)
-				}
+		if value is TOMLValueConvertible {
+			self.setupTable()
+			if let parentKey = self.parentKey {
+				self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = (value as! TOMLValueConvertible)
+			} else {
+				self.tomlValue.table?[key.stringValue] = (value as! TOMLValueConvertible)
+			}
+		} else {
+			self.setupTable()
+			if let parentKey = self.parentKey {
+				let encoder = InternalTOMLEncoder(.left(self.tomlValue.table![parentKey.stringValue]!.table!.tomlValue), parentKey: key, codingPath: self.codingPath, userInfo: self.userInfo)
+				try value.encode(to: encoder)
+			} else {
+				let encoder = InternalTOMLEncoder(.left(self.tomlValue), parentKey: key, codingPath: self.codingPath, userInfo: self.userInfo)
+				try value.encode(to: encoder)
+			}
 		}
 	}
 
@@ -207,10 +171,10 @@ extension InternalTOMLEncoder.KEC {
 	func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
 		self.self.setupTable()
 		if let parentKey = self.parentKey {
-			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = TOMLArray()
+			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = TOMLArray().tomlValue
 			return InternalTOMLEncoder.UEC(self.tomlValue.table![parentKey.stringValue]!.table![key.stringValue]!.array!, codingPath: self.codingPath, userInfo: self.userInfo)
 		} else {
-			self.tomlValue.table?[key.stringValue] = TOMLArray()
+			self.tomlValue.table?[key.stringValue] = TOMLArray().tomlValue
 			return InternalTOMLEncoder.UEC(self.tomlValue.table![key.stringValue]!.array!, codingPath: self.codingPath, userInfo: self.userInfo)
 		}
 	}

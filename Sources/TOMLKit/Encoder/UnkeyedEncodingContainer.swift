@@ -28,63 +28,58 @@ extension InternalTOMLEncoder.UEC {
 	}
 
 	mutating func encode(_ value: Int) throws {
-		self.tomlArray[self.currentIndex] = value.tomlInt
+		self.tomlArray[self.currentIndex] = value
 		self.currentIndex += 1
 	}
 
 	mutating func encode(_ value: Int8) throws {
-		self.tomlArray[self.currentIndex] = value.tomlInt
+		self.tomlArray[self.currentIndex] = Int(value)
 		self.currentIndex += 1
 	}
 
 	mutating func encode(_ value: Int16) throws {
-		self.tomlArray[self.currentIndex] = value.tomlInt
+		self.tomlArray[self.currentIndex] = Int(value)
 		self.currentIndex += 1
 	}
 
 	mutating func encode(_ value: Int32) throws {
-		self.tomlArray[self.currentIndex] = value.tomlInt
+		self.tomlArray[self.currentIndex] = Int(value)
 		self.currentIndex += 1
 	}
 
 	mutating func encode(_ value: Int64) throws {
-		self.tomlArray[self.currentIndex] = value.tomlInt
+		self.tomlArray[self.currentIndex] = Int(value)
 		self.currentIndex += 1
 	}
 
 	mutating func encode(_ value: UInt) throws {
-		self.tomlArray[self.currentIndex] = value.tomlInt
+		self.tomlArray[self.currentIndex] = Int(value)
 		self.currentIndex += 1
 	}
 
 	mutating func encode(_ value: UInt8) throws {
-		self.tomlArray[self.currentIndex] = value.tomlInt
+		self.tomlArray[self.currentIndex] = Int(value)
 		self.currentIndex += 1
 	}
 
 	mutating func encode(_ value: UInt16) throws {
-		self.tomlArray[self.currentIndex] = value.tomlInt
+		self.tomlArray[self.currentIndex] = Int(value)
 		self.currentIndex += 1
 	}
 
 	mutating func encode(_ value: UInt32) throws {
-		self.tomlArray[self.currentIndex] = value.tomlInt
+		self.tomlArray[self.currentIndex] = Int(value)
 		self.currentIndex += 1
 	}
 
 	mutating func encode(_ value: UInt64) throws {
-		self.tomlArray[self.currentIndex] = value.tomlInt
+		self.tomlArray[self.currentIndex] = Int(value)
 		self.currentIndex += 1
 	}
 
 	mutating func encode<T>(_ value: T) throws where T: Encodable {
 		switch value {
-			case is TOMLTime: self.tomlArray[self.currentIndex] = value as! TOMLTime
-			case is TOMLDate: self.tomlArray[self.currentIndex] = value as! TOMLDate
-			case is TOMLDateTime: self.tomlArray[self.currentIndex] = value as! TOMLDateTime
-			case is TOMLTable: self.tomlArray[self.currentIndex] = value as! TOMLTable
-			case is TOMLArray: self.tomlArray[self.currentIndex] = value as! TOMLArray
-			case is TOMLInt: self.tomlArray[self.currentIndex] = value as! TOMLInt
+			case is TOMLValueConvertible: self.tomlArray[self.currentIndex] = (value as! TOMLValueConvertible)
 			default:
 				let encoder = InternalTOMLEncoder(.right((array: self.tomlArray, index: self.currentIndex)), parentKey: nil, codingPath: self.codingPath, userInfo: self.userInfo)
 
@@ -103,7 +98,7 @@ extension InternalTOMLEncoder.UEC {
 
 	mutating func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
 		self.tomlArray[self.currentIndex] = TOMLArray()
-		return InternalTOMLEncoder.UEC(self.tomlArray[self.currentIndex]!.array!, codingPath: self.codingPath, userInfo: self.userInfo)
+		return InternalTOMLEncoder.UEC(self.tomlArray[self.currentIndex].array!, codingPath: self.codingPath, userInfo: self.userInfo)
 	}
 
 	mutating func superEncoder() -> Encoder {

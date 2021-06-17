@@ -75,17 +75,17 @@ extern "C" {
 		return reinterpret_cast<toml::table *>(table)->size();
 	}
 
+	/// Whether the \c table contains \c key .
+	bool tableContains(CTOMLTable * table, const char * key) {
+		return reinterpret_cast<toml::table *>(table)->contains(key);
+	}
+
 	// MARK: - Table - Data Insertion
 
 	/// Clears all the values in \c table.
 	/// @param table The \c toml::table to clear.
 	void tableClear(CTOMLTable * table) {
 		reinterpret_cast<toml::table *>(table)->clear();
-	}
-
-	/// Inserts \c boolean into \c table at \c key .
-	void tableInsertBool(CTOMLTable * table, const char * key, bool boolean) {
-		reinterpret_cast<toml::table *>(table)->insert(key, boolean);
 	}
 
 	/// Inserts \c integer into \c table at \c key .
@@ -98,31 +98,6 @@ extern "C" {
 		t->get(key)->as_integer()->flags(toml::value_flags { flags });
 	}
 
-	/// Inserts \c d into \c table at \c key .
-	void tableInsertDouble(CTOMLTable * table, const char * key, double d) {
-		reinterpret_cast<toml::table *>(table)->insert(key, d);
-	}
-
-	/// Inserts \c string into \c table at \c key .
-	void tableInsertString(CTOMLTable * table, const char * key, const char * string) {
-		reinterpret_cast<toml::table *>(table)->insert(key, string);
-	}
-
-	/// Inserts \c date into \c table at \c key .
-	void tableInsertDate(CTOMLTable * table, const char * key, CTOMLDate date) {
-		reinterpret_cast<toml::table *>(table)->insert(key, cTOMLDateToTomlDate(date));
-	}
-
-	/// Inserts \c time into \c table at \c key .
-	void tableInsertTime(CTOMLTable * table, const char * key, CTOMLTime time) {
-		reinterpret_cast<toml::table *>(table)->insert(key, cTOMLTimeToTomlTime(time));
-	}
-
-	/// Inserts \c dateTime into \c table at \c key .
-	void tableInsertDateTime(CTOMLTable * table, const char * key, CTOMLDateTime dateTime) {
-		reinterpret_cast<toml::table *>(table)->insert(key, cTOMLDateTimeToTomlDateTime(dateTime));
-	}
-
 	/// Inserts \c tableToInsert into \c table at \c key .
 	void tableInsertTable(CTOMLTable * table, const char * key, CTOMLTable * tableToInsert) {
 		reinterpret_cast<toml::table *>(table)->insert(key, *reinterpret_cast<toml::table *>(tableToInsert));
@@ -131,6 +106,36 @@ extern "C" {
 	/// Inserts \c array into \c table at \c key .
 	void tableInsertArray(CTOMLTable * table, const char * key, CTOMLArray * array) {
 		reinterpret_cast<toml::table *>(table)->insert(key, *reinterpret_cast<toml::array *>(array));
+	}
+
+	/// Inserts \c toml::node into \c table at \c key .
+	void tableInsertNode(CTOMLTable * table, const char * key, CTOMLNode * node) {
+		reinterpret_cast<toml::table *>(table)->insert(key, *reinterpret_cast<toml::node *>(node));
+	}
+
+	/// Replaces the value at \c key with \c integer .
+	void tableReplaceOrInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags) {
+		auto t = reinterpret_cast<toml::table *>(table);
+		auto v = toml::value { integer };
+
+		t->insert_or_assign(key, integer);
+
+		t->get(key)->as_integer()->flags(toml::value_flags { flags });
+	}
+
+	/// Replaces the value at \c key with \c tableToInsert .
+	void tableReplaceOrInsertTable(CTOMLTable * table, const char * key, CTOMLTable * tableToInsert) {
+		reinterpret_cast<toml::table *>(table)->insert_or_assign(key, *reinterpret_cast<toml::table *>(tableToInsert));
+	}
+
+	/// Replaces the value at \c key with \c array .
+	void tableReplaceOrInsertArray(CTOMLTable * table, const char * key, CTOMLArray * array) {
+		reinterpret_cast<toml::table *>(table)->insert_or_assign(key, *reinterpret_cast<toml::array *>(array));
+	}
+
+	/// Replaces the value at \c key with \c toml::node .
+	void tableReplaceOrInsertNode(CTOMLTable * table, const char * key, CTOMLNode * node) {
+		reinterpret_cast<toml::table *>(table)->insert_or_assign(key, *reinterpret_cast<toml::node *>(node));
 	}
 
 	// MARK: - Table - Data Retrieval
