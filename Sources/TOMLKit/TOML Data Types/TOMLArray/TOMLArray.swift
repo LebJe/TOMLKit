@@ -69,11 +69,11 @@ public class TOMLArray:
 		arrayClear(self.arrayPointer)
 	}
 
-	public func insertIntoTable(tablePointer: OpaquePointer, key: String) {
+	func insertIntoTable(tablePointer: OpaquePointer, key: String) {
 		tableInsertArray(tablePointer, strdup(key), self.arrayPointer)
 	}
 
-	public func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
+	func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
 		arrayInsertArray(arrayPointer, Int64(index), self.arrayPointer)
 	}
 

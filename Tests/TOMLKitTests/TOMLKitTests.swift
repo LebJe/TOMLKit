@@ -99,7 +99,7 @@ final class TOMLKitTests: XCTestCase {
 			case def
 			case ghi
 
-			public static func ==(lhs: E, rhs: E) -> Bool {
+			public static func == (lhs: E, rhs: E) -> Bool {
 				switch (lhs, rhs) {
 					case (.abc, .abc): return true
 					case (.def, .def): return true

@@ -156,11 +156,11 @@ public class TOMLTable:
 		tableEqual(lhs.tablePointer, rhs.tablePointer)
 	}
 
-	public func insertIntoTable(tablePointer: OpaquePointer, key: String) {
+	func insertIntoTable(tablePointer: OpaquePointer, key: String) {
 		tableInsertTable(tablePointer, strdup(key), self.tablePointer)
 	}
 
-	public func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
+	func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
 		arrayInsertTable(arrayPointer, Int64(index), self.tablePointer)
 	}
 }

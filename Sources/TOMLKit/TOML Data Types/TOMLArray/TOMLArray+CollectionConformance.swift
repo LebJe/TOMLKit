@@ -54,7 +54,8 @@ extension TOMLArray:
 	}
 
 	public func removeSubrange(_ bounds: Range<Int>) {
-		bounds.reversed().forEach({ self.checkIndex($0); self.remove(at: $0) })
+		bounds.reversed().forEach({ self.checkIndex($0)
+			self.remove(at: $0) })
 	}
 
 	public func replaceSubrange<C>(_ subrange: Range<Int>, with newElements: C) where C: Collection, TOMLValueConvertible == C.Element {

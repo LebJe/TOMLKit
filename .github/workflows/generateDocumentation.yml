@@ -1,24 +1,27 @@
-name: Generate Documentation
+name: "Generate Documentation"
 
-on: push
+on:
+    push:
+        branches:
+            - "main"
 
 jobs:
-  GenerateDocumentation:
-   runs-on: ubuntu-latest
-   steps:
-     - uses: actions/checkout@v2
-     - name: Generate Documentation
-       uses: SwiftDocOrg/swift-doc@master
-       with:
-         inputs: "Sources"
-         module-name: TOMLKit
-         format: html
-         base-url: "https://lebje.github.io/TOMLKit/"
-         output: ./.build/documentation
-     - name: Change Permissions
-       run: sudo chmod o+r -R ./.build/documentation
-     - name: Deploy to GitHub Pages
-       uses: peaceiris/actions-gh-pages@v3
-       with:
-         github_token: ${{ secrets.GITHUB_TOKEN }}
-         publish_dir: ./.build/documentation
+    "GenerateDocumentation":
+        runs-on: "ubuntu-latest"
+        steps:
+            - uses: "actions/checkout@v2"
+            - name: "Generate Documentation"
+              uses: "SwiftDocOrg/swift-doc@master"
+              with:
+                  inputs: "Sources"
+                  module-name: "TOMLKit"
+                  format: "html"
+                  base-url: "https://lebje.github.io/TOMLKit/"
+                  output: "./.build/documentation"
+            - name: "Change Permissions"
+              run: "sudo chmod o+r -R ./.build/documentation"
+            - name: "Deploy to GitHub Pages"
+              uses: "peaceiris/actions-gh-pages@v3"
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: "./.build/documentation"
