@@ -19,7 +19,7 @@ extension TOMLArray:
 	public var indices: Range<Index> { 0..<self.endIndex }
 
 	private func checkIndex(_ index: Index) {
-		precondition(index <= self.endIndex, "TOMLArray index out of bounds")
+		precondition(index <= self.endIndex - 1, "TOMLArray index out of bounds")
 	}
 
 	private func isEmptyPrecondition() {
