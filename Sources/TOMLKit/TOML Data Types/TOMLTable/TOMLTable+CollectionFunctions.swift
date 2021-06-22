@@ -37,20 +37,7 @@ public extension TOMLTable {
 		}
 	}
 
-	func next() -> (String, TOMLValueConvertible)? {
-		if self.currentIndex == 0 {
-			self.storedKeys = self.keys
-		}
-
-		guard self.currentIndex <= self.count - 1 else {
-			self.currentIndex = 0
-			self.storedKeys = []
-			return nil
-		}
-
-		let v = (self.storedKeys[self.currentIndex], self[self.storedKeys[self.currentIndex]]!)
-		self.currentIndex += 1
-
-		return v
+	func makeIterator() -> TOMLTableIterator {
+		TOMLTableIterator(table: self)
 	}
 }

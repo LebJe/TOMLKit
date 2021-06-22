@@ -23,11 +23,8 @@ public class TOMLTable:
 	ExpressibleByDictionaryLiteral,
 	CustomDebugStringConvertible,
 	TOMLValueConvertible,
-	Sequence,
-	IteratorProtocol
+	Sequence
 {
-	var currentIndex = 0
-	var storedKeys: [String] = []
 	public var type: TOMLType { .table }
 	public var debugDescription: String { self.convert() }
 	public var tomlValue: TOMLValue { get { .init(self) } set {} }

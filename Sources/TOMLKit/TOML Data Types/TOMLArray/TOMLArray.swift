@@ -9,6 +9,7 @@ import CTOML
 /// An array in a TOML document.
 public class TOMLArray:
 	Equatable,
+	Sequence,
 	ExpressibleByArrayLiteral,
 	CustomDebugStringConvertible,
 	TOMLValueConvertible
@@ -79,5 +80,9 @@ public class TOMLArray:
 
 	public static func == (lhs: TOMLArray, rhs: TOMLArray) -> Bool {
 		arrayEqual(lhs.arrayPointer, rhs.arrayPointer)
+	}
+
+	public func makeIterator() -> TOMLArrayIterator {
+		TOMLArrayIterator(array: self)
 	}
 }
