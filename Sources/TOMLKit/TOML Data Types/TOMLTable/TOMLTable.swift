@@ -25,7 +25,6 @@ public class TOMLTable:
 	TOMLValueConvertible,
 	Sequence
 {
-
 	public var type: TOMLType { .table }
 	public var debugDescription: String { self.convert() }
 	public var tomlValue: TOMLValue { get { .init(self) } set {} }

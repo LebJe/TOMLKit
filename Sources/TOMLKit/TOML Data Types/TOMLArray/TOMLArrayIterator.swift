@@ -1,9 +1,8 @@
+// Copyright (c) 2021 Jeff Lebrun
 //
-//  File.swift
-//  
+//  Licensed under the MIT License.
 //
-//  Created by Jeff Lebrun on 6/22/21.
-//
+//  The full text of the license can be found in the file named LICENSE.
 
 public struct TOMLArrayIterator: IteratorProtocol {
 	let array: TOMLArray
@@ -11,8 +10,8 @@ public struct TOMLArrayIterator: IteratorProtocol {
 
 	public mutating func next() -> TOMLValueConvertible? {
 		guard self.currentIndex <= self.array.endIndex - 1 else { return nil }
-		let element = array[self.currentIndex]
-		currentIndex += 1
+		let element = self.array[self.currentIndex]
+		self.currentIndex += 1
 		return element
 	}
 }

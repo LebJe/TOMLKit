@@ -1,10 +1,8 @@
+// Copyright (c) 2021 Jeff Lebrun
 //
-//  File.swift
-//  
+//  Licensed under the MIT License.
 //
-//  Created by Jeff Lebrun on 6/22/21.
-//
-
+//  The full text of the license can be found in the file named LICENSE.
 
 public struct TOMLTableIterator: IteratorProtocol {
 	let table: TOMLTable
