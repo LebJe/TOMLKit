@@ -14,30 +14,30 @@ TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.c
 ## Table of Contents
 
 <!--ts-->
+   * [TOMLKit](#tomlkit)
+      * [Table of Contents](#table-of-contents)
+      * [Installation](#installation)
+         * [Swift Package Manager](#swift-package-manager)
+      * [Usage](#usage)
+         * [Creating TOML Values](#creating-toml-values)
+            * [Tables](#tables)
+               * [From a Dictionary](#from-a-dictionary)
+               * [From a TOML String](#from-a-toml-string)
+               * [Conversion](#conversion)
+            * [Arrays](#arrays)
+            * [Dates](#dates)
+            * [Times](#times)
+            * [Integers](#integers)
+         * [Retrieving TOML values](#retrieving-toml-values)
+            * [Tables](#tables-1)
+            * [Arrays](#arrays-1)
+         * [Encoding](#encoding)
+         * [Decoding](#decoding)
+      * [Dependencies](#dependencies)
+      * [Licenses](#licenses)
+      * [Contributing](#contributing)
 
--   [TOMLKit](#tomlkit)
-    -   [Table of Contents](#table-of-contents)
-    -   [Installation](#installation)
-        -   [Swift Package Manager](#swift-package-manager)
-    -   [Usage](#usage)
-        -   [Creating TOML Values](#creating-toml-values)
-            -   [Tables](#tables)
-                -   [From a Dictionary](#from-a-dictionary)
-                -   [From a TOML String](#from-a-toml-string)
-                -   [Conversion](#conversion)
-            -   [Arrays](#arrays)
-            -   [Dates](#dates)
-            -   [Times](#times)
-            -   [Integers](#integers)
-        -   [Retrieving TOML values](#retrieving-toml-values)
-            -   [Tables](#tables-1)
-            -   [Arrays](#arrays-1)
-        -   [Encoding](#encoding)
-        -   [Decoding](#decoding)
-    -   [Dependencies](#dependencies)
-    -   [Licenses](#licenses)
-
-<!-- Added by: lebje, at: Thu Jun 10 17:58:14 EDT 2021 -->
+<!-- Added by: lebje, at: Mon Jul 12 12:36:07 EDT 2021 -->
 
 <!--te-->
 
