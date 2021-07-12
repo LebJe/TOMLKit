@@ -14,28 +14,29 @@ TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.c
 ## Table of Contents
 
 <!--ts-->
-   * [TOMLKit](#tomlkit)
-      * [Table of Contents](#table-of-contents)
-      * [Installation](#installation)
-         * [Swift Package Manager](#swift-package-manager)
-      * [Usage](#usage)
-         * [Creating TOML Values](#creating-toml-values)
-            * [Tables](#tables)
-               * [From a Dictionary](#from-a-dictionary)
-               * [From a TOML String](#from-a-toml-string)
-               * [Conversion](#conversion)
-            * [Arrays](#arrays)
-            * [Dates](#dates)
-            * [Times](#times)
-            * [Integers](#integers)
-         * [Retrieving TOML values](#retrieving-toml-values)
-            * [Tables](#tables-1)
-            * [Arrays](#arrays-1)
-         * [Encoding](#encoding)
-         * [Decoding](#decoding)
-      * [Dependencies](#dependencies)
-      * [Licenses](#licenses)
-      * [Contributing](#contributing)
+
+-   [TOMLKit](#tomlkit)
+    -   [Table of Contents](#table-of-contents)
+    -   [Installation](#installation)
+        -   [Swift Package Manager](#swift-package-manager)
+    -   [Usage](#usage)
+        -   [Creating TOML Values](#creating-toml-values)
+            -   [Tables](#tables)
+                -   [From a Dictionary](#from-a-dictionary)
+                -   [From a TOML String](#from-a-toml-string)
+                -   [Conversion](#conversion)
+            -   [Arrays](#arrays)
+            -   [Dates](#dates)
+            -   [Times](#times)
+            -   [Integers](#integers)
+        -   [Retrieving TOML values](#retrieving-toml-values)
+            -   [Tables](#tables-1)
+            -   [Arrays](#arrays-1)
+        -   [Encoding](#encoding)
+        -   [Decoding](#decoding)
+    -   [Dependencies](#dependencies)
+    -   [Licenses](#licenses)
+    -   [Contributing](#contributing)
 
 <!-- Added by: lebje, at: Mon Jul 12 12:36:07 EDT 2021 -->
 
@@ -301,7 +302,9 @@ print(testStruct)
 The [toml++](https://github.com/marzer/tomlplusplus/) license is available in the `tomlplusplus` directory in the `LICENSE` file.
 
 ## Contributing
+
 Before committing, please install [pre-commit](https://pre-commit.com), [swift-format](https://github.com/nicklockwood/SwiftFormat), and [Prettier](https://prettier.io) then install the pre-commit hook:
+
 ```bash
 $ brew bundle # install the packages specified in Brewfile
 $ pre-commit install
