@@ -51,7 +51,7 @@ struct TOMLParseError: Error, CustomDebugStringConvertible {
 
 	/// Returns the region of the source document responsible for the error.
 	///
-	/// This documentation comment was taken from the [toml++ documentation](https://marzer.github.io/tomlplusplus/classtoml_1_1parse__error.html#a8168b4941305654cf4ba8fc96efd0514) .
+	/// This documentation comment was taken from the [toml++ documentation](https://marzer.github.io/tomlplusplus/classtoml_1_1parse__error.html#a8168b4941305654cf4ba8fc96efd0514).
 	public let source: TOMLSourceRegion
 
 	internal init(cTOMLParseError: CTOMLParseError) {

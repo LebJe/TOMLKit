@@ -9,7 +9,6 @@
 #elseif os(Linux) || os(Android)
 	import Glibc
 #elseif os(Windows)
-	// TODO: is this the right module?
 	import ucrt
 #else
 	#error("Unsupported Platform")
@@ -126,7 +125,7 @@ public class TOMLTable:
 		tableClear(self.tablePointer)
 	}
 
-	/// Insert a value into this table.
+	/// Insert a value into this `TOMLTable`, or retrieve a value from this `TOMLTable`.
 	public subscript(key: String) -> TOMLValueConvertible? {
 		get {
 			guard let pointer = tableGetNode(self.tablePointer, strdup(key)) else { return nil }

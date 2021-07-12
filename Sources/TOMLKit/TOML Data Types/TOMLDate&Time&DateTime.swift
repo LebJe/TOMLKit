@@ -11,7 +11,6 @@ import CTOML
 #elseif os(Linux) || os(Android)
 	import Glibc
 #elseif os(Windows)
-	// TODO: is this the right module?
 	import ucrt
 #else
 	#error("Unsupported Platform")

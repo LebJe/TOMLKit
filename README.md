@@ -299,3 +299,14 @@ print(testStruct)
 ## Licenses
 
 The [toml++](https://github.com/marzer/tomlplusplus/) license is available in the `tomlplusplus` directory in the `LICENSE` file.
+
+## Contributing
+Before committing, please install [pre-commit](https://pre-commit.com), [swift-format](https://github.com/nicklockwood/SwiftFormat), and [Prettier](https://prettier.io) then install the pre-commit hook:
+```bash
+$ brew bundle # install the packages specified in Brewfile
+$ pre-commit install
+
+# Commit your changes.
+```
+
+To install pre-commit on other platforms, refer to the [documentation](https://pre-commit.com/#install).
