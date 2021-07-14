@@ -56,7 +56,7 @@ Add this to the `dependencies` array in `Package.swift`:
 .package(url: "https://github.com/LebJe/TOMLKit.git", from: "0.1.1")
 ```
 
-. Also add this to the `targets` array in the aforementioned file:
+Also add this to the `targets` array in the aforementioned file:
 
 ```swift
 .product(name: "TOMLKit", package: "TOMLKit")
