@@ -5,13 +5,13 @@
 //  The full text of the license can be found in the file named LICENSE.
 
 #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
-    import Darwin.C
+	import Darwin.C
 #elseif os(Linux) || os(Android)
-    import Glibc
+	import Glibc
 #elseif os(Windows)
-    import ucrt
+	import ucrt
 #else
-    #error("Unsupported Platform")
+	#error("Unsupported Platform")
 #endif
 
 import CTOML

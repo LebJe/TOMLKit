@@ -141,16 +141,16 @@ final class TOMLKitTests: XCTestCase {
 				time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
 				date: TOMLDate(year: 2021, month: 5, day: 20),
 				dateTime: TOMLDateTime(
-                    date: TOMLDate(year: 2021, month: 5, day: 20), 
-                    time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294), 
-                    offset: TOMLTimeOffset(offset: 0)
-                ),
+					date: TOMLDate(year: 2021, month: 5, day: 20),
+					time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
+					offset: TOMLTimeOffset(offset: 0)
+				),
 				array: ["Hello", "World!"],
 				c: [A.B.C(a: "Hello, World!"), A.B.C(a: "Hello")]
 			)
 		)
 
-        XCTAssertEqual(try TOMLDecoder().decode(A.self, from: toml), a)
+		XCTAssertEqual(try TOMLDecoder().decode(A.self, from: toml), a)
 	}
 
 	func testTOMLEncoder() throws {
