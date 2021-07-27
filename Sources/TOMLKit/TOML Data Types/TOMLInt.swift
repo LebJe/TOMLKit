@@ -4,6 +4,16 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
+#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+    import Darwin.C
+#elseif os(Linux) || os(Android)
+    import Glibc
+#elseif os(Windows)
+    import ucrt
+#else
+    #error("Unsupported Platform")
+#endif
+
 import CTOML
 
 /// An integer in a TOML document.

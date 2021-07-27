@@ -131,23 +131,26 @@ final class TOMLKitTests: XCTestCase {
 			}
 		}
 
-//		let a = A(
-//			string: "Hello, World!",
-//			int: 2093,
-//			double: 3053.53,
-//			bool: true,
-//			e: .abc,
-//			b: A.B(
-//				time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
-//				date: TOMLDate(year: 2021, month: 5, day: 20),
-//				dateTime: TOMLDateTime(date: TOMLDate(year: 2021, month: 5, day: 20), time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)),
-//				array: ["Hello", "World!"],
-//				c: [A.B.C(a: "Hello, World!"), A.B.C(a: "Hello")]
-//			)
-//		)
+		let a = A(
+			string: "Hello, World!",
+			int: 2093,
+			double: 3053.53,
+			bool: true,
+			e: .abc,
+			b: A.B(
+				time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
+				date: TOMLDate(year: 2021, month: 5, day: 20),
+				dateTime: TOMLDateTime(
+                    date: TOMLDate(year: 2021, month: 5, day: 20), 
+                    time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294), 
+                    offset: TOMLTimeOffset(offset: 0)
+                ),
+				array: ["Hello", "World!"],
+				c: [A.B.C(a: "Hello, World!"), A.B.C(a: "Hello")]
+			)
+		)
 
-		// TODO: Test Equality
-		XCTAssertNoThrow(try TOMLDecoder().decode(A.self, from: toml))
+        XCTAssertEqual(try TOMLDecoder().decode(A.self, from: toml), a)
 	}
 
 	func testTOMLEncoder() throws {
