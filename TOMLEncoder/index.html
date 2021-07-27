@@ -25,7 +25,7 @@
     <nav>
         <div class="wrapper">
             <h2>On This Page</h2>
-            <ol><li><a href="#initializers">Initializers</a><ul><li class="initializer"><a href="#tomlencoder.init(options:)">init(options:​)</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#tomlencoder.userinfo">user​Info</a></li><li class="variable"><a href="#tomlencoder.options">options</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#tomlencoder.encode(_:)">encode(_:​)</a></li></ul></li></ol>
+            <ol><li><a href="#initializers">Initializers</a><ul><li class="initializer"><a href="#tomlencoder.init(options:dataencoder:)">init(options:​data​Encoder:​)</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#tomlencoder.userinfo">user​Info</a></li><li class="variable"><a href="#tomlencoder.options">options</a></li><li class="variable"><a href="#tomlencoder.dataencoder">data​Encoder</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#tomlencoder.encode(_:)">encode(_:​)</a></li></ul></li></ol>
         </div>
     </nav>
 
@@ -47,9 +47,9 @@
     <section id="initializers">
         <h2>Initializers</h2>
 
-        <div role="article" class="initializer" id="tomlencoder.init(options:)">
+        <div role="article" class="initializer" id="tomlencoder.init(options:dataencoder:)">
     <h3>
-        <code><a href="#tomlencoder.init(options:)">init(options:​)</a></code>
+        <code><a href="#tomlencoder.init(options:dataencoder:)">init(options:​data​Encoder:​)</a></code>
     </h3>
     <div class="declaration">
 <pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">init</span>(
@@ -57,7 +57,8 @@
 			.<span class="variable">allowLiteralStrings</span>,
 			.<span class="variable">allowMultilineStrings</span>,
 			.<span class="variable">allowValueFormatFlags</span>,
-		]
+		],
+		<span class="variable">dataEncoder</span>: <span class="attribute">@</span><span class="attribute">escaping</span> (<span class="type">Data</span>) -&gt; <span class="type">String</span> = { <span class="variable">$0</span>.<span class="variable">base64EncodedString</span>() }
 	)  </body></html></code></pre>
 </div>
 </div>
@@ -83,6 +84,26 @@
 		.<span class="variable">allowMultilineStrings</span>,
 		.<span class="variable">allowValueFormatFlags</span>,
 	] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Once encoding is complete, <code>options</code> will be used when converting the encoded data into TOML.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="tomlencoder.dataencoder">
+    <h3>
+        <code><a href="#tomlencoder.dataencoder">data​Encoder</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">dataEncoder</span>: (<span class="type">Data</span>) -&gt; <span class="type">String</span>  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Used to encode instances of <code>Data</code> into a <code>String</code> that can be inserted into a TOML document.</p>
+
+</div>
+<div class="discussion">
+    <p>The default <code>Data</code> encoding is <a href="https://en.wikipedia.org/wiki/Base64">Base64</a>.</p>
+
 </div>
 </div>
     </section>
@@ -135,7 +156,7 @@
 
     <footer>
         <p>
-    Generated on <time datetime="2021-07-27T09:42:20+0000">July 27, 2021</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+    Generated on <time datetime="2021-07-27T19:52:57+0000">July 27, 2021</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
 </p>
     </footer>
 </body>
