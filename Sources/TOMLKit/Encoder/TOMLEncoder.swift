@@ -4,23 +4,35 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
+import struct Foundation.Data
+import class Foundation.JSONEncoder
+
 /// `TOMLEncoder` encodes Swift `struct`s into TOML documents.
 public struct TOMLEncoder {
 	public var userInfo: [CodingUserInfoKey: Any] = [:]
+
+	/// Once encoding is complete, `options` will be used when converting the encoded data into TOML.
 	public var options: FormatOptions = [
 		.allowLiteralStrings,
 		.allowMultilineStrings,
 		.allowValueFormatFlags,
 	]
 
+	/// Used to encode instances of `Data` into a `String` that can be inserted into a TOML document.
+	///
+	/// The default `Data` encoding is [Base64](https://en.wikipedia.org/wiki/Base64).
+	public var dataEncoder: (Data) -> String = { $0.base64EncodedString() }
+
 	public init(
 		options: FormatOptions = [
 			.allowLiteralStrings,
 			.allowMultilineStrings,
 			.allowValueFormatFlags,
-		]
+		],
+		dataEncoder: @escaping (Data) -> String = { $0.base64EncodedString() }
 	) {
 		self.options = options
+		self.dataEncoder = dataEncoder
 	}
 
 	/// Encodes `T` and returns the generated TOML.
@@ -30,7 +42,12 @@ public struct TOMLEncoder {
 	/// - Returns: The generated TOML.
 	public func encode<T: Encodable>(_ value: T) throws -> String {
 		let table = TOMLTable()
-		let encoder = InternalTOMLEncoder(.left(table.tomlValue), codingPath: [], userInfo: self.userInfo)
+		let encoder = InternalTOMLEncoder(
+			.left(table.tomlValue),
+			codingPath: [],
+			userInfo: self.userInfo,
+			dataEncoder: self.dataEncoder
+		)
 		try value.encode(to: encoder)
 		return table.convert(to: .toml, options: self.options)
 	}

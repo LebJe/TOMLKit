@@ -4,6 +4,8 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
+import struct Foundation.Data
+
 extension InternalTOMLDecoder.UDC {
 	mutating func decodeNil() throws -> Bool {
 		// There is no `null` in TOML.
@@ -101,13 +103,26 @@ extension InternalTOMLDecoder.UDC {
 	}
 
 	mutating func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
-		let decoder = InternalTOMLDecoder(self.tomlArray[self.currentIndex].tomlValue, userInfo: self.userInfo)
-		self.currentIndex += 1
-		return try T(from: decoder)
+		if type is Data.Type {
+			guard let s = self.tomlArray[self.currentIndex].string else {
+				throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
+			}
+
+			guard let data = self.dataDecoder(s) else {
+				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode Data from the string: \"\(s)\". TOMLArray index: \(self.currentIndex)."))
+			}
+
+			self.currentIndex += 1
+			return data as! T
+		} else {
+			let decoder = InternalTOMLDecoder(self.tomlArray[self.currentIndex].tomlValue, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
+			self.currentIndex += 1
+			return try T(from: decoder)
+		}
 	}
 
 	mutating func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
-		KeyedDecodingContainer<NestedKey>(InternalTOMLDecoder.KDC(tomlValue: self.tomlArray.tomlValue, codingPath: self.codingPath, userInfo: self.userInfo))
+		KeyedDecodingContainer<NestedKey>(InternalTOMLDecoder.KDC(tomlValue: self.tomlArray.tomlValue, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder))
 	}
 
 	mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
@@ -115,7 +130,7 @@ extension InternalTOMLDecoder.UDC {
 			throw DecodingError.typeMismatch(TOMLArray.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve an array from the TOML array at index \(self.currentIndex)."))
 		}
 
-		return InternalTOMLDecoder.UDC(nestedArray, codingPath: self.codingPath, userInfo: self.userInfo)
+		return InternalTOMLDecoder.UDC(nestedArray, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
 	}
 
 	mutating func superDecoder() throws -> Decoder {

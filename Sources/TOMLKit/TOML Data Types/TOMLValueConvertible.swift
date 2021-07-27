@@ -15,6 +15,7 @@
 #endif
 
 import CTOML
+import struct Foundation.Data
 
 public protocol TOMLValueConvertible: CustomDebugStringConvertible {
 	/// What kind of TOML value this is.
@@ -86,15 +87,12 @@ extension TOMLValueConvertible {
 
 extension Bool: TOMLValueConvertible {
 	public var debugDescription: String { self.description }
-
 	public var type: TOMLType { .bool }
-
 	public var tomlValue: TOMLValue { get { .init(booleanLiteral: self) } set {} }
 }
 
 extension Double: TOMLValueConvertible {
 	public var type: TOMLType { .double }
-
 	public var tomlValue: TOMLValue { get { .init(floatLiteral: self) } set {} }
 }
 
@@ -106,7 +104,12 @@ extension String: TOMLValueConvertible {
 
 extension Int: TOMLValueConvertible {
 	public var debugDescription: String { self.description }
-
 	public var type: TOMLType { .string }
 	public var tomlValue: TOMLValue { get { .init(self) } set {} }
+}
+
+extension Data: TOMLValueConvertible {
+	public var debugDescription: String { self.description }
+	public var type: TOMLType { .string }
+	public var tomlValue: TOMLValue { get { .init(stringLiteral: self.base64EncodedString()) } set {} }
 }

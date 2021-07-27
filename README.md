@@ -30,15 +30,15 @@ TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.c
             -   [Times](#times)
             -   [Integers](#integers)
         -   [Retrieving TOML values](#retrieving-toml-values)
-            -   [Tables](#tables-1)
-            -   [Arrays](#arrays-1)
-        -   [Encoding](#encoding)
-        -   [Decoding](#decoding)
+            -   [From Tables](#from-tables)
+            -   [From Arrays](#from-arrays)
+        -   [Encoding struct to TOML](#encoding-struct-to-toml)
+        -   [Decoding TOML to struct](#decoding-toml-to-struct)
     -   [Dependencies](#dependencies)
     -   [Licenses](#licenses)
     -   [Contributing](#contributing)
 
-<!-- Added by: lebje, at: Mon Jul 12 12:36:07 EDT 2021 -->
+<!-- Added by: lebje, at: Tue Jul 27 15:33:29 EDT 2021 -->
 
 <!--te-->
 
@@ -105,10 +105,10 @@ To create a `TOMLTable` with values, use one of the below methods:
 ##### From a Dictionary
 
 ```swift
-let table = TOMLTable(["string": "Hello, World!", "int": 345025.tomlInt, "double": 025307.350])
+let table = TOMLTable(["string": "Hello, World!", "int": 345025, "double": 025307.350])
 
 // Or use `TOMLTable`'s `ExpressibleByDictionaryLiteral` conformance.
-let table = ["string": "Hello, World!", "int": 345025.tomlInt, "double": 025307.350] as TOMLTable
+let table = ["string": "Hello, World!", "int": 345025, "double": 025307.350] as TOMLTable
 ```
 
 ##### From a TOML String
@@ -138,7 +138,7 @@ To insert values, make sure the value conforms to `TOMLValueConvertible`, then u
 let table = TOMLTable()
 
 table["string"] = "Hello, World!"
-table.insert(127.tomlInt, at: "int")
+table.insert(127, at: "int")
 table["table"] = TOMLTable(["string 1": "Hello, Again!"], inline: true)
 table["table"] = TOMLTable(["string 2": "Hello, Again!"], inline: false)
 
@@ -167,7 +167,7 @@ TOML arrays are similar to a Swift `Array`. They can be embedded inside one anot
 
 To create a empty `TOMLArray`, use the `TOMLArray.init` initializer.
 
-To create a `TOMLarray` with values, use one of the below methods:
+To create a `TOMLArray` with values, use one of the below methods:
 
 ```swift
 let array = TOMLArray(
@@ -208,8 +208,8 @@ let date = TOMLDate(year: 2021, month: 6, day: 10)
 
 // Create a date from `Foundation.Date`
 import Foundation
-let date2 = TOMLDate(date: Date())
 
+let date2 = TOMLDate(date: Date())
 let table = TOMLTable(["Date1": date, "Date2": date2])
 ```
 
@@ -221,16 +221,29 @@ let time = TOMLTime(hour: 12, minute: 27, second: 49)
 let table = TOMLTable(["time": time])
 ```
 
+#### `Data`
+
+```swift
+import Foundation
+
+let data = Data([0x01, 0x02, 0x03])
+
+// `data` will be encoded as Base64.
+let table = TOMLTable(["data": data])
+```
+
 #### Integers
 
-Use the [`tomlInt` property in `FixedWidthInteger`](https://lebje.github.io/TOMLKit/FixedWidthInteger/#fixedwidthinteger.tomlint) to quickly create a `TOMLInt` for simple integers, and the `TOMLInt.init(_ value:options:)` initializer the format the integer as an octal, hexadecimal, or binary value.
+Integers that don't need to be formatted will be converted to a `TOMLInt` automatically.
+Use the `TOMLInt.init(_ value:options:)` initializer to format integers as octal, hexadecimal, or binary values.
 
 ### Retrieving TOML values
 
-#### Tables
+#### From Tables
 
 ```swift
 let table: TOMLTable = ...
+
 if let string = table["string"]?.string {
    print(string)
 }
@@ -246,10 +259,11 @@ print(double)
 ...
 ```
 
-#### Arrays
+#### From Arrays
 
 ```swift
 let array: TOMLArray = ...
+
 if let string = array[0].string? {
    print(string)
 }
@@ -267,7 +281,7 @@ for value in array {
 }
 ```
 
-### Encoding
+### Encoding `struct` to TOML
 
 ```swift
 struct TestStruct: Encodable {
@@ -280,7 +294,7 @@ let toml = try TOMLEncoder().encode(TestStruct())
 print(toml)
 ```
 
-### Decoding
+### Decoding TOML to `struct`
 
 ```swift
 struct TestStruct: Decodable {
