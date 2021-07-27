@@ -4,6 +4,8 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
+import struct Foundation.Data
+
 extension InternalTOMLEncoder.KEC {
 	func setupTable() {
 		if let parentKey = self.parentKey {
@@ -141,20 +143,40 @@ extension InternalTOMLEncoder.KEC {
 	}
 
 	func encode<T>(_ value: T, forKey key: Key) throws where T: Encodable {
-		if value is TOMLValueConvertible {
+		if value is Data {
+			self.setupTable()
+			if let parentKey = self.parentKey {
+				self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = self.dataEncoder(value as! Data)
+			} else {
+				self.tomlValue.table?[key.stringValue] = self.dataEncoder(value as! Data)
+			}
+		} else if value is TOMLValueConvertible {
 			self.setupTable()
 			if let parentKey = self.parentKey {
 				self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = (value as! TOMLValueConvertible)
 			} else {
 				self.tomlValue.table?[key.stringValue] = (value as! TOMLValueConvertible)
 			}
+
 		} else {
 			self.setupTable()
 			if let parentKey = self.parentKey {
-				let encoder = InternalTOMLEncoder(.left(self.tomlValue.table![parentKey.stringValue]!.table!.tomlValue), parentKey: key, codingPath: self.codingPath, userInfo: self.userInfo)
+				let encoder = InternalTOMLEncoder(
+					.left(self.tomlValue.table![parentKey.stringValue]!.table!.tomlValue),
+					parentKey: key,
+					codingPath: self.codingPath,
+					userInfo: self.userInfo,
+					dataEncoder: self.dataEncoder
+				)
 				try value.encode(to: encoder)
 			} else {
-				let encoder = InternalTOMLEncoder(.left(self.tomlValue), parentKey: key, codingPath: self.codingPath, userInfo: self.userInfo)
+				let encoder = InternalTOMLEncoder(
+					.left(self.tomlValue),
+					parentKey: key,
+					codingPath: self.codingPath,
+					userInfo: self.userInfo,
+					dataEncoder: self.dataEncoder
+				)
 				try value.encode(to: encoder)
 			}
 		}
@@ -162,9 +184,25 @@ extension InternalTOMLEncoder.KEC {
 
 	func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
 		if let parentKey = self.parentKey {
-			return KeyedEncodingContainer(InternalTOMLEncoder.KEC<NestedKey>(self.tomlValue.table![parentKey.stringValue]!.table!.tomlValue, parentKey: key, codingPath: self.codingPath, userInfo: self.userInfo))
+			return KeyedEncodingContainer(
+				InternalTOMLEncoder.KEC<NestedKey>(
+					self.tomlValue.table![parentKey.stringValue]!.table!.tomlValue,
+					parentKey: key,
+					codingPath: self.codingPath,
+					userInfo: self.userInfo,
+					dataEncoder: self.dataEncoder
+				)
+			)
 		} else {
-			return KeyedEncodingContainer(InternalTOMLEncoder.KEC<NestedKey>(self.tomlValue, parentKey: key, codingPath: self.codingPath, userInfo: self.userInfo))
+			return KeyedEncodingContainer(
+				InternalTOMLEncoder.KEC<NestedKey>(
+					self.tomlValue,
+					parentKey: key,
+					codingPath: self.codingPath,
+					userInfo: self.userInfo,
+					dataEncoder: self.dataEncoder
+				)
+			)
 		}
 	}
 
@@ -172,10 +210,20 @@ extension InternalTOMLEncoder.KEC {
 		self.self.setupTable()
 		if let parentKey = self.parentKey {
 			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = TOMLArray().tomlValue
-			return InternalTOMLEncoder.UEC(self.tomlValue.table![parentKey.stringValue]!.table![key.stringValue]!.array!, codingPath: self.codingPath, userInfo: self.userInfo)
+			return InternalTOMLEncoder.UEC(
+				self.tomlValue.table![parentKey.stringValue]!.table![key.stringValue]!.array!,
+				codingPath: self.codingPath,
+				userInfo: self.userInfo,
+				dataEncoder: self.dataEncoder
+			)
 		} else {
 			self.tomlValue.table?[key.stringValue] = TOMLArray().tomlValue
-			return InternalTOMLEncoder.UEC(self.tomlValue.table![key.stringValue]!.array!, codingPath: self.codingPath, userInfo: self.userInfo)
+			return InternalTOMLEncoder.UEC(
+				self.tomlValue.table![key.stringValue]!.array!,
+				codingPath: self.codingPath,
+				userInfo: self.userInfo,
+				dataEncoder: self.dataEncoder
+			)
 		}
 	}
 

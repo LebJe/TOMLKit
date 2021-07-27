@@ -4,6 +4,8 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
+import struct Foundation.Data
+
 extension InternalTOMLDecoder.KDC {
 	private func decodeInt(key: Key) throws -> Int {
 		guard let i = self.tomlValue.table?[key.stringValue]?.int else {
@@ -97,28 +99,40 @@ extension InternalTOMLDecoder.KDC {
 		// Check if `type` is a TOMLTime, TOMLDate, or TOMLDateTime.
 		switch self.tomlValue.table?[key.stringValue]?.type {
 			case .time:
-				if let value = self.tomlValue.table?[key.stringValue]?.time as? T {
-					return value
-				} else {
+				guard let value = self.tomlValue.table?[key.stringValue]?.time as? T else {
 					throw DecodingError.typeMismatch(TOMLTime.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The type (\(type)) being decoded is not a \(TOMLTime.self)"))
 				}
+
+				return value
 			case .date:
-				if let value = self.tomlValue.table?[key.stringValue]?.date as? T {
-					return value
-				} else {
+				guard let value = self.tomlValue.table?[key.stringValue]?.date as? T else {
 					throw DecodingError.typeMismatch(TOMLDate.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The type (\(type)) being decoded is not a \(TOMLDate.self)"))
 				}
+
+				return value
 			case .dateTime:
-				if let value = self.tomlValue.table?[key.stringValue]?.dateTime as? T {
-					return value
-				} else {
+				guard let value = self.tomlValue.table?[key.stringValue]?.dateTime as? T else {
 					throw DecodingError.typeMismatch(TOMLDateTime.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The type (\(type)) being decoded is not a \(TOMLDateTime.self)"))
 				}
+
+				return value
 			case .none:
 				throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The key \"\(key.stringValue)\" was not found in the TOML table."))
 			default:
-				let decoder = InternalTOMLDecoder(self.tomlValue.table![key.stringValue]!.tomlValue, userInfo: self.userInfo)
-				return try T(from: decoder)
+				if type is Data.Type, let value = self.tomlValue.table?[key.stringValue]?.string {
+					guard let data = self.dataDecoder(value) else {
+						throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode Data from the string: \"\(value)\". Key: \(key.stringValue)"))
+					}
+
+					return data as! T
+				} else {
+					guard let value = self.tomlValue.table?[key.stringValue]?.tomlValue else {
+						throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The key \"\(key.stringValue)\" was not found in the TOML table."))
+					}
+
+					let decoder = InternalTOMLDecoder(value, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
+					return try T(from: decoder)
+				}
 		}
 	}
 
@@ -127,15 +141,15 @@ extension InternalTOMLDecoder.KDC {
 			throw DecodingError.typeMismatch(TOMLTable.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected a TOMLTable but found a \(self.tomlValue.table?[key.stringValue]?.type.rawValue ?? "No type") instead."))
 		}
 
-		return KeyedDecodingContainer<NestedKey>(InternalTOMLDecoder.KDC<NestedKey>(tomlValue: value, codingPath: self.codingPath, userInfo: self.userInfo))
+		return KeyedDecodingContainer<NestedKey>(InternalTOMLDecoder.KDC<NestedKey>(tomlValue: value, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder))
 	}
 
 	func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
 		guard let array = self.tomlValue.table?[key.stringValue]?.array else {
-			throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "An \"array\" does not exist at \"\(key.stringValue)\" in the TOML table."))
+			throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "An array does not exist at \"\(key.stringValue)\" in the TOML table."))
 		}
 
-		return InternalTOMLDecoder.UDC(array, codingPath: self.codingPath, userInfo: self.userInfo)
+		return InternalTOMLDecoder.UDC(array, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
 	}
 
 	func superDecoder() throws -> Decoder {

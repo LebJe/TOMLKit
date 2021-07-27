@@ -14,10 +14,11 @@ final class TOMLKitTests: XCTestCase {
 		"Double": 50.10475,
 		"Bool": false,
 		"Array": [
-			1.tomlInt,
+			1,
 			"Hello, World!",
 			2724.49,
 			TOMLInt(0b10101001, options: .formatAsBinary),
+			Data(Array(repeating: 0x96, count: 5)),
 		] as TOMLArray,
 		"Date": TOMLDate(year: 2021, month: 5, day: 20),
 		"Time": TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
@@ -25,16 +26,23 @@ final class TOMLKitTests: XCTestCase {
 			date: TOMLDate(year: 2021, month: 5, day: 20),
 			time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)
 		),
-		"Inline-Table": TOMLTable(["String 1": "Hello", "Time": TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)], inline: true),
+		"Inline-Table": TOMLTable(
+			[
+				"String 1": "Hello",
+				"Time": TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
+				"Data": Data(Array(repeating: 0x74, count: 5)),
+			],
+			inline: true
+		),
 	] as TOMLTable
 
 	let expectedTOMLForTestTable = """
-	Array = [ 1, 'Hello, World!', 2724.49, 0b10101001 ]
+	Array = [ 1, 'Hello, World!', 2724.49, 0b10101001, 'lpaWlpY=' ]
 	Bool = false
 	Date = 2021-05-20
 	DateTime = 2021-05-20T04:27:05.000000294Z
 	Double = 50.10475
-	Inline-Table = { "String 1" = 'Hello', Time = 04:27:05.000000294 }
+	Inline-Table = { Data = 'dHR0dHQ=', "String 1" = 'Hello', Time = 04:27:05.000000294 }
 	Int = 0xEA64
 	String = 'Hello, World!'
 	Time = 04:27:05.000000294
@@ -89,9 +97,11 @@ final class TOMLKitTests: XCTestCase {
 
 			[[b.c]]
 			a = 'Hello, World!'
+			data = 'YyA='
 
 			[[b.c]]
 			a = 'Hello'
+			data = 'Yic='
 		"""
 
 		enum E: String, Codable, Equatable {
@@ -127,6 +137,7 @@ final class TOMLKitTests: XCTestCase {
 
 				struct C: Decodable, Equatable {
 					let a: String
+					let data: Data
 				}
 			}
 		}
@@ -146,7 +157,10 @@ final class TOMLKitTests: XCTestCase {
 					offset: TOMLTimeOffset(offset: 0)
 				),
 				array: ["Hello", "World!"],
-				c: [A.B.C(a: "Hello, World!"), A.B.C(a: "Hello")]
+				c: [
+					A.B.C(a: "Hello, World!", data: Data([0x63, 0x20])),
+					A.B.C(a: "Hello", data: Data([0x62, 0x27])),
+				]
 			)
 		)
 
@@ -177,10 +191,14 @@ final class TOMLKitTests: XCTestCase {
 					time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)
 				)
 				var array: [String] = ["String 1", "String 2"]
-				var c: [A.B.C] = [.init(a: "Array of C 1"), .init(a: "Array of C 2")]
+				var c: [A.B.C] = [
+					.init(a: "Array of C 1", data: Data([0x63, 0x20])),
+					.init(a: "Array of C 2", data: Data([0x62, 0x27])),
+				]
 
 				struct C: Encodable {
 					var a: String
+					var data: Data
 				}
 			}
 		}
@@ -200,12 +218,24 @@ final class TOMLKitTests: XCTestCase {
 
 			[[b.c]]
 			a = 'Array of C 1'
+			data = 'YyA='
 
 			[[b.c]]
 			a = 'Array of C 2'
+			data = 'Yic='
 		"""
 
 		XCTAssertEqual(try TOMLTable(string: try TOMLEncoder().encode(A())), try TOMLTable(string: toml))
+	}
+
+	func testCustomDataDecodingAndEncoding() {
+		struct Test: Codable, Equatable {
+			let data: Data
+		}
+
+		XCTAssertEqual(try TOMLEncoder(dataEncoder: { _ in "Hello" }).encode(Test(data: Data([0x01]))), "data = 'Hello'")
+
+		XCTAssertEqual(try TOMLDecoder(dataDecoder: { _ in Data([0x01]) }).decode(Test.self, from: "data = 'Hello'"), Test(data: Data([0x01])))
 	}
 
 	func testInvalidToml() throws {

@@ -4,6 +4,8 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
+import struct Foundation.Data
+
 extension InternalTOMLEncoder.SVEC {
 	func encodeNil() throws {}
 
@@ -134,7 +136,14 @@ extension InternalTOMLEncoder.SVEC {
 	}
 
 	func encode<T>(_ value: T) throws where T: Encodable {
-		if value is TOMLValueConvertible {
+		if value is Data {
+			switch self.tomlValueOrArray {
+				case let .left(t):
+					t.table?[self.parentKey!.stringValue] = self.dataEncoder(value as! Data)
+				case let .right((array, index)):
+					array[index] = self.dataEncoder(value as! Data)
+			}
+		} else if value is TOMLValueConvertible {
 			switch self.tomlValueOrArray {
 				case let .left(t):
 					t.table?[self.parentKey!.stringValue] = (value as! TOMLValueConvertible)
@@ -144,10 +153,22 @@ extension InternalTOMLEncoder.SVEC {
 		} else {
 			switch self.tomlValueOrArray {
 				case let .left(t):
-					let encoder = InternalTOMLEncoder(.left(t.tomlValue), parentKey: self.parentKey, codingPath: self.codingPath, userInfo: self.userInfo)
+					let encoder = InternalTOMLEncoder(
+						.left(t.tomlValue),
+						parentKey: self.parentKey,
+						codingPath: self.codingPath,
+						userInfo: self.userInfo,
+						dataEncoder: self.dataEncoder
+					)
 					try value.encode(to: encoder)
 				case let .right((array, index)):
-					let encoder = InternalTOMLEncoder(.right((array: array, index: index)), parentKey: self.parentKey, codingPath: self.codingPath, userInfo: self.userInfo)
+					let encoder = InternalTOMLEncoder(
+						.right((array: array, index: index)),
+						parentKey: self.parentKey,
+						codingPath: self.codingPath,
+						userInfo: self.userInfo,
+						dataEncoder: self.dataEncoder
+					)
 					try value.encode(to: encoder)
 			}
 		}

@@ -4,6 +4,8 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
+import struct Foundation.Data
+
 extension InternalTOMLDecoder.SVDC {
 	func decodeNil() -> Bool {
 		false
@@ -121,9 +123,17 @@ extension InternalTOMLDecoder.SVDC {
 		return type.init(i)
 	}
 
-	func decode<T>(_: T.Type) throws -> T where T: Decodable {
-		let decoder = InternalTOMLDecoder(self.tomlValue)
+	func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
+		let decoder = InternalTOMLDecoder(self.tomlValue, dataDecoder: self.dataDecoder)
 
-		return try T(from: decoder)
+		if type is Data.Type, let s = self.tomlValue.string {
+			if let data = self.dataDecoder(s) {
+				return data as! T
+			} else {
+				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode Data from the string: \"\(s)\"."))
+			}
+		} else {
+			return try T(from: decoder)
+		}
 	}
 }

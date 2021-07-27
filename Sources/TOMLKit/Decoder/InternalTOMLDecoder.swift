@@ -4,59 +4,78 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
+import struct Foundation.Data
+
 final class InternalTOMLDecoder: Decoder {
 	var codingPath: [CodingKey] = []
 	var userInfo: [CodingUserInfoKey: Any] = [:]
+	var dataDecoder: (String) -> Data?
 
 	let tomlValue: TOMLValue
-	init(_ tomlValue: TOMLValue, userInfo: [CodingUserInfoKey: Any] = [:]) {
+	init(_ tomlValue: TOMLValue, userInfo: [CodingUserInfoKey: Any] = [:], dataDecoder: @escaping (String) -> Data?) {
 		self.tomlValue = tomlValue
 		self.userInfo = userInfo
+		self.dataDecoder = dataDecoder
 	}
 
 	func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
-		KeyedDecodingContainer<Key>(KDC(tomlValue: self.tomlValue, codingPath: self.codingPath, userInfo: self.userInfo))
+		KeyedDecodingContainer<Key>(KDC(tomlValue: self.tomlValue, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder))
 	}
 
 	func unkeyedContainer() throws -> UnkeyedDecodingContainer {
 		guard let array = self.tomlValue.array else {
 			throw DecodingError.typeMismatch(TOMLArray.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected a TOMLArray but found a \(self.tomlValue.type) instead."))
 		}
-		return UDC(array, codingPath: self.codingPath, userInfo: self.userInfo)
+		return UDC(array, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
 	}
 
 	func singleValueContainer() throws -> SingleValueDecodingContainer {
-		SVDC(self.tomlValue, codingPath: self.codingPath)
+		SVDC(self.tomlValue, codingPath: self.codingPath, dataDecoder: self.dataDecoder)
 	}
 
 	struct SVDC: SingleValueDecodingContainer {
 		var codingPath: [CodingKey] = []
 		var userInfo: [CodingUserInfoKey: Any] = [:]
+		var dataDecoder: (String) -> Data?
 		let tomlValue: TOMLValue
 
-		init(_ tomlValue: TOMLValue, codingPath: [CodingKey], userInfo: [CodingUserInfoKey: Any] = [:]) {
+		init(
+			_ tomlValue: TOMLValue,
+			codingPath: [CodingKey],
+			userInfo: [CodingUserInfoKey: Any] = [:],
+			dataDecoder: @escaping (String) -> Data?
+		) {
 			self.tomlValue = tomlValue
 			self.userInfo = userInfo
 			self.codingPath = codingPath
+			self.dataDecoder = dataDecoder
 		}
 	}
 
 	struct KDC<Key: CodingKey>: KeyedDecodingContainerProtocol {
 		var codingPath: [CodingKey] = []
 		var userInfo: [CodingUserInfoKey: Any] = [:]
+		var dataDecoder: (String) -> Data?
 		var allKeys: [Key] = []
 		let tomlValue: TOMLValue
 
-		init(tomlValue: TOMLValue, codingPath: [CodingKey], userInfo: [CodingUserInfoKey: Any]) {
+		init(
+			tomlValue: TOMLValue,
+			codingPath: [CodingKey],
+			userInfo: [CodingUserInfoKey: Any],
+			dataDecoder: @escaping (String) -> Data?
+		) {
 			self.tomlValue = tomlValue
 			self.userInfo = userInfo
 			self.codingPath = codingPath
+			self.dataDecoder = dataDecoder
 		}
 	}
 
 	struct UDC: UnkeyedDecodingContainer {
 		var codingPath: [CodingKey]
 		var userInfo: [CodingUserInfoKey: Any] = [:]
+		var dataDecoder: (String) -> Data?
 
 		var count: Int? { self.tomlArray.count }
 
@@ -69,10 +88,16 @@ final class InternalTOMLDecoder: Decoder {
 
 		let tomlArray: TOMLArray
 
-		init(_ tomlArray: TOMLArray, codingPath: [CodingKey], userInfo: [CodingUserInfoKey: Any]) {
+		init(
+			_ tomlArray: TOMLArray,
+			codingPath: [CodingKey],
+			userInfo: [CodingUserInfoKey: Any],
+			dataDecoder: @escaping (String) -> Data?
+		) {
 			self.tomlArray = tomlArray
 			self.codingPath = codingPath
 			self.userInfo = userInfo
+			self.dataDecoder = dataDecoder
 		}
 	}
 }
