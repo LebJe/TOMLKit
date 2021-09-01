@@ -17,6 +17,7 @@
 import CTOML
 import struct Foundation.Data
 
+/// A type that can be converted into a value in a TOML document.
 public protocol TOMLValueConvertible: CustomDebugStringConvertible {
 	/// What kind of TOML value this is.
 	var type: TOMLType { get }

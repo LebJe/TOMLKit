@@ -27,7 +27,7 @@ public struct TOMLDecoder {
 	/// - Returns: The decoded type.
 	public func decode<T: Decodable>(_ type: T.Type, from tomlString: String) throws -> T {
 		let table = try TOMLTable(string: tomlString)
-		let decoder = InternalTOMLDecoder(table.tomlValue, dataDecoder: self.dataDecoder)
+		let decoder = InternalTOMLDecoder(table.tomlValue, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
 		return try T(from: decoder)
 	}
 
@@ -38,7 +38,7 @@ public struct TOMLDecoder {
 	/// - Throws: `DecodingError`.
 	/// - Returns: The decoded type.
 	public func decode<T: Decodable>(_ type: T.Type, from table: TOMLTable) throws -> T {
-		let decoder = InternalTOMLDecoder(table.tomlValue, dataDecoder: self.dataDecoder)
+		let decoder = InternalTOMLDecoder(table.tomlValue, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
 		return try T(from: decoder)
 	}
 }
