@@ -13,8 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
--	`TOMLDecoder` now passes `TOMLDecoder.userInfo` to `InternalTOMLDecoder`'s initializer.
--	Improved code formatting.
+-   `TOMLDecoder` now passes `TOMLDecoder.userInfo` to `InternalTOMLDecoder`'s initializer.
+-   Improved code formatting.
 
 ## [0.1.2](https://github.com/LebJe/TOMLKit/releases/tag/0.1.2) - 2021-07-27
 

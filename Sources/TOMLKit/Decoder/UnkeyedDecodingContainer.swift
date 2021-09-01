@@ -123,13 +123,13 @@ extension InternalTOMLDecoder.UDC {
 
 	mutating func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
 		KeyedDecodingContainer<NestedKey>(
-            InternalTOMLDecoder.KDC(
-                tomlValue: self.tomlArray.tomlValue,
-                codingPath: self.codingPath,
-                userInfo: self.userInfo,
-                dataDecoder: self.dataDecoder
-            )
-        )
+			InternalTOMLDecoder.KDC(
+				tomlValue: self.tomlArray.tomlValue,
+				codingPath: self.codingPath,
+				userInfo: self.userInfo,
+				dataDecoder: self.dataDecoder
+			)
+		)
 	}
 
 	mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {

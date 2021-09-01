@@ -41,10 +41,10 @@ public struct TOMLEncoder {
 	/// - Throws: `EncodingError`.
 	/// - Returns: The generated TOML.
 	public func encode<T: Encodable>(_ value: T) throws -> String {
-	    try self.encode(value).convert(to: .toml, options: self.options)
+		try self.encode(value).convert(to: .toml, options: self.options)
 	}
 
-    /// Encodes `T` and returns the generated `TOMLTable`.
+	/// Encodes `T` and returns the generated `TOMLTable`.
 	/// - Parameters:
 	///   - value: The type you want to convert into a `TOMLTable`.
 	/// - Throws: `EncodingError`.
