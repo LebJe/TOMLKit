@@ -18,10 +18,10 @@ public struct TOMLEncoder {
 		.allowValueFormatFlags,
 	]
 
-	/// Used to encode instances of `Data` into a `String` that can be inserted into a TOML document.
+	/// Used to encode instances of `Data` into a type conforming to `TOMLValueConvertible` that can be inserted into a TOML document.
 	///
 	/// The default `Data` encoding is [Base64](https://en.wikipedia.org/wiki/Base64).
-	public var dataEncoder: (Data) -> String = { $0.base64EncodedString() }
+	public var dataEncoder: (Data) -> TOMLValueConvertible = { $0.base64EncodedString() }
 
 	public init(
 		options: FormatOptions = [
@@ -29,7 +29,7 @@ public struct TOMLEncoder {
 			.allowMultilineStrings,
 			.allowValueFormatFlags,
 		],
-		dataEncoder: @escaping (Data) -> String = { $0.base64EncodedString() }
+		dataEncoder: @escaping (Data) -> TOMLValueConvertible = { $0.base64EncodedString() }
 	) {
 		self.options = options
 		self.dataEncoder = dataEncoder
@@ -37,18 +37,29 @@ public struct TOMLEncoder {
 
 	/// Encodes `T` and returns the generated TOML.
 	/// - Parameters:
-	///   - value: The type you want to convert  into TOML.
+	///   - value: The type you want to convert into TOML.
 	/// - Throws: `EncodingError`.
 	/// - Returns: The generated TOML.
 	public func encode<T: Encodable>(_ value: T) throws -> String {
+	    try self.encode(value).convert(to: .toml, options: self.options)
+	}
+
+    /// Encodes `T` and returns the generated `TOMLTable`.
+	/// - Parameters:
+	///   - value: The type you want to convert into a `TOMLTable`.
+	/// - Throws: `EncodingError`.
+	/// - Returns: The generated `TOMLTable` containing the contents of `T`.
+	public func encode<T: Encodable>(_ value: T) throws -> TOMLTable {
 		let table = TOMLTable()
+
 		let encoder = InternalTOMLEncoder(
 			.left(table.tomlValue),
 			codingPath: [],
 			userInfo: self.userInfo,
 			dataEncoder: self.dataEncoder
 		)
+
 		try value.encode(to: encoder)
-		return table.convert(to: .toml, options: self.options)
+		return table
 	}
 }

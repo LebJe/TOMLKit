@@ -19,12 +19,22 @@ final class InternalTOMLDecoder: Decoder {
 	}
 
 	func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
-		KeyedDecodingContainer<Key>(KDC(tomlValue: self.tomlValue, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder))
+		KeyedDecodingContainer<Key>(
+            KDC(
+                tomlValue: self.tomlValue,
+                codingPath: self.codingPath,
+                userInfo: self.userInfo,
+                dataDecoder: self.dataDecoder
+            )
+        )
 	}
 
 	func unkeyedContainer() throws -> UnkeyedDecodingContainer {
 		guard let array = self.tomlValue.array else {
-			throw DecodingError.typeMismatch(TOMLArray.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected a TOMLArray but found a \(self.tomlValue.type) instead."))
+			throw DecodingError.typeMismatch(
+                TOMLArray.self,
+                DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected a TOMLArray but found a \(self.tomlValue.type) instead.")
+            )
 		}
 		return UDC(array, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
 	}

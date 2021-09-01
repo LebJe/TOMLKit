@@ -16,14 +16,14 @@ final class InternalTOMLEncoder: Encoder {
 	var userInfo: [CodingUserInfoKey: Any]
 	let tomlValueOrArray: Either<TOMLValue, (array: TOMLArray, index: Int)>
 	let parentKey: CodingKey?
-	let dataEncoder: (Data) -> String
+	let dataEncoder: (Data) -> TOMLValueConvertible
 
 	init(
 		_ tomlValueOrArray: Either<TOMLValue, (array: TOMLArray, index: Int)>,
 		parentKey: CodingKey? = nil,
 		codingPath: [CodingKey],
 		userInfo: [CodingUserInfoKey: Any],
-		dataEncoder: @escaping (Data) -> String
+		dataEncoder: @escaping (Data) -> TOMLValueConvertible
 	) {
 		self.tomlValueOrArray = tomlValueOrArray
 		self.parentKey = parentKey
@@ -113,13 +113,13 @@ final class InternalTOMLEncoder: Encoder {
 		var userInfo: [CodingUserInfoKey: Any]
 		let tomlValueOrArray: Either<TOMLValue, (array: TOMLArray, index: Int)>
 		let parentKey: CodingKey?
-		let dataEncoder: (Data) -> String
+		let dataEncoder: (Data) -> TOMLValueConvertible
 
 		init(
 			_ tomlValueOrArray: Either<TOMLValue, (array: TOMLArray, index: Int)>,
 			parentKey: CodingKey?,
 			userInfo: [CodingUserInfoKey: Any] = [:],
-			dataEncoder: @escaping (Data) -> String
+			dataEncoder: @escaping (Data) -> TOMLValueConvertible
 		) {
 			self.tomlValueOrArray = tomlValueOrArray
 			self.parentKey = parentKey
@@ -134,14 +134,14 @@ final class InternalTOMLEncoder: Encoder {
 		var userInfo: [CodingUserInfoKey: Any]
 		let tomlValue: TOMLValue
 		let parentKey: CodingKey?
-		let dataEncoder: (Data) -> String
+		let dataEncoder: (Data) -> TOMLValueConvertible
 
 		init(
 			_ tomlValue: TOMLValue,
 			parentKey: CodingKey? = nil,
 			codingPath: [CodingKey],
 			userInfo: [CodingUserInfoKey: Any] = [:],
-			dataEncoder: @escaping (Data) -> String
+			dataEncoder: @escaping (Data) -> TOMLValueConvertible
 		) {
 			self.tomlValue = tomlValue
 			self.parentKey = parentKey
@@ -154,7 +154,7 @@ final class InternalTOMLEncoder: Encoder {
 	struct UEC: UnkeyedEncodingContainer {
 		var codingPath: [CodingKey]
 		var userInfo: [CodingUserInfoKey: Any] = [:]
-		let dataEncoder: (Data) -> String
+		let dataEncoder: (Data) -> TOMLValueConvertible
 		var currentIndex: Int = 0
 		let tomlArray: TOMLArray
 
@@ -166,7 +166,7 @@ final class InternalTOMLEncoder: Encoder {
 			_ tomlArray: TOMLArray,
 			codingPath: [CodingKey],
 			userInfo: [CodingUserInfoKey: Any],
-			dataEncoder: @escaping (Data) -> String
+			dataEncoder: @escaping (Data) -> TOMLValueConvertible
 		) {
 			self.tomlArray = tomlArray
 			self.codingPath = codingPath

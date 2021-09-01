@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------------------------------------------------
 //
-// toml++ v2.4.0
+// toml++ v2.5.0
 // https://github.com/marzer/tomlplusplus
 // SPDX-License-Identifier: MIT
 //
@@ -408,12 +408,21 @@
 #endif
 
 #ifndef DOXYGEN
-	#if defined(_WIN32) && !defined(TOML_WINDOWS_COMPAT)
-		#define TOML_WINDOWS_COMPAT 1
+	#ifdef _WIN32
+		#ifndef TOML_WINDOWS_COMPAT
+			#define TOML_WINDOWS_COMPAT 1
+		#endif
+		#if TOML_WINDOWS_COMPAT && !defined(TOML_INCLUDE_WINDOWS_H)
+			#define TOML_INCLUDE_WINDOWS_H 0
+		#endif
 	#endif
 	#if !defined(_WIN32) || !defined(TOML_WINDOWS_COMPAT)
 		#undef TOML_WINDOWS_COMPAT
-		#define TOML_WINDOWS_COMPAT 0
+		#define TOML_WINDOWS_COMPAT		0
+	#endif
+	#if !TOML_WINDOWS_COMPAT
+		#undef TOML_INCLUDE_WINDOWS_H
+		#define TOML_INCLUDE_WINDOWS_H	0
 	#endif
 #endif
 
@@ -620,24 +629,42 @@ is no longer necessary.
 	#define TOML_ARM 0
 #endif
 
-#define TOML_MAKE_BITOPS(type)																		\
+#define TOML_MAKE_FLAGS_(name, op)																	\
 	[[nodiscard]]																					\
 	TOML_ALWAYS_INLINE																				\
 	TOML_ATTR(const)																				\
-	TOML_ATTR(flatten)																				\
-	constexpr type operator & (type lhs, type rhs) noexcept											\
+	constexpr name operator op(name lhs, name rhs) noexcept											\
 	{																								\
-		return static_cast<type>(::toml::impl::unwrap_enum(lhs) & ::toml::impl::unwrap_enum(rhs));	\
+		using under = std::underlying_type_t<name>;													\
+		return static_cast<name>(static_cast<under>(lhs) op static_cast<under>(rhs));				\
+	}																								\
+	constexpr name& operator TOML_CONCAT(op, =)(name & lhs, name rhs) noexcept						\
+	{																								\
+		return lhs = (lhs op rhs);																	\
+	}																								\
+	static_assert(true, "")
+
+#define TOML_MAKE_FLAGS(name)																		\
+	TOML_MAKE_FLAGS_(name, &);																		\
+	TOML_MAKE_FLAGS_(name, |);																		\
+	TOML_MAKE_FLAGS_(name, ^);																		\
+	[[nodiscard]]																					\
+	TOML_ALWAYS_INLINE																				\
+	TOML_ATTR(const)																				\
+	constexpr name operator~(name val) noexcept														\
+	{																								\
+		using under = std::underlying_type_t<name>;													\
+		return static_cast<name>(~static_cast<under>(val));											\
 	}																								\
 	[[nodiscard]]																					\
 	TOML_ALWAYS_INLINE																				\
 	TOML_ATTR(const)																				\
-	TOML_ATTR(flatten)																				\
-	constexpr type operator | (type lhs, type rhs) noexcept											\
+	constexpr bool operator!(name val) noexcept														\
 	{																								\
-		return static_cast<type>(::toml::impl::unwrap_enum(lhs) | ::toml::impl::unwrap_enum(rhs));	\
+		using under = std::underlying_type_t<name>;													\
+		return !static_cast<under>(val);															\
 	}																								\
-	static_assert(true)
+	static_assert(true, "")
 
 #ifndef TOML_LIFETIME_HOOKS
 	#define TOML_LIFETIME_HOOKS 0
@@ -673,7 +700,7 @@ is no longer necessary.
 #endif
 
 #define TOML_LIB_MAJOR		2
-#define TOML_LIB_MINOR		4
+#define TOML_LIB_MINOR		5
 #define TOML_LIB_PATCH		0
 
 #define TOML_LANG_MAJOR		1
@@ -1571,7 +1598,7 @@ TOML_NAMESPACE_START
 
 		format_as_hexadecimal = 3,
 	};
-	TOML_MAKE_BITOPS(value_flags);
+	TOML_MAKE_FLAGS(value_flags);
 
 	enum class format_flags : uint8_t
 	{
@@ -1585,7 +1612,7 @@ TOML_NAMESPACE_START
 
 		allow_value_format_flags = 8,
 	};
-	TOML_MAKE_BITOPS(format_flags);
+	TOML_MAKE_FLAGS(format_flags);
 
 	template <typename Char>
 	inline std::basic_ostream<Char>& operator << (std::basic_ostream<Char>& lhs, node_type rhs)
@@ -10407,7 +10434,7 @@ TOML_IMPL_NAMESPACE_START
 				{
 					if (is_eof()
 						|| is_value_terminator(*cp)
-						|| (part_of_datetime && is_match(*cp, U'+', U'-', U'Z')))
+						|| (part_of_datetime && is_match(*cp, U'+', U'-', U'Z', U'z')))
 						return time;
 				}
 				else
@@ -10429,7 +10456,7 @@ TOML_IMPL_NAMESPACE_START
 				// '.' (early-exiting is allowed; fractional is optional)
 				if (is_eof()
 					|| is_value_terminator(*cp)
-					|| (part_of_datetime && is_match(*cp, U'+', U'-', U'Z')))
+					|| (part_of_datetime && is_match(*cp, U'+', U'-', U'Z', U'z')))
 					return time;
 				if (*cp != U'.')
 					set_error_and_return_default("expected '.', saw '"sv, to_sv(*cp), "'"sv);
@@ -10477,9 +10504,9 @@ TOML_IMPL_NAMESPACE_START
 				auto date = parse_date(true);
 				set_error_and_return_if_eof({});
 
-				// ' ' or 'T'
-				if (!is_match(*cp, U' ', U'T'))
-					set_error_and_return_default("expected space or 'T', saw '"sv, to_sv(*cp), "'"sv);
+				// ' ', 'T' or 't'
+				if (!is_match(*cp, U' ', U'T', U't'))
+					set_error_and_return_default("expected space, 'T' or 't', saw '"sv, to_sv(*cp), "'"sv);
 				advance_and_return_if_error_or_eof({});
 
 				// "HH:MM:SS.FFFFFFFFF"
@@ -10490,9 +10517,9 @@ TOML_IMPL_NAMESPACE_START
 				if (is_eof() || is_value_terminator(*cp))
 					return { date, time };
 
-				// zero offset ("Z")
+				// zero offset ('Z' or 'z')
 				time_offset offset;
-				if (*cp == U'Z')
+				if (is_match(*cp, U'Z', U'z'))
 					advance_and_return_if_error({});
 
 				// explicit offset ("+/-HH:MM")
@@ -10825,20 +10852,19 @@ TOML_IMPL_NAMESPACE_START
 					// (as opposed to the fallback "could not determine type" message)
 					if (has_any(has_p))
 						val = new value{ parse_hex_float() };
-					else if (has_any(has_x))
+					else if (has_any(has_x | has_o | has_b))
 					{
-						val = new value{ parse_integer<16>() };
+						int64_t i;
+						if (has_any(has_x))
+							i = parse_integer<16>();
+						else if (has_any(has_o))
+							i = parse_integer<8>();
+						else // has_b
+							i = parse_integer<2>();
+						return_if_error({});
+
+						val = new value{ i };
 						reinterpret_cast<value<int64_t>*>(val.get())->flags(value_flags::format_as_hexadecimal);
-					}
-					else if (has_any(has_o))
-					{
-						val = new value{ parse_integer<8>() };
-						reinterpret_cast<value<int64_t>*>(val.get())->flags(value_flags::format_as_octal);
-					}
-					else if (has_any(has_b))
-					{
-						val = new value{ parse_integer<2>() };
-						reinterpret_cast<value<int64_t>*>(val.get())->flags(value_flags::format_as_binary);
 					}
 					else if (has_any(has_e) || (has_any(begins_zero | begins_digit) && chars[1] == U'.'))
 						val = new value{ parse_float() };
@@ -12098,27 +12124,34 @@ TOML_NAMESPACE_END;
 #if TOML_WINDOWS_COMPAT
 
 #ifndef _WINDOWS_
-extern "C"
-{
-	int __stdcall WideCharToMultiByte(
-		unsigned int CodePage,
-		unsigned long dwFlags,
-		const wchar_t* lpWideCharStr,
-		int cchWideChar,
-		char* lpMultiByteStr,
-		int cbMultiByte,
-		const char* lpDefaultChar,
-		int* lpUsedDefaultChar
-	);
-	int __stdcall MultiByteToWideChar(
-		unsigned int CodePage,
-		unsigned long dwFlags,
-		const char* lpMultiByteStr,
-		int cbMultiByte,
-		wchar_t* lpWideCharStr,
-		int cchWideChar
-	);
-}
+	#if TOML_INCLUDE_WINDOWS_H
+		#include <Windows.h>
+	#else
+		extern "C"
+		{
+			__declspec(dllimport)
+			int __stdcall WideCharToMultiByte(
+				unsigned int CodePage,
+				unsigned long dwFlags,
+				const wchar_t* lpWideCharStr,
+				int cchWideChar,
+				char* lpMultiByteStr,
+				int cbMultiByte,
+				const char* lpDefaultChar,
+				int* lpUsedDefaultChar
+			);
+
+			__declspec(dllimport)
+			int __stdcall MultiByteToWideChar(
+				unsigned int CodePage,
+				unsigned long dwFlags,
+				const char* lpMultiByteStr,
+				int cbMultiByte,
+				wchar_t* lpWideCharStr,
+				int cchWideChar
+			);
+		}
+	#endif
 #endif // _WINDOWS_
 
 TOML_IMPL_NAMESPACE_START
@@ -12130,13 +12163,13 @@ TOML_IMPL_NAMESPACE_START
 			return {};
 
 		std::string s;
-		const auto len = WideCharToMultiByte(
+		const auto len = ::WideCharToMultiByte(
 			65001, 0, str.data(), static_cast<int>(str.length()), nullptr, 0, nullptr, nullptr
 		);
 		if (len)
 		{
 			s.resize(static_cast<size_t>(len));
-			WideCharToMultiByte(65001, 0, str.data(), static_cast<int>(str.length()), s.data(), len, nullptr, nullptr);
+			::WideCharToMultiByte(65001, 0, str.data(), static_cast<int>(str.length()), s.data(), len, nullptr, nullptr);
 		}
 		return s;
 	}
@@ -12148,11 +12181,11 @@ TOML_IMPL_NAMESPACE_START
 			return {};
 
 		std::wstring s;
-		const auto len = MultiByteToWideChar(65001, 0, str.data(), static_cast<int>(str.length()), nullptr, 0);
+		const auto len = ::MultiByteToWideChar(65001, 0, str.data(), static_cast<int>(str.length()), nullptr, 0);
 		if (len)
 		{
 			s.resize(static_cast<size_t>(len));
-			MultiByteToWideChar(65001, 0, str.data(), static_cast<int>(str.length()), s.data(), len);
+			::MultiByteToWideChar(65001, 0, str.data(), static_cast<int>(str.length()), s.data(), len);
 		}
 		return s;
 	}
@@ -12420,6 +12453,7 @@ TOML_POP_WARNINGS; // TOML_DISABLE_SPAM_WARNINGS
 	#undef TOML_IMPLEMENTATION
 	#undef TOML_IMPL_NAMESPACE_END
 	#undef TOML_IMPL_NAMESPACE_START
+	#undef TOML_INCLUDE_WINDOWS_H
 	#undef TOML_INT128
 	#undef TOML_INTELLISENSE
 	#undef TOML_INTERNAL_LINKAGE
@@ -12431,7 +12465,8 @@ TOML_POP_WARNINGS; // TOML_DISABLE_SPAM_WARNINGS
 	#undef TOML_LAUNDER
 	#undef TOML_LIFETIME_HOOKS
 	#undef TOML_LIKELY
-	#undef TOML_MAKE_BITOPS
+	#undef TOML_MAKE_FLAGS_
+	#undef TOML_MAKE_FLAGS
 	#undef TOML_MAKE_VERSION
 	#undef TOML_MAY_THROW
 	#undef TOML_MSVC
