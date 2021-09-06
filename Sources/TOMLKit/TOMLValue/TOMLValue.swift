@@ -46,7 +46,7 @@ public struct TOMLValue:
 		switch self.type {
 			case .table: return self.table?.debugDescription ?? ""
 			case .array: return self.array?.debugDescription ?? ""
-			case .string: return self.string ?? ""
+			case .string: return self.string != nil ? "\"" + self.string! + "\"" : ""
 			case .int:
 				return self.int != nil ? String(self.int!) : ""
 			case .double: return self.double != nil ? String(self.double!) : ""
@@ -111,9 +111,9 @@ public struct TOMLValue:
 	func replaceInArray(arrayPointer: OpaquePointer, index: Int) {
 		switch self.type {
 			case .table:
-				arrayReplaceTable(arrayPointer, Int64(index), self.table!.tomlValue.tomlValuePointer)
+				arrayReplaceTable(arrayPointer, Int64(index), self.table!.tablePointer)
 			case .array:
-				arrayReplaceArray(arrayPointer, Int64(index), self.array!.tomlValue.tomlValuePointer)
+				arrayReplaceArray(arrayPointer, Int64(index), self.array!.arrayPointer)
 			case .string:
 				self.string!.withCString({ arrayReplaceString(arrayPointer, Int64(index), $0) })
 			case .int:
@@ -133,14 +133,5 @@ public struct TOMLValue:
 			case .dateTime:
 				arrayReplaceDateTime(arrayPointer, Int64(index), self.dateTime!.cTOMLDateTime)
 		}
-	}
-
-	public subscript(index: Int) -> TOMLValue? {
-		get { self.array?[index].tomlValue }
-		set {}
-	}
-
-	public subscript(key: String) -> TOMLValue? {
-		self.table?[key]?.tomlValue
 	}
 }

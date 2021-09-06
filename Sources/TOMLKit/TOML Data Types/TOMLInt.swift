@@ -16,7 +16,7 @@
 
 import CTOML
 
-/// An integer in a TOML document.
+/// An [integer](https://toml.io/en/v1.0.0#integer) in a TOML document.
 public struct TOMLInt: ExpressibleByIntegerLiteral, Equatable, TOMLValueConvertible {
 	public var type: TOMLType { .int }
 

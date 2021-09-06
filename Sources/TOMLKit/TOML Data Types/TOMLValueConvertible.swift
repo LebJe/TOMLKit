@@ -26,63 +26,83 @@ public protocol TOMLValueConvertible: CustomDebugStringConvertible {
 	var tomlValue: TOMLValue { get set }
 }
 
-extension TOMLValueConvertible {
-	/// Converts this `TOMLValue` to a `Bool`. If the conversion fails, this will return `nil`.
+public extension TOMLValueConvertible {
+	/// Converts this `TOMLValueConvertible` to a `Bool`. If the conversion fails, this will return `nil`.
 	var bool: Bool? {
 		guard let pointer = nodeAsBool(self.tomlValue.tomlValuePointer) else { return nil }
 		return pointer.pointee
 	}
 
-	/// Converts this `TOMLValue` to an `Int`. If the conversion fails, this will return `nil`.
+	/// Converts this `TOMLValueConvertible` to an `Int`. If the conversion fails, this will return `nil`.
 	var int: Int? {
 		guard let pointer = nodeAsInt(self.tomlValue.tomlValuePointer) else { return nil }
 		return Int(pointer.pointee)
 	}
 
-	/// Converts this `TOMLValue` to a `Double`. If the conversion fails, this will return `nil`.
+	/// Converts this `TOMLValueConvertible` to a `Double`. If the conversion fails, this will return `nil`.
 	var double: Double? {
 		guard let pointer = nodeAsDouble(self.tomlValue.tomlValuePointer) else { return nil }
 		return pointer.pointee
 	}
 
-	/// Converts this `TOMLValue` to a `String`. If the conversion fails, this will return `nil`.
+	/// Converts this `TOMLValueConvertible` to a `String`. If the conversion fails, this will return `nil`.
 	var string: String? {
 		guard let pointer = nodeAsString(self.tomlValue.tomlValuePointer) else { return nil }
 		return String(cString: pointer)
 	}
 
-	/// Converts this `TOMLValue` to a `TOMLDate`. If the conversion fails, this will return `nil`.
+	/// Converts this `TOMLValueConvertible` to a `TOMLDate`. If the conversion fails, this will return `nil`.
 	var date: TOMLDate? {
 		guard let pointer = nodeAsDate(self.tomlValue.tomlValuePointer) else { return nil }
 		return TOMLDate(cTOMLDate: pointer.pointee)
 	}
 
-	/// Converts this `TOMLValue` to a `TOMLTime`. If the conversion fails, this will return `nil`.
+	/// Converts this `TOMLValueConvertible` to a `TOMLTime`. If the conversion fails, this will return `nil`.
 	var time: TOMLTime? {
 		guard let pointer = nodeAsTime(self.tomlValue.tomlValuePointer) else { return nil }
 		return TOMLTime(cTOMLTime: pointer.pointee)
 	}
 
-	/// Converts this `TOMLValue` to a `TOMLDateTime`. If the conversion fails, this will return `nil`.
+	/// Converts this `TOMLValueConvertible` to a `TOMLDateTime`. If the conversion fails, this will return `nil`.
 	var dateTime: TOMLDateTime? {
 		guard let pointer = nodeAsDateTime(self.tomlValue.tomlValuePointer) else { return nil }
 		return TOMLDateTime(cTOMLDateTime: pointer.pointee)
 	}
 
-	/// Converts this `TOMLValue` to a `TOMLTable`. If the conversion fails, this will return `nil`.
+	/// Converts this `TOMLValueConvertible` to a `TOMLTable`. If the conversion fails, this will return `nil`.
 	var table: TOMLTable? {
 		guard let pointer = nodeAsTable(self.tomlValue.tomlValuePointer) else { return nil }
 		return TOMLTable(tablePointer: pointer)
 	}
 
-	/// Converts this `TOMLValue` to a `TOMLArray`. If the conversion fails, this will return `nil`.
+	/// Converts this `TOMLValueConvertible` to a `TOMLArray`. If the conversion fails, this will return `nil`.
 	var array: TOMLArray? {
+		guard let pointer = nodeAsArray(self.tomlValue.tomlValuePointer) else { return nil }
+		return TOMLArray(arrayPointer: pointer)
+	}
+
+	/// Converts this `TOMLValueConvertible` to a `TOMLArray`. then returns the `TOMLValue` at `index`, If the conversion fails, this will return `nil`.
+	subscript(index: Int) -> TOMLValue? {
 		get {
-			guard let pointer = nodeAsArray(self.tomlValue.tomlValuePointer) else { return nil }
-			return TOMLArray(arrayPointer: pointer)
+			guard self.type == .array else { return nil }
+			return self.array?[index].tomlValue
 		}
-		// This allows manipulating values through subscripts.
-		set {}
+		set {
+			guard self.type == .array, let n = newValue else { return }
+			self.array?[index] = n
+		}
+	}
+
+	/// Converts this `TOMLValueConvertible` to a `TOMLTable`. then returns the `TOMLValue` at `key`, If the conversion fails, this will return `nil`.
+	subscript(key: String) -> TOMLValue? {
+		get {
+			guard self.type == .table else { return nil }
+			return self.table?[key]?.tomlValue
+		}
+		set {
+			guard self.type == .table else { return }
+			self.table?[key] = newValue
+		}
 	}
 }
 
@@ -108,6 +128,16 @@ extension Int: TOMLValueConvertible {
 	public var type: TOMLType { .string }
 	public var tomlValue: TOMLValue { get { .init(self) } set {} }
 }
+
+extension Dictionary: TOMLValueConvertible where Self.Value: TOMLValueConvertible, Self.Key == String {
+	public var type: TOMLType { .table }
+	public var tomlValue: TOMLValue { get { .init(.init(self)) } set {} }
+}
+
+// extension Array: TOMLValueConvertible where Self.Element: TOMLValueConvertible {
+//	public var type: TOMLType { .array }
+//	public var tomlValue: TOMLValue { get { .init(.init(self)) } set {} }
+// }
 
 extension Data: TOMLValueConvertible {
 	public var debugDescription: String { self.description }

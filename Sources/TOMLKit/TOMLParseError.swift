@@ -41,7 +41,9 @@ public struct TOMLSourceRegion: Equatable, CustomDebugStringConvertible {
 		self.end = .init(cTOMLSourcePosition: cEnd)
 	}
 
-	public var debugDescription: String { "begin: \(self.begin), end: \(self.end)" }
+	public var debugDescription: String {
+		self.begin == self.end ? "at \(self.begin)" : "from \(self.begin) to \(self.end)"
+	}
 }
 
 /// An error that occurs while parsing a TOML document.
@@ -59,5 +61,5 @@ struct TOMLParseError: Error, CustomDebugStringConvertible {
 		self.source = TOMLSourceRegion(cBegin: cTOMLParseError.source.begin, cEnd: cTOMLParseError.source.end)
 	}
 
-	var debugDescription: String { "Description: \(self.description)\nSource: \(self.source)" }
+	var debugDescription: String { "\(self.description) (\(self.source))" }
 }

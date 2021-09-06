@@ -49,6 +49,7 @@ public struct TOMLEncoder {
 	///   - value: The type you want to convert into a `TOMLTable`.
 	/// - Throws: `EncodingError`.
 	/// - Returns: The generated `TOMLTable` containing the contents of `T`.
+	@_disfavoredOverload
 	public func encode<T: Encodable>(_ value: T) throws -> TOMLTable {
 		let table = TOMLTable()
 
