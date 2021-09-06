@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0](https://github.com/LebJe/TOMLKit/releases/tag/0.3.0) - 2021-09-06
+
+### Added
+
+-   Links to the official documentation from `TOMLInt`, `TOMLTable`, `TOMLArray`, `TOMLDate`, `TOMLTime`, `TOMLDateTime`, and `TOMLTimeOffset`.
+-   [toml++](https://github.com/marzer/tomlplusplus/) is now used to format `TOMLArray`, `TOMLDate`, `TOMLTime`, and `TOMLDateTime`, when they are being printed.
+-   Improved the formatting of strings in `TOMLValue.debugDescription`.
+-   Setting a value in a `TOMLTable` or `TOMLArray` via a nested subscript is now possible.
+
+```swift
+tomlTable["InnerTable"]?["Int"] = 1
+tomlArray[0]?[0] = "Hello, World!"
+```
+
+### Changed
+
+-   Improved the debug output of `TOMLParseError`.
+
+### Fixed
+
+-   It is no longer necessary to add `.tomlValue` after the first subscript in a subscript chain.
+
+```swift
+// Before:
+tomlTable["InnerTable"]?.tomlValue["InnerTable"]
+tomlArray[0]?.tomlValue[0]
+
+// After:
+tomlTable["InnerTable"]?["InnerTable"]
+tomlArray[0]?[0]
+```
+
 ## [0.2.0](https://github.com/LebJe/TOMLKit/releases/tag/0.2.0) - 2021-09-01
 
 ### Added

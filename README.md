@@ -1,6 +1,6 @@
 # TOMLKit
 
-**A small, simple TOML parser for Swift. Powered by toml++.**
+**A small, simple TOML parser for Swift. Powered by [toml++](https://github.com/marzer/tomlplusplus/).**
 
 [![Swift 5.4](https://img.shields.io/badge/Swift-5.4-brightgreen?logo=swift)](https://swift.org)
 [![SPM Compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager)
@@ -9,7 +9,7 @@
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FLebJe%2FTOMLKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/LebJe/TOMLKit)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FLebJe%2FTOMLKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/LebJe/TOMLKit)
 
-TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.com/marzer/tomlplusplus/), allowing you to read and write [TOML](https://toml.io/en/) files in Swift.
+TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.com/marzer/tomlplusplus/), allowing you to read and write [TOML](https://toml.io) files in Swift.
 
 ## Table of Contents
 
@@ -28,6 +28,7 @@ TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.c
             -   [Arrays](#arrays)
             -   [Dates](#dates)
             -   [Times](#times)
+            -   [Data](#data)
             -   [Integers](#integers)
         -   [Retrieving TOML values](#retrieving-toml-values)
             -   [From Tables](#from-tables)
@@ -38,7 +39,7 @@ TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.c
     -   [Licenses](#licenses)
     -   [Contributing](#contributing)
 
-<!-- Added by: lebje, at: Tue Jul 27 15:33:29 EDT 2021 -->
+<!-- Added by: lebje, at: Mon Sep  6 14:34:16 EDT 2021 -->
 
 <!--te-->
 
@@ -252,7 +253,7 @@ if let bool = table["bool"]?.bool {
    print(bool)
 }
 
-if let double = table["InnerTable"]?.tomlValue["InnerInnerTable"]?["InnerInnerInnerTable"]?.double {
+if let double = table["InnerTable"]?["InnerInnerTable"]?["InnerInnerInnerTable"]?.double {
 print(double)
 }
 
@@ -272,7 +273,7 @@ if let bool = array[1].bool? {
    print(bool)
 }
 
-if let double = array[2][0].double? {
+if let double = array[2][0]?.double? {
    print(double)
 }
 

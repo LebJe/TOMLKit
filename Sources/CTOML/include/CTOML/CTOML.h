@@ -151,6 +151,9 @@ extern "C" {
 	/// Removes the element at \c index from \c array .
 	void arrayRemoveElement(CTOMLArray * array, int64_t index);
 
+	/// Convert \c array to TOML.
+	const char * _Nonnull arrayConvertToTOML(CTOMLArray * _Nonnull array);
+
 	// MARK: - Array - Value Manipulation - Insertion
 
 	/// Insert a \c int64_t into \c array .
@@ -292,6 +295,15 @@ extern "C" {
 	/// Copies \c n and returns the copy.
 	CTOMLNode * copyNode(CTOMLNode * n);
 
+	// MARK: - Date, Time, and Date Time Conversion
+	/// Convert \c date to TOML.
+	const char * _Nonnull cTOMLDateToTOML(CTOMLDate date);
+
+	/// Convert \c time to TOML.
+	const char * _Nonnull cTOMLTimeToTOML(CTOMLTime time);
+
+	/// Convert \c dateTime to TOML.
+	const char * _Nonnull cTOMLDateTimeToTOML(CTOMLDateTime dateTime);
 	#pragma clang assume_nonnull end
 
 	// MARK: - Node - Creation

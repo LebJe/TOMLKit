@@ -16,8 +16,8 @@
 
 import CTOML
 
-/// A table in a TOML document.
-public class TOMLTable:
+/// A [table](https://toml.io/en/v1.0.0#table) in a TOML document.
+public final class TOMLTable:
 	Equatable,
 	ExpressibleByDictionaryLiteral,
 	CustomDebugStringConvertible,
@@ -91,9 +91,8 @@ public class TOMLTable:
 	/// - Parameters:
 	///   - dictionary: The `Dictionary` that will be used to populate the fields of this table.
 	///   - inline: Whether this table will be an [inline table](https://toml.io/en/v1.0.0#inline-table) or not.
-	public init(_ dictionary: [String: TOMLValueConvertible], inline: Bool = false) {
-		self.tablePointer = tableCreate()
-		self.inline = inline
+	public convenience init(_ dictionary: [String: TOMLValueConvertible], inline: Bool = false) {
+		self.init(inline: inline)
 		dictionary.forEach({ self[$0] = $1 })
 	}
 
@@ -111,8 +110,8 @@ public class TOMLTable:
 		self.tablePointer = table
 	}
 
-	public required init(dictionaryLiteral elements: (String, TOMLValueConvertible)...) {
-		self.tablePointer = tableCreate()
+	public required convenience init(dictionaryLiteral elements: (String, TOMLValueConvertible)...) {
+		self.init()
 		elements.forEach({ self[$0] = $1 })
 	}
 
@@ -125,14 +124,14 @@ public class TOMLTable:
 		tableClear(self.tablePointer)
 	}
 
-	/// Insert a value into this `TOMLTable`, or retrieve a value from this `TOMLTable`.
+	/// Insert a value into this `TOMLTable`, or retrieve a value.
 	public subscript(key: String) -> TOMLValueConvertible? {
 		get {
 			guard let pointer = tableGetNode(self.tablePointer, strdup(key)) else { return nil }
 			return TOMLValue(tomlValuePointer: pointer)
 		}
 		set(value) {
-			value!.tomlValue.replaceOrInsertInTable(tablePointer: self.tablePointer, key: key)
+			value?.tomlValue.replaceOrInsertInTable(tablePointer: self.tablePointer, key: key)
 		}
 	}
 

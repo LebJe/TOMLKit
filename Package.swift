@@ -13,7 +13,11 @@ let package = Package(
 	products: [
 		.library(name: "TOMLKit", targets: ["TOMLKit"]),
 	],
-	dependencies: [],
+	dependencies: [
+		// Use this dependency when one of the `TOMLTable` comparison tests fail and
+		// XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>"
+		// .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "0.1.0")
+	],
 	targets: [
 		.target(
 			name: "CTOML",
@@ -28,7 +32,7 @@ let package = Package(
 		),
 		.testTarget(
 			name: "TOMLKitTests",
-			dependencies: ["TOMLKit"]
+			dependencies: ["TOMLKit" /* .product(name: "CustomDump", package: "swift-custom-dump") */ ]
 		),
 	],
 	cLanguageStandard: .c99,

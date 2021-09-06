@@ -19,7 +19,7 @@ extension TOMLArray:
 	public var indices: Range<Index> { 0..<self.endIndex }
 
 	private func checkIndex(_ index: Index) {
-		precondition(index <= self.endIndex - 1, "TOMLArray index out of bounds")
+		precondition(index <= self.endIndex - 1, "TOMLArray index out of range")
 	}
 
 	private func isEmptyPrecondition() {
@@ -27,7 +27,7 @@ extension TOMLArray:
 	}
 
 	private func checkPastEndIndex(_ index: Index) {
-		precondition(index < self.endIndex, "Can't advance beyond self.endIndex")
+		precondition(index < self.endIndex, "Cannot advance beyond self.endIndex")
 	}
 
 	public func append(_ newElement: Element) {
@@ -74,7 +74,6 @@ extension TOMLArray:
 		return i + 1
 	}
 
-	/// Insert a value into this array or retrieve a value.
 	public subscript(index: Index) -> Element {
 		get {
 			self.checkIndex(index)

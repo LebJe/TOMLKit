@@ -159,11 +159,16 @@ extern "C" {
 	void arrayReplaceArray(CTOMLArray * array, int64_t index, CTOMLArray * _Nonnull arrayToEmplace) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
+		// FIXME: If we don't create a new `toml::array`, sometimes accessing `arrToInsert` crashes.
+		// Also, creating a new `toml::array` is inefficient.
+		auto arrToInsert = toml::array(*reinterpret_cast<toml::array *>(arrayToEmplace));
+		//auto arrToInsert = reinterpret_cast<toml::array *>(arrayToEmplace);
+
 		if (arr->get(index)) {
 			arr->erase(arr->cbegin() + index);
 		}
 
-		arr->insert(arr->cbegin() + index, *reinterpret_cast<toml::array *>(arrayToEmplace));
+		arr->insert(arr->cbegin() + index, arrToInsert);
 	}
 
 	/// Replace the \c toml::table at \c index with \c table .
@@ -192,6 +197,16 @@ extern "C" {
 	void arrayRemoveElement(CTOMLArray * array, int64_t index) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 		arr->erase(arr->cbegin() + index);
+	}
+
+	// MARK: - Array Printing
+
+	const char * _Nonnull arrayConvertToTOML(CTOMLArray * _Nonnull array) {
+		std::stringstream ss;
+
+		ss << toml::default_formatter { *reinterpret_cast<toml::array *>(array) };
+
+		return strdup(ss.str().c_str());
 	}
 
 #ifdef __cplusplus

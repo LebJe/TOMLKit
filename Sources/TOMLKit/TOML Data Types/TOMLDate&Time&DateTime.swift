@@ -20,8 +20,8 @@ import struct Foundation.Calendar
 import struct Foundation.Date
 import struct Foundation.DateComponents
 
-/// A date in a TOML document.
-public struct TOMLDate: Codable, CustomDebugStringConvertible, TOMLValueConvertible, Equatable {
+/// A [date](https://toml.io/en/v1.0.0#local-date) in a TOML document.
+public struct TOMLDate: Codable, Equatable, CustomDebugStringConvertible, TOMLValueConvertible {
 	public let year: Int
 	public let month: Int
 	public let day: Int
@@ -34,7 +34,7 @@ public struct TOMLDate: Codable, CustomDebugStringConvertible, TOMLValueConverti
 	public var tomlValue: TOMLValue { get { .init(self) } set {} }
 
 	public var debugDescription: String {
-		"\(self.year)-\(String(self.month).leftPadding(to: 2))-\(String(self.day).leftPadding(to: 2))"
+		String(cString: cTOMLDateToTOML(self.cTOMLDate))
 	}
 
 	public init(year: Int, month: Int, day: Int) {
@@ -76,8 +76,8 @@ public struct TOMLDate: Codable, CustomDebugStringConvertible, TOMLValueConverti
 	}
 }
 
-/// A time in a TOML document.
-public struct TOMLTime: Codable, CustomDebugStringConvertible, TOMLValueConvertible, Equatable {
+/// A [time](https://toml.io/en/v1.0.0#local-time) in a TOML document.
+public struct TOMLTime: Codable, Equatable, CustomDebugStringConvertible, TOMLValueConvertible {
 	public let hour: Int
 	public let minute: Int
 	public let second: Int
@@ -95,7 +95,7 @@ public struct TOMLTime: Codable, CustomDebugStringConvertible, TOMLValueConverti
 	}
 
 	public var debugDescription: String {
-		"\(String(self.hour).leftPadding(to: 2)):\(String(self.minute).leftPadding(to: 2)):\(String(self.second).leftPadding(to: 2)).\(String(self.nanoSecond).leftPadding(to: 9))Z"
+		String(cString: cTOMLTimeToTOML(self.cTOMLTime))
 	}
 
 	public var tomlValue: TOMLValue { get { .init(self) } set {} }
@@ -122,7 +122,7 @@ public struct TOMLTime: Codable, CustomDebugStringConvertible, TOMLValueConverti
 	}
 }
 
-/// A date and time in a TOML document.
+/// A [time offset](https://toml.io/en/v1.0.0#offset-date-time) for a `TOMLDateTime`.
 public struct TOMLTimeOffset: Codable, Equatable {
 	public let offset: Int
 
@@ -139,7 +139,8 @@ public struct TOMLTimeOffset: Codable, Equatable {
 	}
 }
 
-public struct TOMLDateTime: Codable, CustomDebugStringConvertible, TOMLValueConvertible, Equatable {
+/// A [date and time](https://toml.io/en/v1.0.0#local-date-time) in a TOML document.
+public struct TOMLDateTime: Codable, Equatable, CustomDebugStringConvertible, TOMLValueConvertible {
 	public let date: TOMLDate
 	public let time: TOMLTime
 	public internal(set) var offset: TOMLTimeOffset?
@@ -158,7 +159,7 @@ public struct TOMLDateTime: Codable, CustomDebugStringConvertible, TOMLValueConv
 	public var tomlValue: TOMLValue { get { .init(self) } set {} }
 
 	public var debugDescription: String {
-		"\(self.date.debugDescription)T\(self.time.debugDescription)"
+		String(cString: cTOMLDateTimeToTOML(self.cTOMLDateTime))
 	}
 
 	public var type: TOMLType { .dateTime }

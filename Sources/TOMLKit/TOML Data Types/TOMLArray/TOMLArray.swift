@@ -16,8 +16,8 @@
 
 import CTOML
 
-/// An array in a TOML document.
-public class TOMLArray:
+/// An [array](https://toml.io/en/v1.0.0#array) in a TOML document.
+public final class TOMLArray:
 	Equatable,
 	Sequence,
 	ExpressibleByArrayLiteral,
@@ -32,14 +32,14 @@ public class TOMLArray:
 
 	public var tomlValue: TOMLValue { get { .init(self) } set {} }
 
-	/// The amount of elements in the array.
 	public var count: Int { arraySize(self.arrayPointer) }
 
 	/// If this array is empty.
 	public var isEmpty: Bool { arrayIsEmpty(self.arrayPointer) }
 
 	public var debugDescription: String {
-		"[\(self.map({ "\($0.debugDescription)" }).joined(separator: ", "))]"
+		String(cString: arrayConvertToTOML(self.arrayPointer))
+		// "[\(self.map({ "\($0.debugDescription)" }).joined(separator: ", "))]"
 	}
 
 	/// A pointer to the underlying `toml::array`.
@@ -54,25 +54,14 @@ public class TOMLArray:
 		self.arrayPointer = arrayCreate()
 	}
 
-	/// Creates a new `TOMLArray` using the contents of a Swift array.
-	public init(_ array: [TOMLValueConvertible]) {
-		self.arrayPointer = arrayCreate()
-		var index = 0
-
-		array.forEach({
-			$0.tomlValue.insertIntoArray(arrayPointer: self.arrayPointer, index: index)
-			index += 1
-		})
+	/// Creates a new `TOMLArray` using the contents of a Swift `Array`.
+	public convenience init(_ array: [TOMLValueConvertible]) {
+		self.init()
+		array.forEach(self.append(_:))
 	}
 
-	public required init(arrayLiteral: TOMLValueConvertible...) {
-		self.arrayPointer = arrayCreate()
-		var index = 0
-
-		arrayLiteral.forEach({
-			$0.tomlValue.insertIntoArray(arrayPointer: self.arrayPointer, index: index)
-			index += 1
-		})
+	public convenience init(arrayLiteral: TOMLValueConvertible...) {
+		self.init(arrayLiteral)
 	}
 
 	/// Remove all the elements from this array.

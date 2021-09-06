@@ -5,7 +5,79 @@
 //  The full text of the license can be found in the file named LICENSE.
 
 @testable import TOMLKit
+// Uncomment the dependency in package.swift, and uncomment this line when
+// XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>"
+// import CustomDump
 import XCTest
+
+// MARK: - Codable Structures
+
+enum CodableEnum: String, Codable, Equatable {
+	case abc
+	case def
+	case ghi
+
+	public static func == (lhs: Self, rhs: Self) -> Bool {
+		switch (lhs, rhs) {
+			case (.abc, .abc): return true
+			case (.def, .def): return true
+			case (.ghi, .ghi): return true
+			default: return false
+		}
+	}
+}
+
+struct CodableStruct: Codable, Equatable {
+	var string: String = "Hello, World!"
+	var int: Int = 44330
+	var double: Double = 439.4904
+	var bool: Bool = true
+	var e: CodableEnum = .abc
+
+	var b = B()
+
+	struct B: Codable, Equatable {
+		var time = TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)
+		var date = TOMLDate(year: 2021, month: 5, day: 20)
+		var dateTime = TOMLDateTime(
+			date: TOMLDate(year: 2021, month: 5, day: 20),
+			time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
+			offset: TOMLTimeOffset(offset: 0)
+		)
+		var array: [String] = ["String 1", "String 2"]
+		var c: [CodableStruct.B.C] = [
+			.init(a: "Array of C 1", data: Data([0x63, 0x20])),
+			.init(a: "Array of C 2", data: Data([0x62, 0x27])),
+		]
+
+		struct C: Codable, Equatable {
+			var a: String
+			var data: Data
+		}
+	}
+}
+
+let tomlForCodableStruct = """
+bool = true
+double = 439.4904
+e = 'abc'
+int = 44330
+string = 'Hello, World!'
+
+[b]
+array = [ 'String 1', 'String 2' ]
+date = 2021-05-20
+dateTime = 2021-05-20T04:27:05.000000294Z
+time = 04:27:05.000000294
+
+	[[b.c]]
+	a = 'Array of C 1'
+	data = 'YyA='
+
+	[[b.c]]
+	a = 'Array of C 2'
+	data = 'Yic='
+"""
 
 final class TOMLKitTests: XCTestCase {
 	let testTable = [
@@ -49,27 +121,65 @@ final class TOMLKitTests: XCTestCase {
 	"""
 
 	func testTOMLArray() {
-		var arr: TOMLArray = ["Hello", "World", 1234567890, 134509.25043, true, false, ["Date": TOMLDate(year: 2021, month: 5, day: 20)] as TOMLTable]
-
-		XCTAssertEqual(arr.count, 7)
-
-		arr.append("Hello")
+		var arr: TOMLArray = [
+			"Hello",
+			"World",
+			1234567890,
+			134509.25043,
+			true,
+			false,
+			["Date": TOMLDate(year: 2021, month: 5, day: 20)],
+			[
+				2397,
+				2592.239,
+				true,
+				"String",
+			] as TOMLArray,
+		]
 
 		XCTAssertEqual(arr.count, 8)
 
-		XCTAssertEqual(arr[7].string!, "Hello")
+		arr.append("Hello")
+
+		XCTAssertEqual(arr.count, 9)
+
+		XCTAssertEqual(arr[8].string!, "Hello")
 
 		arr.remove(at: 0)
-		arr.removeSubrange(4..<6)
+		arr.removeSubrange(4..<5)
 
 		XCTAssertEqual(arr[0].string!, "World")
 
 		arr.replaceSubrange(2...4, with: [false, "string", TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)])
 
-		XCTAssertEqual(arr, TOMLArray(["World", 1234567890, false, "string", TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)]))
+		// Read through nested subscript
+		XCTAssertEqual(arr[5][2]!.bool!, true)
+		XCTAssertEqual(arr[5][3]!.string!, "String")
+
+		// Write through nested subscript
+		arr[5][2] = false
+		arr[5][3] = "Different String"
+
+		XCTAssertEqual(
+			arr,
+			TOMLArray([
+				"World",
+				1234567890,
+				false,
+				"string",
+				TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
+				[
+					2397,
+					2592.239,
+					false,
+					"Different String",
+				] as TOMLArray,
+				"Hello",
+			])
+		)
 	}
 
-	func testTOMLTable() throws {
+	func testTOMLTableConversion() throws {
 		XCTAssertEqual(self.testTable.convert(), self.expectedTOMLForTestTable)
 	}
 
@@ -79,153 +189,45 @@ final class TOMLKitTests: XCTestCase {
 		XCTAssertEqual(self.testTable["Double"]!.double!, 50.10475)
 		XCTAssertEqual(self.testTable["Bool"]!.bool!, false)
 		XCTAssertEqual(self.testTable["Array"]!.array![0].int!, 1)
+		XCTAssertEqual(self.testTable["Inline-Table"]!["String 1"]!.string!, "Hello")
+	}
+
+	func testModifyTOMLTable() throws {
+		// Modify nested array.
+		XCTAssertEqual(self.testTable["Array"]!.array![0].int!, 1)
+		self.testTable["Array"]?.array?[0] = 10
+		XCTAssertEqual(self.testTable["Array"]!.array![0].int!, 10)
+		self.testTable["Array"]?.array?[0] = 1
+		XCTAssertEqual(self.testTable["Array"]!.array![0].int!, 1)
+
+		// Modify nested table.
+		XCTAssertEqual(self.testTable["Inline-Table"]!["String 1"]!.string!, "Hello")
+		self.testTable["Inline-Table"]!["String 1"] = "Goodbye"
+		XCTAssertEqual(self.testTable["Inline-Table"]!["String 1"]!.string!, "Goodbye")
+		self.testTable["Inline-Table"]!["String 1"] = "Hello"
+		XCTAssertEqual(self.testTable["Inline-Table"]!["String 1"]!.string!, "Hello")
+
+		// Modify non-nested value.
+		self.testTable["Bool"] = true
+		XCTAssertEqual(self.testTable["Bool"]!.bool!, true)
+		self.testTable["Bool"] = false
+		XCTAssertEqual(self.testTable["Bool"]!.bool!, false)
+
+		self.testTable["String"] = "String 1"
+		XCTAssertEqual(self.testTable["String"]!.string!, "String 1")
+		self.testTable["String"] = "Hello, World!"
+		XCTAssertEqual(self.testTable["String"]!.string!, "Hello, World!")
 	}
 
 	func testTOMLDecoder() throws {
-		let toml = """
-		bool = true
-		double = 3053.53
-		e = 'abc'
-		int = 2093
-		string = 'Hello, World!'
-
-		[b]
-		array = [ 'Hello', 'World!' ]
-		date = 2021-05-20
-		dateTime = 2021-05-20T04:27:05.000000294Z
-		time = 04:27:05.000000294
-
-			[[b.c]]
-			a = 'Hello, World!'
-			data = 'YyA='
-
-			[[b.c]]
-			a = 'Hello'
-			data = 'Yic='
-		"""
-
-		enum E: String, Codable, Equatable {
-			case abc
-			case def
-			case ghi
-
-			public static func == (lhs: E, rhs: E) -> Bool {
-				switch (lhs, rhs) {
-					case (.abc, .abc): return true
-					case (.def, .def): return true
-					case (.ghi, .ghi): return true
-					default: return false
-				}
-			}
-		}
-
-		struct A: Decodable, Equatable {
-			let string: String
-			let int: Int
-			let double: Double
-			let bool: Bool
-			let e: E
-
-			let b: B
-
-			struct B: Decodable, Equatable {
-				let time: TOMLTime
-				let date: TOMLDate
-				let dateTime: TOMLDateTime
-				let array: [String]
-				let c: [A.B.C]
-
-				struct C: Decodable, Equatable {
-					let a: String
-					let data: Data
-				}
-			}
-		}
-
-		let a = A(
-			string: "Hello, World!",
-			int: 2093,
-			double: 3053.53,
-			bool: true,
-			e: .abc,
-			b: A.B(
-				time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
-				date: TOMLDate(year: 2021, month: 5, day: 20),
-				dateTime: TOMLDateTime(
-					date: TOMLDate(year: 2021, month: 5, day: 20),
-					time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
-					offset: TOMLTimeOffset(offset: 0)
-				),
-				array: ["Hello", "World!"],
-				c: [
-					A.B.C(a: "Hello, World!", data: Data([0x63, 0x20])),
-					A.B.C(a: "Hello", data: Data([0x62, 0x27])),
-				]
-			)
-		)
-
-		XCTAssertEqual(try TOMLDecoder().decode(A.self, from: toml), a)
+		// Uncomment the dependency in package.swift, and uncomment this line when
+		//  XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>" "<large CodableStruct> is not equal to <other large CodableStruct>"
+		// XCTAssertNoDifference(try TOMLDecoder().decode(CodableStruct.self, from: tomlForCodableStruct), CodableStruct())
+		XCTAssertEqual(try TOMLDecoder().decode(CodableStruct.self, from: tomlForCodableStruct), CodableStruct())
 	}
 
 	func testTOMLEncoder() throws {
-		enum E: String, Codable {
-			case abc
-			case def
-			case ghi
-		}
-
-		struct A: Encodable {
-			var string: String = "Hello, World!"
-			var int: Int = 44330
-			var double: Double = 439.4904
-			var bool: Bool = true
-			var e: E = .abc
-
-			var b = B()
-
-			struct B: Encodable {
-				var time = TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)
-				var date = TOMLDate(year: 2021, month: 5, day: 20)
-				var dateTime = TOMLDateTime(
-					date: TOMLDate(year: 2021, month: 5, day: 20),
-					time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294)
-				)
-				var array: [String] = ["String 1", "String 2"]
-				var c: [A.B.C] = [
-					.init(a: "Array of C 1", data: Data([0x63, 0x20])),
-					.init(a: "Array of C 2", data: Data([0x62, 0x27])),
-				]
-
-				struct C: Encodable {
-					var a: String
-					var data: Data
-				}
-			}
-		}
-
-		let toml = """
-		bool = true
-		double = 439.4904
-		e = 'abc'
-		int = 44330
-		string = 'Hello, World!'
-
-		[b]
-		array = [ 'String 1', 'String 2' ]
-		date = 2021-05-20
-		dateTime = 2021-05-20T04:27:05.000000294Z
-		time = 04:27:05.000000294
-
-			[[b.c]]
-			a = 'Array of C 1'
-			data = 'YyA='
-
-			[[b.c]]
-			a = 'Array of C 2'
-			data = 'Yic='
-		"""
-
-		XCTAssertEqual(try TOMLTable(string: try TOMLEncoder().encode(A())), try TOMLTable(string: toml))
+		XCTAssertEqual(try TOMLTable(string: try TOMLEncoder().encode(CodableStruct())), try TOMLTable(string: tomlForCodableStruct))
 	}
 
 	func testCustomDataDecodingAndEncoding() {
@@ -234,8 +236,19 @@ final class TOMLKitTests: XCTestCase {
 		}
 
 		XCTAssertEqual(try TOMLEncoder(dataEncoder: { _ in "Hello" }).encode(Test(data: Data([0x01]))), "data = 'Hello'")
-
 		XCTAssertEqual(try TOMLDecoder(dataDecoder: { _ in Data([0x01]) }).decode(Test.self, from: "data = 'Hello'"), Test(data: Data([0x01])))
+	}
+
+	func testMeasureEncoding() {
+		self.measure {
+			_ = try! TOMLEncoder().encode(CodableStruct())
+		}
+	}
+
+	func testMeasureDecoding() {
+		self.measure {
+			_ = try! TOMLDecoder().decode(CodableStruct.self, from: tomlForCodableStruct)
+		}
 	}
 
 	func testInvalidToml() throws {
