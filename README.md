@@ -175,7 +175,7 @@ let array = TOMLArray(
 	[
 		"Hello, World!",
 		"Hello, Again!",
-		3294923.tomlInt,
+		3294923,
 		2350.53,
 		TOMLTable(["string": "string 1"])
 	]
@@ -185,7 +185,7 @@ let array = TOMLArray(
 let array = [
 	"Hello, World!",
 	"Hello, Again!",
-	3294923.tomlInt,
+	3294923,
 	2350.53,
 	TOMLTable(["string": "string 1"])
 ] as TOMLArray
