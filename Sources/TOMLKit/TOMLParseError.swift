@@ -61,5 +61,5 @@ public struct TOMLParseError: Error, CustomDebugStringConvertible {
 		self.source = TOMLSourceRegion(cBegin: cTOMLParseError.source.begin, cEnd: cTOMLParseError.source.end)
 	}
 
-	var debugDescription: String { "\(self.description) (\(self.source))" }
+	public var debugDescription: String { "\(self.description) (\(self.source))" }
 }
