@@ -79,6 +79,7 @@ final class InternalTOMLDecoder: Decoder {
 			self.userInfo = userInfo
 			self.codingPath = codingPath
 			self.dataDecoder = dataDecoder
+			self.allKeys = tomlValue.table?.keys.compactMap(Self.Key.init(stringValue:)) ?? []
 		}
 	}
 
