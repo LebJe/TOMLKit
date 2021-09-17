@@ -47,7 +47,7 @@ public struct TOMLSourceRegion: Equatable, CustomDebugStringConvertible {
 }
 
 /// An error that occurs while parsing a TOML document.
-struct TOMLParseError: Error, CustomDebugStringConvertible {
+public struct TOMLParseError: Error, CustomDebugStringConvertible {
 	/// A textual description of the error.
 	public let description: String
 
