@@ -253,7 +253,7 @@ if let bool = table["bool"]?.bool {
    print(bool)
 }
 
-if let double = table["InnerTable"]?["InnerInnerTable"]?["InnerInnerInnerTable"]?.double {
+if let double = table["InnerTable"]?["InnerInnerTable"]?["InnerInnerInnerTable"]?["double"]?.double {
 print(double)
 }
 
