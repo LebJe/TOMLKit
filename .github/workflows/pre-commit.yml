@@ -1,8 +1,6 @@
 name: "Run Pre-Commit"
 
 on: "pull_request"
-permissions:
-  
 
 jobs:
     PreCommit:
