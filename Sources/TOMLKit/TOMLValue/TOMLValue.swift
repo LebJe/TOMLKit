@@ -47,8 +47,7 @@ public struct TOMLValue:
 			case .table: return self.table?.debugDescription ?? ""
 			case .array: return self.array?.debugDescription ?? ""
 			case .string: return self.string != nil ? "\"" + self.string! + "\"" : ""
-			case .int:
-				return self.int != nil ? String(self.int!) : ""
+			case .int: return self.int != nil ? String(self.int!) : ""
 			case .double: return self.double != nil ? String(self.double!) : ""
 			case .bool: return self.bool != nil ? String(self.bool!) : ""
 			case .date: return self.date?.debugDescription ?? ""
