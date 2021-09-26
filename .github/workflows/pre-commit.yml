@@ -7,9 +7,11 @@ jobs:
         runs-on: "macos-latest"
         steps:
             - uses: "actions/checkout@v2"
+              with:
+                token: ${{ secrets.PRE_COMMIT_TOKEN }}
             - name: "Checkout PR"
               env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                GITHUB_TOKEN: ${{ secrets.PRE_COMMIT_TOKEN }}
               run: "gh pr checkout ${{ github.event.pull_request.number }}"
             - name: "Run Pre-Commit"
               run: |
