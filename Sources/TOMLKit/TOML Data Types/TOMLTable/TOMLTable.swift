@@ -128,7 +128,11 @@ public final class TOMLTable:
 	public subscript(key: String) -> TOMLValueConvertible? {
 		get {
 			guard let pointer = tableGetNode(self.tablePointer, key) else { return nil }
+<<<<<<< HEAD
 			return TOMLValue(tomlValuePointer: pointer)	
+=======
+			return TOMLValue(tomlValuePointer: pointer)
+>>>>>>> b98587db012eebe264df713c919dc41388e0f330
 		}
 		set(value) {
 			value?.tomlValue.replaceOrInsertInTable(tablePointer: self.tablePointer, key: key)
