@@ -22,5 +22,5 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.PRE_COMMIT_TOKEN }}
               run: | 
                 git add . || true
-                git commit -m \"Run pre-commit\" || true
+                git commit -m "Run pre-commit hooks." || true
                 git push || true
