@@ -1762,7 +1762,7 @@ TOML_NAMESPACE_END;
 	   //--------------------------------
 
 #if 1 //-------------------------------------------------------------------------------  ↓
-	  //toml_print_to_stream.h  ----
+	  // toml_print_to_stream.h  ----
 
 TOML_DISABLE_WARNINGS;
 	#include <cmath>
@@ -2177,7 +2177,7 @@ TOML_NAMESPACE_END;
 TOML_POP_WARNINGS; // TOML_DISABLE_SWITCH_WARNINGS
 
 #endif //-------------------------------------------------------------------------------  ↑
-	   //toml_print_to_stream.h  ----
+	   // toml_print_to_stream.h  ----
 
 #if 1 //----------  ↓ toml_node.h
 	  //------------------------------------------------------------------------------------
@@ -2210,11 +2210,11 @@ TOML_POP_WARNINGS; // TOML_DISABLE_SWITCH_WARNINGS
 
 	#define TOML_SA_NODE_TYPE_LIST                                                                 \
 		TOML_SA_LIST_BEG                                                                           \
-			"toml::table" TOML_SA_LIST_SEP "toml::array" TOML_SA_LIST_SEP                          \
-			"toml::value<std::string>" TOML_SA_LIST_SEP "toml::value<int64_t>" TOML_SA_LIST_SEP    \
-			"toml::value<double>" TOML_SA_LIST_SEP "toml::value<bool>" TOML_SA_LIST_SEP            \
-			"toml::value<toml::date>" TOML_SA_LIST_SEP "toml::value<toml::time>" TOML_SA_LIST_SEP  \
-			"toml::value<toml::date_time>" TOML_SA_LIST_END
+		"toml::table" TOML_SA_LIST_SEP "toml::array" TOML_SA_LIST_SEP                              \
+		"toml::value<std::string>" TOML_SA_LIST_SEP "toml::value<int64_t>" TOML_SA_LIST_SEP        \
+		"toml::value<double>" TOML_SA_LIST_SEP "toml::value<bool>" TOML_SA_LIST_SEP                \
+		"toml::value<toml::date>" TOML_SA_LIST_SEP "toml::value<toml::time>" TOML_SA_LIST_SEP      \
+		"toml::value<toml::date_time>" TOML_SA_LIST_END
 
 	#define TOML_SA_UNWRAPPED_NODE_TYPE_LIST                                                       \
 		TOML_SA_LIST_NEW "A native TOML value type" TOML_SA_NATIVE_VALUE_TYPE_LIST                 \
@@ -2646,7 +2646,7 @@ TOML_NAMESPACE_END;
 			"A native TOML value type" TOML_SA_NATIVE_VALUE_TYPE_LIST                              \
                                                                                                    \
 				TOML_SA_LIST_NXT "A non-view type capable of losslessly representing a native "    \
-								 "TOML value type" TOML_SA_LIST_BEG                                \
+			"TOML value type" TOML_SA_LIST_BEG                                                     \
 			"std::string" TOML_SA_VALUE_MESSAGE_WSTRING TOML_SA_LIST_SEP                           \
 			"any signed integer type >= 64 bits" TOML_SA_LIST_SEP                                  \
 			"any floating-point type >= 64 bits" TOML_SA_LIST_END                                  \
@@ -2661,14 +2661,13 @@ TOML_NAMESPACE_END;
 			"A native TOML value type" TOML_SA_NATIVE_VALUE_TYPE_LIST                              \
                                                                                                    \
 				TOML_SA_LIST_NXT "A non-view type capable of losslessly representing a native "    \
-								 "TOML value type" TOML_SA_LIST_BEG                                \
+			"TOML value type" TOML_SA_LIST_BEG                                                     \
 			"std::string" TOML_SA_VALUE_MESSAGE_WSTRING TOML_SA_LIST_SEP                           \
 			"any signed integer type >= 64 bits" TOML_SA_LIST_SEP                                  \
 			"any floating-point type >= 64 bits" TOML_SA_LIST_END                                  \
                                                                                                    \
 				TOML_SA_LIST_NXT "A non-view type capable of (reasonably) representing a native "  \
-								 "TOML value type" TOML_SA_LIST_BEG                                \
-			"any other integer type" TOML_SA_LIST_SEP                                              \
+			"TOML value type" TOML_SA_LIST_BEG "any other integer type" TOML_SA_LIST_SEP           \
 			"any floating-point type >= 32 bits" TOML_SA_LIST_END                                  \
                                                                                                    \
 				TOML_SA_LIST_NXT                                                                   \
@@ -3273,7 +3272,7 @@ TOML_NAMESPACE_START {
 				"A native TOML value type" TOML_SA_NATIVE_VALUE_TYPE_LIST
 
 					TOML_SA_LIST_NXT "A non-view type capable of losslessly representing a native "
-									 "TOML value type" TOML_SA_LIST_BEG "std::string"
+				"TOML value type" TOML_SA_LIST_BEG "std::string"
 	#if TOML_WINDOWS_COMPAT
 				TOML_SA_LIST_SEP "std::wstring"
 	#endif
@@ -3281,8 +3280,7 @@ TOML_NAMESPACE_START {
 				"any floating-point type >= 64 bits" TOML_SA_LIST_END
 
 					TOML_SA_LIST_NXT "A non-view type capable of (reasonably) representing a "
-									 "native TOML value type" TOML_SA_LIST_BEG
-				"any other integer type" TOML_SA_LIST_SEP
+				"native TOML value type" TOML_SA_LIST_BEG "any other integer type" TOML_SA_LIST_SEP
 				"any floating-point type >= 32 bits" TOML_SA_LIST_END
 
 					TOML_SA_LIST_NXT "A compatible view type" TOML_SA_LIST_BEG "std::string_view"
@@ -3809,7 +3807,7 @@ TOML_NAMESPACE_END;
 	   //----------------------------------
 
 #if 1 //------------------------------------------------------------------------------------  ↓
-	  //toml_table.h  ---------
+	  // toml_table.h  ---------
 
 TOML_IMPL_NAMESPACE_START {
 	template <bool IsConst> struct table_proxy_pair final {
@@ -4288,8 +4286,9 @@ TOML_NAMESPACE_START {
 			//		"supported on Windows with TOML_WINDOWS_COMPAT enabled."
 			//	);
 			//	static_assert(
-			//		(is_native<T> || can_represent_native<T> || can_partially_represent_native<T>) &&
-			//!is_cvref<T>, 		TOML_SA_VALUE_FUNC_MESSAGE("return type of node::select()")
+			//		(is_native<T> || can_represent_native<T> || can_partially_represent_native<T>)
+			//&&
+			//! is_cvref<T>, 		TOML_SA_VALUE_FUNC_MESSAGE("return type of node::select()")
 			//	);
 			//}
 
@@ -4298,7 +4297,7 @@ TOML_NAMESPACE_START {
 TOML_NAMESPACE_END;
 
 #endif //------------------------------------------------------------------------------------  ↑
-	   //toml_table.h  ---------
+	   // toml_table.h  ---------
 
 #if 1 //-------  ↓ toml_node_view.h
 	  //----------------------------------------------------------------------------------
@@ -5702,7 +5701,7 @@ TOML_POP_WARNINGS; // TOML_DISABLE_INIT_WARNINGS
 		   //-------------------------------
 
 	#if 1 //---------------------------------------------------------------------------------  ↓
-		  //toml_parse_result.h  -----
+		  // toml_parse_result.h  -----
 
 		#if defined(DOXYGEN) || !TOML_EXCEPTIONS
 TOML_NAMESPACE_START {
@@ -5880,7 +5879,7 @@ TOML_NAMESPACE_END;
 		#endif // !TOML_EXCEPTIONS
 
 	#endif //---------------------------------------------------------------------------------  ↑
-		   //toml_parse_result.h  -----
+		   // toml_parse_result.h  -----
 
 	#if 1 //------  ↓ toml_utf8_streams.h
 		  //--------------------------------------------------------------------------------
@@ -6529,7 +6528,7 @@ TOML_POP_WARNINGS; // TOML_DISABLE_SWITCH_WARNINGS
 	   //--------------------------------
 
 #if 1 //------------------------------------------------------------------------------  ↓
-	  //toml_default_formatter.h  ---
+	  // toml_default_formatter.h  ---
 
 TOML_PUSH_WARNINGS;
 TOML_DISABLE_SWITCH_WARNINGS;
@@ -6868,7 +6867,7 @@ TOML_NAMESPACE_END;
 TOML_POP_WARNINGS; // TOML_DISABLE_SWITCH_WARNINGS
 
 #endif //------------------------------------------------------------------------------  ↑
-	   //toml_default_formatter.h  ---
+	   // toml_default_formatter.h  ---
 
 #if 1 //-----  ↓ toml_json_formatter.h
 	  //-------------------------------------------------------------------------------
@@ -7375,7 +7374,7 @@ TOML_NAMESPACE_END;
 		   //---------------------------------
 
 	#if 1 //-----------------------------------------------------------------------------------  ↓
-		  //toml_table.hpp  --------
+		  // toml_table.hpp  --------
 
 TOML_NAMESPACE_START {
 		#if TOML_LIFETIME_HOOKS
@@ -7636,7 +7635,7 @@ TOML_NAMESPACE_START {
 TOML_NAMESPACE_END;
 
 	#endif //-----------------------------------------------------------------------------------  ↑
-		   //toml_table.hpp  --------
+		   // toml_table.hpp  --------
 
 	#if TOML_PARSER
 
@@ -10921,7 +10920,7 @@ TOML_POP_WARNINGS; // TOML_DISABLE_SWITCH_WARNINGS, TOML_DISABLE_ARITHMETIC_WARN
 		   //---------------------------
 
 	#if 1 //-------------------------------------------------------------------------------  ↓
-		  //toml_json_formatter.hpp  ---
+		  // toml_json_formatter.hpp  ---
 
 TOML_PUSH_WARNINGS;
 TOML_DISABLE_SWITCH_WARNINGS;
@@ -10968,7 +10967,7 @@ TOML_NAMESPACE_END;
 TOML_POP_WARNINGS; // TOML_DISABLE_SWITCH_WARNINGS
 
 	#endif //-------------------------------------------------------------------------------  ↑
-		   //toml_json_formatter.hpp  ---
+		   // toml_json_formatter.hpp  ---
 
 	#if !TOML_HEADER_ONLY
 
