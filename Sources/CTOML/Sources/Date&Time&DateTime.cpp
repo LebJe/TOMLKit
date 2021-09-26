@@ -1,8 +1,8 @@
 
+#include "Conversion.hpp"
+#include "toml.hpp"
 #include <CTOML/CTOML.h>
 #include <string>
-#include "toml.hpp"
-#include "Conversion.hpp"
 
 /// Convert \c date to TOML.
 const char * _Nonnull cTOMLDateToTOML(CTOMLDate date) {

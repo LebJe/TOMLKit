@@ -6,8 +6,8 @@
 
 #ifdef __cplusplus
 
-#include <optional>
-#include "Conversion.hpp"
+	#include "Conversion.hpp"
+	#include <optional>
 
 CTOMLDate tomlDateToCTOMLDate(toml::date date) {
 	return CTOMLDate { .year = date.year, .month = date.month, .day = date.day };
@@ -18,41 +18,35 @@ toml::date cTOMLDateToTomlDate(CTOMLDate date) {
 }
 
 CTOMLTime tomlTimeToCTOMLTime(toml::time time) {
-	return CTOMLTime {
-		.hour = time.hour,
-		.minute = time.minute,
-		.second = time.second,
-		.nanoSecond = time.nanosecond
-	};
+	return CTOMLTime { .hour = time.hour,
+					   .minute = time.minute,
+					   .second = time.second,
+					   .nanoSecond = time.nanosecond };
 }
 
 toml::time cTOMLTimeToTomlTime(CTOMLTime time) {
-	return toml::time {
-		.hour = time.hour,
-		.minute = time.minute,
-		.second = time.second,
-		.nanosecond = time.nanoSecond
-	};
+	return toml::time { .hour = time.hour,
+						.minute = time.minute,
+						.second = time.second,
+						.nanosecond = time.nanoSecond };
 }
 
 CTOMLDateTime tomlDateTimeToCTOMLDateTime(toml::date_time dateTime) {
 	return CTOMLDateTime {
 		.date = tomlDateToCTOMLDate(dateTime.date),
 		.time = tomlTimeToCTOMLTime(dateTime.time),
-		.offset = dateTime.offset.has_value() ? new CTOMLTimeOffset { .minutes = dateTime.offset.value().minutes } : NULL
+		.offset = dateTime.offset.has_value()
+					  ? new CTOMLTimeOffset { .minutes = dateTime.offset.value().minutes }
+					  : NULL
 	};
 }
 
 toml::date_time cTOMLDateTimeToTomlDateTime(CTOMLDateTime dateTime) {
 	return toml::date_time {
-		cTOMLDateToTomlDate(dateTime.date),
-		cTOMLTimeToTomlTime(dateTime.time),
-		dateTime.offset
-		? toml::time_offset {
-			static_cast<int8_t>(dateTime.offset->minutes / 60),
-			static_cast<int8_t>(dateTime.offset->minutes % 60)
-		}
-		: toml::time_offset { 0, 0 }
+		cTOMLDateToTomlDate(dateTime.date), cTOMLTimeToTomlTime(dateTime.time),
+		dateTime.offset ? toml::time_offset { static_cast<int8_t>(dateTime.offset->minutes / 60),
+											  static_cast<int8_t>(dateTime.offset->minutes % 60) }
+						: toml::time_offset { 0, 0 }
 	};
 }
 

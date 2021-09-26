@@ -11,9 +11,9 @@
 extern "C" {
 #endif
 
-	#include <stdint.h>
-	#include <stddef.h>
-	#include <stdbool.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 	// MARK: - Structs
 
@@ -40,7 +40,6 @@ extern "C" {
 	};
 	typedef struct CTOMLSourcePosition CTOMLSourcePosition;
 
-
 	struct CTOMLSourceRegion {
 		CTOMLSourcePosition begin;
 		CTOMLSourcePosition end;
@@ -55,7 +54,9 @@ extern "C" {
 
 		/// Returns the region of the source document responsible for the error.
 		///
-		/// This documentation comment was taken from the [toml++ documentation](https://marzer.github.io/tomlplusplus/classtoml_1_1parse__error.html#a8168b4941305654cf4ba8fc96efd0514) .
+		/// This documentation comment was taken from the [toml++
+		/// documentation](https://marzer.github.io/tomlplusplus/classtoml_1_1parse__error.html#a8168b4941305654cf4ba8fc96efd0514)
+		/// .
 		CTOMLSourceRegion source;
 	};
 
@@ -122,7 +123,7 @@ extern "C" {
 
 	typedef enum CTOMLNodeType CTOMLNodeType;
 
-	#pragma clang assume_nonnull begin
+#pragma clang assume_nonnull begin
 
 	// MARK: - Array - Creation and Deletion
 
@@ -141,7 +142,6 @@ extern "C" {
 
 	/// The amount of elements in \c array .
 	size_t arraySize(CTOMLArray * array);
-
 
 	// MARK: - Array - Value Manipulation - Deletion
 	/// Clears all the values in \c array .
@@ -196,10 +196,12 @@ extern "C" {
 	void arrayReplaceTable(CTOMLArray * array, int64_t index, CTOMLTable * _Nonnull table);
 
 	/// Replaces the value at \c key with \c integer .
-	void tableReplaceOrInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags);
+	void
+	tableReplaceOrInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags);
 
 	/// Replaces the value at \c key with \c tableToInsert .
-	void tableReplaceOrInsertTable(CTOMLTable * table, const char * key, CTOMLTable * tableToInsert);
+	void
+	tableReplaceOrInsertTable(CTOMLTable * table, const char * key, CTOMLTable * tableToInsert);
 
 	/// Replaces the value at \c key with \c array .
 	void tableReplaceOrInsertArray(CTOMLTable * table, const char * key, CTOMLArray * array);
@@ -217,8 +219,10 @@ extern "C" {
 
 	/// Creates a \c toml::table from a string containing a TOML document.
 	/// @param tomlStr The string containing the TOML document.
-	/// @param errorPointer Te pointer that will contain the \c CTOMLParseError if an error occurs during parsing.
-	CTOMLTable * _Nullable tableCreateFromString(const char * _Nonnull tomlStr, CTOMLParseError * _Nonnull errorPointer);
+	/// @param errorPointer Te pointer that will contain the \c CTOMLParseError if an error occurs
+	/// during parsing.
+	CTOMLTable * _Nullable tableCreateFromString(
+		const char * _Nonnull tomlStr, CTOMLParseError * _Nonnull errorPointer);
 
 	// MARK: - Table - Information
 
@@ -227,7 +231,8 @@ extern "C" {
 	/// @param table2 This second \c toml::table that will be used in the comparison.
 	bool tableEqual(CTOMLTable * table1, CTOMLTable * table2);
 
-	/// Makes \c table an inline table or not an inline table depending on the value of \c isInline .
+	/// Makes \c table an inline table or not an inline table depending on the value of \c isInline
+	/// .
 	/// @param table The \c toml::table to inline or not inline.
 	/// @param isInline Whether \c table should be made an inline table or not.
 	void tableSetInline(CTOMLTable * table, bool isInline);
@@ -273,7 +278,8 @@ extern "C" {
 	/// Retrieve all the keys from \c table . The size of the return value is the size of \c table .
 	char const * _Nonnull const * _Nonnull tableGetKeys(CTOMLTable * table);
 
-	/// Retrieve all the values from \c table . The size of the return value is the size of \c table .
+	/// Retrieve all the values from \c table . The size of the return value is the size of \c table
+	/// .
 	CTOMLNode const * _Nonnull const * _Nonnull tableGetValues(CTOMLTable * table);
 
 	// MARK: - Table - Data Removal
@@ -304,7 +310,7 @@ extern "C" {
 
 	/// Convert \c dateTime to TOML.
 	const char * _Nonnull cTOMLDateTimeToTOML(CTOMLDateTime dateTime);
-	#pragma clang assume_nonnull end
+#pragma clang assume_nonnull end
 
 	// MARK: - Node - Creation
 
