@@ -17,6 +17,7 @@ jobs:
               run: |
                   brew bundle
                   pre-commit run --all-files || true
+            - uses: fregante/setup-git-user@v1
             - name: "Push Changes"
               env:
                   GITHUB_TOKEN: ${{ secrets.PRE_COMMIT_TOKEN }}
