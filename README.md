@@ -28,6 +28,7 @@ TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.c
             -   [Arrays](#arrays)
             -   [Dates](#dates)
             -   [Times](#times)
+            -   [Date and Time](#date-and-time)
             -   [Data](#data)
             -   [Integers](#integers)
         -   [Retrieving TOML values](#retrieving-toml-values)
@@ -39,7 +40,7 @@ TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.c
     -   [Licenses](#licenses)
     -   [Contributing](#contributing)
 
-<!-- Added by: lebje, at: Mon Sep  6 14:34:16 EDT 2021 -->
+<!-- Added by: lebje, at: Sun Sep 26 12:32:23 EDT 2021 -->
 
 <!--te-->
 
@@ -204,10 +205,10 @@ array[0] = TOMLTable(["double": 02734.23])
 #### Dates
 
 ```swift
-// Create a date from numerical values.
+// Create a `TOMLDate` from numerical values.
 let date = TOMLDate(year: 2021, month: 6, day: 10)
 
-// Create a date from `Foundation.Date`
+// Create a `TOMLDate` from `Foundation.Date`
 import Foundation
 
 let date2 = TOMLDate(date: Date())
@@ -217,9 +218,26 @@ let table = TOMLTable(["Date1": date, "Date2": date2])
 #### Times
 
 ```swift
-// Create a time from numerical values.
+// Create a `TOMLTime` from numerical values.
 let time = TOMLTime(hour: 12, minute: 27, second: 49)
 let table = TOMLTable(["time": time])
+```
+
+#### Date and Time
+
+```swift
+// Create a `TOMLDateTime` from numerical values.
+let dateTime = TOMLDateTime(
+	date: TOMLDate(year: 2021, month: 5, day: 20),
+	time: TOMLTime(hour: 4, minute: 27, second: 5, nanoSecond: 294),
+	offset: TOMLTimeOffset(offset: 0)
+)
+
+// Create a `TOMLDateTime` from `Foundation.Date`
+import Foundation
+let dateTime2 = TOMLDateTime(date: Date())
+
+let table = TOMLTable(["DateTime": dateTime, "DateTime2": dateTime2])
 ```
 
 #### `Data`
