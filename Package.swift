@@ -16,7 +16,8 @@ let package = Package(
 	dependencies: [
 		// Use this dependency when one of the `TOMLTable` comparison tests fail and
 		// XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>"
-		// .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "0.1.0")
+		// .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "0.1.0"),
+        .package(url: "https://github.com/karwa/swift-checkit.git", .branch("master")),
 	],
 	targets: [
 		.target(
@@ -33,7 +34,7 @@ let package = Package(
 		),
 		.testTarget(
 			name: "TOMLKitTests",
-			dependencies: ["TOMLKit" /* .product(name: "CustomDump", package: "swift-custom-dump") */ ]
+			dependencies: ["TOMLKit", .product(name: "Checkit", package: "swift-checkit"), /* .product(name: "CustomDump", package: "swift-custom-dump") */ ]
 		),
 	],
 	cLanguageStandard: .c99,

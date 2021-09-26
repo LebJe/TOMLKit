@@ -9,6 +9,7 @@
 // XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>"
 // import CustomDump
 import XCTest
+import Checkit
 
 // MARK: - Codable Structures
 
@@ -136,6 +137,8 @@ final class TOMLKitTests: XCTestCase {
 				"String",
 			] as TOMLArray,
 		]
+
+        CollectionChecker.check(arr)
 
 		XCTAssertEqual(arr.count, 8)
 
