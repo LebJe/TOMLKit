@@ -4,9 +4,9 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
-#include <CTOML/CTOML.h>
-#include "toml.hpp"
 #include "Conversion.hpp"
+#include "toml.hpp"
+#include <CTOML/CTOML.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,9 +15,7 @@ extern "C" {
 	// MARK: - Creation and Deletion
 
 	/// Initializes a new \c toml::array .
-	CTOMLArray * arrayCreate() {
-		return reinterpret_cast<CTOMLArray *>( new toml::array() );
-	}
+	CTOMLArray * arrayCreate() { return reinterpret_cast<CTOMLArray *>(new toml::array()); }
 
 	// MARK: - Array Information
 
@@ -36,15 +34,11 @@ extern "C" {
 	}
 
 	/// The amount of elements in \c array .
-	size_t arraySize(CTOMLArray * array) {
-		return reinterpret_cast<toml::array *>(array)->size();
-	}
+	size_t arraySize(CTOMLArray * array) { return reinterpret_cast<toml::array *>(array)->size(); }
 
 	/// Clears all the values in \c array .
 	/// @param array The \c toml::array to clear.
-	void arrayClear(CTOMLArray * array) {
-		reinterpret_cast<toml::array *>(array)->clear();
-	}
+	void arrayClear(CTOMLArray * array) { reinterpret_cast<toml::array *>(array)->clear(); }
 
 	// MARK: - Value Insertion
 
@@ -80,9 +74,7 @@ extern "C" {
 	void arrayReplaceBool(CTOMLArray * array, int64_t index, bool b) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
-		if (arr->get(index)) {
-			arr->erase(arr->cbegin() + index);
-		}
+		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
 
 		arr->emplace<bool>(arr->cbegin() + index, b);
 	}
@@ -92,9 +84,7 @@ extern "C" {
 		auto arr = reinterpret_cast<toml::array *>(array);
 		auto v = toml::value { i };
 
-		if (arr->get(index)) {
-			arr->erase(arr->cbegin() + index);
-		}
+		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
 
 		arr->insert(arr->cbegin() + index, v);
 		arr->get(index)->as_integer()->flags(toml::value_flags { flags });
@@ -104,9 +94,7 @@ extern "C" {
 	void arrayReplaceDouble(CTOMLArray * array, int64_t index, double d) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
-		if (arr->get(index)) {
-			arr->erase(arr->cbegin() + index);
-		}
+		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
 
 		arr->insert(arr->cbegin() + index, d);
 	}
@@ -115,9 +103,7 @@ extern "C" {
 	void arrayReplaceString(CTOMLArray * array, int64_t index, const char * s) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
-		if (arr->get(index)) {
-			arr->erase(arr->cbegin() + index);
-		}
+		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
 
 		arr->insert(arr->cbegin() + index, std::string(s));
 	}
@@ -126,9 +112,7 @@ extern "C" {
 	void arrayReplaceDate(CTOMLArray * array, int64_t index, CTOMLDate date) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
-		if (arr->get(index)) {
-			arr->erase(arr->cbegin() + index);
-		}
+		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
 
 		arr->insert(arr->cbegin() + index, cTOMLDateToTomlDate(date));
 	}
@@ -137,9 +121,7 @@ extern "C" {
 	void arrayReplaceTime(CTOMLArray * array, int64_t index, CTOMLTime time) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
-		if (arr->get(index)) {
-			arr->erase(arr->cbegin() + index);
-		}
+		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
 
 		arr->insert(arr->cbegin() + index, cTOMLTimeToTomlTime(time));
 	}
@@ -148,25 +130,22 @@ extern "C" {
 	void arrayReplaceDateTime(CTOMLArray * array, int64_t index, CTOMLDateTime dateTime) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
-		if (arr->get(index)) {
-			arr->erase(arr->cbegin() + index);
-		}
+		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
 
 		arr->insert(arr->cbegin() + index, cTOMLDateTimeToTomlDateTime(dateTime));
 	}
 
 	/// Replace the \c toml::array at \c index with \c arrayToEmplace .
-	void arrayReplaceArray(CTOMLArray * array, int64_t index, CTOMLArray * _Nonnull arrayToEmplace) {
+	void
+	arrayReplaceArray(CTOMLArray * array, int64_t index, CTOMLArray * _Nonnull arrayToEmplace) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
 		// FIXME: If we don't create a new `toml::array`, sometimes accessing `arrToInsert` crashes.
 		// Also, creating a new `toml::array` is inefficient.
 		auto arrToInsert = toml::array(*reinterpret_cast<toml::array *>(arrayToEmplace));
-		//auto arrToInsert = reinterpret_cast<toml::array *>(arrayToEmplace);
+		// auto arrToInsert = reinterpret_cast<toml::array *>(arrayToEmplace);
 
-		if (arr->get(index)) {
-			arr->erase(arr->cbegin() + index);
-		}
+		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
 
 		arr->insert(arr->cbegin() + index, arrToInsert);
 	}
@@ -175,18 +154,16 @@ extern "C" {
 	void arrayReplaceTable(CTOMLArray * array, int64_t index, CTOMLTable * _Nonnull table) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
-		if (arr->get(index)) {
-			arr->erase(arr->cbegin() + index);
-		}
+		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
 
 		arr->insert(arr->cbegin() + index, *reinterpret_cast<toml::table *>(table));
 	}
 
 	// MARK: - Value Retrieval
-	
+
 	/// Retrieves a \c toml::node from \c array at \c index .
 	CTOMLNode * _Nonnull arrayGetNode(CTOMLArray * array, int64_t index) {
-		return reinterpret_cast<CTOMLNode *>( reinterpret_cast<toml::array *>(array)->get(index) );
+		return reinterpret_cast<CTOMLNode *>(reinterpret_cast<toml::array *>(array)->get(index));
 	}
 
 	// MARK: - Value Removal

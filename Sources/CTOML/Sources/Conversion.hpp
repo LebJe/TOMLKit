@@ -9,8 +9,8 @@
 
 #ifdef __cplusplus
 
-#include <CTOML/CTOML.h>
-#include "toml.hpp"
+	#include "toml.hpp"
+	#include <CTOML/CTOML.h>
 
 // MARK: - Conversion
 

@@ -4,9 +4,9 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
-#include <CTOML/CTOML.h>
-#include "toml.hpp"
 #include "Conversion.hpp"
+#include "toml.hpp"
+#include <CTOML/CTOML.h>
 #include <iostream>
 
 #ifdef __cplusplus
@@ -15,23 +15,25 @@ extern "C" {
 
 	// MARK: - Table Creation and Deletion
 	/// Initializes a new \c toml::table .
-	CTOMLTable * tableCreate() {
-		return reinterpret_cast<CTOMLTable *>( new toml::table() );
-	}
+	CTOMLTable * tableCreate() { return reinterpret_cast<CTOMLTable *>(new toml::table()); }
 
 	/// Creates a \c toml::table from a string containing a TOML document.
 	/// @param tomlStr The string containing the TOML document.
-	/// @param errorPointer Te pointer that will contain the \c CTOMLParseError if an error occurs during parsing.
-	CTOMLTable * _Nullable tableCreateFromString(const char * _Nonnull tomlStr, CTOMLParseError * _Nonnull errorPointer) {
+	/// @param errorPointer Te pointer that will contain the \c CTOMLParseError if an error occurs
+	/// during parsing.
+	CTOMLTable * _Nullable tableCreateFromString(
+		const char * _Nonnull tomlStr, CTOMLParseError * _Nonnull errorPointer) {
 		try {
-			return reinterpret_cast<CTOMLTable *>( new toml::table(toml::parse(tomlStr)) );
-		} catch (toml::parse_error& e) {
+			return reinterpret_cast<CTOMLTable *>(new toml::table(toml::parse(tomlStr)));
+		} catch (toml::parse_error & e) {
 			*errorPointer = CTOMLParseError {
 				.description = strdup(std::string(e.description()).c_str()),
-				.source = CTOMLSourceRegion {
-					.begin = CTOMLSourcePosition { .line = e.source().begin.line, .column = e.source().begin.column },
-					.end = CTOMLSourcePosition { .line = e.source().end.line, .column = e.source().end.column }
-				}
+				.source =
+					CTOMLSourceRegion {
+						.begin = CTOMLSourcePosition { .line = e.source().begin.line,
+													   .column = e.source().begin.column },
+						.end = CTOMLSourcePosition { .line = e.source().end.line,
+													 .column = e.source().end.column } }
 			};
 			return NULL;
 		}
@@ -48,7 +50,8 @@ extern "C" {
 		return tbl1 == tbl2;
 	}
 
-	/// Makes \c table an inline table or not an inline table depending on the value of \c isInline .
+	/// Makes \c table an inline table or not an inline table depending on the value of \c isInline
+	/// .
 	/// @param table The \c toml::table to inline or not inline.
 	/// @param isInline Whether \c table should be made an inline table or not.
 	void tableSetInline(CTOMLTable * table, bool isInline) {
@@ -71,9 +74,7 @@ extern "C" {
 	}
 
 	/// The amount of elements in \c table .
-	size_t tableSize(CTOMLTable * table) {
-		return reinterpret_cast<toml::table *>(table)->size();
-	}
+	size_t tableSize(CTOMLTable * table) { return reinterpret_cast<toml::table *>(table)->size(); }
 
 	/// Whether the \c table contains \c key .
 	bool tableContains(CTOMLTable * table, const char * key) {
@@ -84,9 +85,7 @@ extern "C" {
 
 	/// Clears all the values in \c table.
 	/// @param table The \c toml::table to clear.
-	void tableClear(CTOMLTable * table) {
-		reinterpret_cast<toml::table *>(table)->clear();
-	}
+	void tableClear(CTOMLTable * table) { reinterpret_cast<toml::table *>(table)->clear(); }
 
 	/// Inserts \c integer into \c table at \c key .
 	void tableInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags) {
@@ -100,12 +99,14 @@ extern "C" {
 
 	/// Inserts \c tableToInsert into \c table at \c key .
 	void tableInsertTable(CTOMLTable * table, const char * key, CTOMLTable * tableToInsert) {
-		reinterpret_cast<toml::table *>(table)->insert(key, *reinterpret_cast<toml::table *>(tableToInsert));
+		reinterpret_cast<toml::table *>(table)->insert(
+			key, *reinterpret_cast<toml::table *>(tableToInsert));
 	}
 
 	/// Inserts \c array into \c table at \c key .
 	void tableInsertArray(CTOMLTable * table, const char * key, CTOMLArray * array) {
-		reinterpret_cast<toml::table *>(table)->insert(key, *reinterpret_cast<toml::array *>(array));
+		reinterpret_cast<toml::table *>(table)->insert(
+			key, *reinterpret_cast<toml::array *>(array));
 	}
 
 	/// Inserts \c toml::node into \c table at \c key .
@@ -114,7 +115,8 @@ extern "C" {
 	}
 
 	/// Replaces the value at \c key with \c integer .
-	void tableReplaceOrInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags) {
+	void
+	tableReplaceOrInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags) {
 		auto t = reinterpret_cast<toml::table *>(table);
 		auto v = toml::value { integer };
 
@@ -124,18 +126,22 @@ extern "C" {
 	}
 
 	/// Replaces the value at \c key with \c tableToInsert .
-	void tableReplaceOrInsertTable(CTOMLTable * table, const char * key, CTOMLTable * tableToInsert) {
-		reinterpret_cast<toml::table *>(table)->insert_or_assign(key, *reinterpret_cast<toml::table *>(tableToInsert));
+	void
+	tableReplaceOrInsertTable(CTOMLTable * table, const char * key, CTOMLTable * tableToInsert) {
+		reinterpret_cast<toml::table *>(table)->insert_or_assign(
+			key, *reinterpret_cast<toml::table *>(tableToInsert));
 	}
 
 	/// Replaces the value at \c key with \c array .
 	void tableReplaceOrInsertArray(CTOMLTable * table, const char * key, CTOMLArray * array) {
-		reinterpret_cast<toml::table *>(table)->insert_or_assign(key, *reinterpret_cast<toml::array *>(array));
+		reinterpret_cast<toml::table *>(table)->insert_or_assign(
+			key, *reinterpret_cast<toml::array *>(array));
 	}
 
 	/// Replaces the value at \c key with \c toml::node .
 	void tableReplaceOrInsertNode(CTOMLTable * table, const char * key, CTOMLNode * node) {
-		reinterpret_cast<toml::table *>(table)->insert_or_assign(key, *reinterpret_cast<toml::node *>(node));
+		reinterpret_cast<toml::table *>(table)->insert_or_assign(
+			key, *reinterpret_cast<toml::node *>(node));
 	}
 
 	// MARK: - Table - Data Retrieval
@@ -144,9 +150,7 @@ extern "C" {
 	CTOMLNode * _Nullable tableGetNode(CTOMLTable * table, const char * key) {
 		auto tbl = reinterpret_cast<toml::table *>(table);
 
-		if (tbl->get(key)) {
-			return reinterpret_cast<CTOMLNode *>( tbl->get(key) );
-		}
+		if (tbl->get(key)) { return reinterpret_cast<CTOMLNode *>(tbl->get(key)); }
 
 		return NULL;
 	}
@@ -154,10 +158,10 @@ extern "C" {
 	/// Retrieve all the keys from \c table . The size of the return value is the size of \c table .
 	const char * const * tableGetKeys(CTOMLTable * table) {
 		auto t = reinterpret_cast<toml::table *>(table);
-		auto keyArray = (char **)malloc(sizeof(char**) * t->size());
+		auto keyArray = (char **)malloc(sizeof(char **) * t->size());
 		int64_t index = 0;
 
-		for (auto&& [k, v] : *t) {
+		for (auto && [k, v] : *t) {
 			keyArray[index] = strdup(k.c_str());
 			index++;
 		}
@@ -165,14 +169,15 @@ extern "C" {
 		return keyArray;
 	}
 
-	/// Retrieve all the values from \c table . The size of the return value is the size of \c table .
+	/// Retrieve all the values from \c table . The size of the return value is the size of \c table
+	/// .
 	CTOMLNode const * const * tableGetValues(CTOMLTable * table) {
 		auto t = reinterpret_cast<toml::table *>(table);
 		auto valueArray = (CTOMLNode **)malloc(sizeof(CTOMLNode **) * t->size());
 		int64_t index = 0;
 
-		for (auto&& [k, v] : *t) {
-			valueArray[index] = reinterpret_cast<CTOMLNode *>( t->get(k) );
+		for (auto && [k, v] : *t) {
+			valueArray[index] = reinterpret_cast<CTOMLNode *>(t->get(k));
 			index++;
 		}
 
@@ -192,7 +197,8 @@ extern "C" {
 	char * tableConvertToTOML(CTOMLTable * table, uint8_t options) {
 		std::stringstream ss;
 
-		ss << toml::default_formatter { *reinterpret_cast<toml::table *>(table), toml::format_flags { options } };
+		ss << toml::default_formatter { *reinterpret_cast<toml::table *>(table),
+										toml::format_flags { options } };
 
 		return strdup(ss.str().c_str());
 	}
@@ -201,7 +207,8 @@ extern "C" {
 	char * tableConvertToJSON(CTOMLTable * table, uint8_t options) {
 		std::stringstream ss;
 
-		ss << toml::json_formatter { *reinterpret_cast<toml::table *>(table), toml::format_flags { options } };
+		ss << toml::json_formatter { *reinterpret_cast<toml::table *>(table),
+									 toml::format_flags { options } };
 
 		return strdup(ss.str().c_str());
 	}
