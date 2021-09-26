@@ -81,17 +81,17 @@ public struct TOMLValue:
 	///   - key:
 	func insertIntoTable(tablePointer: OpaquePointer, key: String) {
 		if let t = self.tomlInt {
-			tableInsertInt(tablePointer, strdup(key), Int64(t.value), t.options.rawValue)
+			tableInsertInt(tablePointer, key, Int64(t.value), t.options.rawValue)
 		} else {
-			tableInsertNode(tablePointer, strdup(key), self.tomlValuePointer)
+			tableInsertNode(tablePointer, key, self.tomlValuePointer)
 		}
 	}
 
 	func replaceOrInsertInTable(tablePointer: OpaquePointer, key: String) {
 		if let t = self.tomlInt {
-			tableReplaceOrInsertInt(tablePointer, strdup(key), Int64(t.value), t.options.rawValue)
+			tableReplaceOrInsertInt(tablePointer, key, Int64(t.value), t.options.rawValue)
 		} else {
-			tableReplaceOrInsertNode(tablePointer, strdup(key), self.tomlValuePointer)
+			tableReplaceOrInsertNode(tablePointer, key, self.tomlValuePointer)
 		}
 	}
 
