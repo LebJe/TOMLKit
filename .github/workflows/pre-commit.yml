@@ -20,4 +20,7 @@ jobs:
             - name: "Push Changes"
               env:
                 GITHUB_TOKEN: ${{ secrets.PRE_COMMIT_TOKEN }}
-              run: "git add . && git commit -m \"Run pre-commit\" && git push"
+              run: | 
+                git add . || true
+                git commit -m \"Run pre-commit\" || true
+                git push || true
