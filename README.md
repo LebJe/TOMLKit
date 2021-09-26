@@ -318,7 +318,7 @@ The [toml++](https://github.com/marzer/tomlplusplus/) license is available in th
 
 ## Contributing
 
-Before committing, please install [pre-commit](https://pre-commit.com), [swift-format](https://github.com/nicklockwood/SwiftFormat), and [Prettier](https://prettier.io) then install the pre-commit hook:
+Before committing, please install [pre-commit](https://pre-commit.com), [swift-format](https://github.com/nicklockwood/SwiftFormat), [clang-format](https://clang.llvm.org/docs/ClangFormat.html), and [Prettier](https://prettier.io), then install the pre-commit hook:
 
 ```bash
 $ brew bundle # install the packages specified in Brewfile
