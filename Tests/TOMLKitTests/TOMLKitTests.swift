@@ -4,12 +4,12 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
+import Checkit
 @testable import TOMLKit
 // Uncomment the dependency in package.swift, and uncomment this line when
 // XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>"
 // import CustomDump
 import XCTest
-import Checkit
 
 // MARK: - Codable Structures
 
@@ -138,7 +138,7 @@ final class TOMLKitTests: XCTestCase {
 			] as TOMLArray,
 		]
 
-        CollectionChecker.check(arr)
+		CollectionChecker.check(arr)
 
 		XCTAssertEqual(arr.count, 8)
 
