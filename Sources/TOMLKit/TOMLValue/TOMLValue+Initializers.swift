@@ -43,7 +43,7 @@ public extension TOMLValue {
 	}
 
 	init(stringLiteral value: String) {
-		self.tomlValuePointer = nodeFromString(strdup(value))
+		self.tomlValuePointer = nodeFromString(value)
 	}
 
 	init(_ value: TOMLDate) {

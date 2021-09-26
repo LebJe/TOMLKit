@@ -18,7 +18,7 @@ import CTOML
 
 public extension TOMLTable {
 	func contains(key: String) -> Bool {
-		tableContains(self.tablePointer, strdup(key))
+		tableContains(self.tablePointer, key)
 	}
 
 	func contains(element: TOMLValueConvertible) -> Bool {
@@ -40,7 +40,7 @@ public extension TOMLTable {
 	@discardableResult func remove(at key: String) -> TOMLValueConvertible? {
 		if let v = self[key]?.tomlValue.tomlValuePointer {
 			let element = TOMLValue(tomlValuePointer: copyNode(v))
-			tableRemoveElement(self.tablePointer, strdup(key))
+			tableRemoveElement(self.tablePointer, key)
 			return element
 		} else {
 			return nil

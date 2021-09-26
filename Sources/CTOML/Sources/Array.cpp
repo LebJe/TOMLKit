@@ -175,8 +175,6 @@ extern "C" {
 	void arrayReplaceTable(CTOMLArray * array, int64_t index, CTOMLTable * _Nonnull table) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
-		auto a = arr->get(0);
-
 		if (arr->get(index)) {
 			arr->erase(arr->cbegin() + index);
 		}

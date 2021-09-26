@@ -59,7 +59,7 @@ public struct TOMLInt: ExpressibleByIntegerLiteral, Equatable, TOMLValueConverti
 	}
 
 	public func insertIntoTable(tablePointer: OpaquePointer, key: String) {
-		tableInsertInt(tablePointer, strdup(key), Int64(self.value), self.options.rawValue)
+		tableInsertInt(tablePointer, key, Int64(self.value), self.options.rawValue)
 	}
 }
 

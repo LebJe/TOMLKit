@@ -183,7 +183,7 @@ extern "C" {
 
 	/// Remove the element at \c key from \c table .
 	void tableRemoveElement(CTOMLTable * table, const char * key) {
-		auto t = reinterpret_cast<toml::table *>(table)->erase(key);
+		reinterpret_cast<toml::table *>(table)->erase(key);
 	}
 
 	// MARK: - Table Conversion

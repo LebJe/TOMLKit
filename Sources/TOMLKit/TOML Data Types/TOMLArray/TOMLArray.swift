@@ -70,7 +70,7 @@ public final class TOMLArray:
 	}
 
 	func insertIntoTable(tablePointer: OpaquePointer, key: String) {
-		tableInsertArray(tablePointer, strdup(key), self.arrayPointer)
+		tableInsertArray(tablePointer, key, self.arrayPointer)
 	}
 
 	func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {

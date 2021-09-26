@@ -127,7 +127,7 @@ public final class TOMLTable:
 	/// Insert a value into this `TOMLTable`, or retrieve a value.
 	public subscript(key: String) -> TOMLValueConvertible? {
 		get {
-			guard let pointer = tableGetNode(self.tablePointer, strdup(key)) else { return nil }
+			guard let pointer = tableGetNode(self.tablePointer, key) else { return nil }
 			return TOMLValue(tomlValuePointer: pointer)
 		}
 		set(value) {
@@ -152,7 +152,7 @@ public final class TOMLTable:
 	}
 
 	func insertIntoTable(tablePointer: OpaquePointer, key: String) {
-		tableInsertTable(tablePointer, strdup(key), self.tablePointer)
+		tableInsertTable(tablePointer, key, self.tablePointer)
 	}
 
 	func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
