@@ -12,7 +12,8 @@ repos:
           - id: "prettier"
             name: "Format Markdown"
             tags: ["md"]
-    - repo: git://github.com/doublify/pre-commit-clang-format
+            exclude: "Sources/TOMLKit/TOMLKit.docc/"
+    - repo: "git://github.com/doublify/pre-commit-clang-format"
       rev: "master"
       hooks:
           - id: "clang-format"
