@@ -56,10 +56,8 @@ jobs:
             - name: "Test"
               run: "swift test"
     TestBuildingOnMacOS-11_0-ARM64:
-        runs-on: "macos-11.0"
+        runs-on: "macos-11"
         steps:
             - uses: "actions/checkout@v2"
             - name: "Run tests"
-              run: |
-                  sudo xcode-select -s /Applications/Xcode_12.5.app
-                  swift build --arch arm64
+              run: "swift build --arch arm64"
