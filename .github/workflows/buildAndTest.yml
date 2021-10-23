@@ -8,9 +8,7 @@ jobs:
         steps:
             - uses: "actions/checkout@v2"
             - name: "Run tests"
-              run: |
-                  sudo xcode-select -s /Applications/Xcode_13.app
-                  swift test
+              run: "swift test"
     # TestOnUbuntu-20_04-ARM:
     #   runs-on: ubuntu-latest
     #   steps:
