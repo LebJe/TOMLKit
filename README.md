@@ -66,7 +66,7 @@ Also add this to the `targets` array in the aforementioned file:
 
 ## Usage
 
-Once you have installed TOMLKit, you will usually start with a `TOMLTable`, or by decoding a TOML document into a Swift structure.
+Once you have installed TOMLKit, you will usually create a `TOMLTable`, or decode a TOML document into a Swift structure.
 
 ### Creating TOML Values
 

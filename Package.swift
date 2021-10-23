@@ -30,7 +30,8 @@ let package = Package(
 		),
 		.target(
 			name: "TOMLKit",
-			dependencies: ["CTOML"]
+			dependencies: ["CTOML"],
+			exclude: ["TOMLKit.docc"]
 		),
 		.testTarget(
 			name: "TOMLKitTests",

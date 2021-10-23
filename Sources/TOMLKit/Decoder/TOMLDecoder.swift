@@ -23,7 +23,7 @@ public struct TOMLDecoder {
 	/// - Parameters:
 	///   - type: The type you want to convert `tomlString` to.
 	///   - tomlString: The `String` containing the TOML document.
-	/// - Throws: `TOMLParseError` and `DecodingError`.
+	/// - Throws: ``TOMLParseError`` and `DecodingError`.
 	/// - Returns: The decoded type.
 	public func decode<T: Decodable>(_ type: T.Type, from tomlString: String) throws -> T {
 		let table = try TOMLTable(string: tomlString)
@@ -31,10 +31,10 @@ public struct TOMLDecoder {
 		return try T(from: decoder)
 	}
 
-	/// Decodes `T` from a `TOMLTable`.
+	/// Decodes `T` from a ``TOMLTable``.
 	/// - Parameters:
 	///   - type: The type you want to convert `table` to.
-	///   - table: The `TOMLTable` that you want to convert to `T`.
+	///   - table: The ``TOMLTable`` that you want to convert to `T`.
 	/// - Throws: `DecodingError`.
 	/// - Returns: The decoded type.
 	public func decode<T: Decodable>(_ type: T.Type, from table: TOMLTable) throws -> T {

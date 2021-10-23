@@ -6,33 +6,33 @@
 
 import CTOML
 
-///
+/// TOML data types.
 public enum TOMLType: String, CaseIterable {
-	/// A TOML table (inlined or not inlined).
+	/// A [TOML table](https://toml.io/en/v1.0.0#table).
 	case table
 
-	/// A TOML array.
+	/// A [TOML array](https://toml.io/en/v1.0.0#array).
 	case array
 
-	/// A TOML string.
+	/// A [TOML string](https://toml.io/en/v1.0.0#string).
 	case string
 
-	/// A TOML integer.
+	/// A [TOML integer](https://toml.io/en/v1.0.0#integer.
 	case int
 
-	/// A TOML floating-point (double) value.
+	/// A [TOML floating-point](https://toml.io/en/v1.0.0#float) (double) value.
 	case double
 
-	/// A TOML boolean.
+	/// A [TOML boolean](https://toml.io/en/v1.0.0#boolean).
 	case bool
 
-	/// A TOML date.
+	/// A [TOML date](https://toml.io/en/v1.0.0#local-date).
 	case date
 
-	/// A TOML time.
+	/// A [TOML time](https://toml.io/en/v1.0.0#local-time).
 	case time
 
-	/// A TOML date with time.
+	/// A [TOML date with time](https://toml.io/en/v1.0.0#offset-date-time).
 	case dateTime
 
 	init(cTOMLNodeType: CTOMLNodeType) {
