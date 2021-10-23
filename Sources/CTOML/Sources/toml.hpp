@@ -9975,31 +9975,31 @@ TOML_IMPL_NAMESPACE_START {
 
 					// bare_key_segment
 					if (is_bare_key_character(*cp))
-					key.segments.emplace_back(parse_bare_key_segment());
+						key.segments.emplace_back(parse_bare_key_segment());
 
-				// "quoted key segment"
-				else if (is_string_delimiter(*cp)) {
-					const auto begin_pos = cp->position;
+					// "quoted key segment"
+					else if (is_string_delimiter(*cp)) {
+						const auto begin_pos = cp->position;
 
-					recording_whitespace = true;
-					auto str = parse_string();
-					recording_whitespace = false;
-					return_if_error({});
+						recording_whitespace = true;
+						auto str = parse_string();
+						recording_whitespace = false;
+						return_if_error({});
 
-					if (str.was_multi_line) {
-						set_error_at(
-							begin_pos, "multi-line strings are prohibited in "sv,
-							key.segments.empty() ? ""sv : "dotted "sv, "keys"sv);
-						return_after_error({});
-					} else
-						key.segments.emplace_back(std::move(str.value));
-				}
+						if (str.was_multi_line) {
+							set_error_at(
+								begin_pos, "multi-line strings are prohibited in "sv,
+								key.segments.empty() ? ""sv : "dotted "sv, "keys"sv);
+							return_after_error({});
+						} else
+							key.segments.emplace_back(std::move(str.value));
+					}
 
-				// ???
-				else
-					set_error_and_return_default(
-						"expected bare key starting character or string delimiter, saw '"sv,
-						to_sv(*cp), "'"sv);
+					// ???
+					else
+						set_error_and_return_default(
+							"expected bare key starting character or string delimiter, saw '"sv,
+							to_sv(*cp), "'"sv);
 
 				// whitespace following the key segment
 				consume_leading_whitespace();
