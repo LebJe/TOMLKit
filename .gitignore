@@ -7,3 +7,4 @@ xcuserdata/
 Package.resolved
 Brewfile.lock.json
 Sources/TOMLKit/TOMLKit.docc/.docc-build
+TOMLKit.doccarchive
