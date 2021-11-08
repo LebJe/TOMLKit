@@ -155,7 +155,7 @@ extern "C" {
 
 		if (res == NULL) { return NULL; }
 
-		auto boolMem = (bool *)malloc(sizeof(bool));
+		auto boolMem = (bool *) malloc(sizeof(bool));
 
 		memcpy(boolMem, &res->get(), sizeof(bool));
 
@@ -168,7 +168,7 @@ extern "C" {
 
 		if (res == NULL) { return NULL; }
 
-		auto intMem = (int64_t *)malloc(sizeof(int64_t));
+		auto intMem = (int64_t *) malloc(sizeof(int64_t));
 
 		memcpy(intMem, &res->get(), sizeof(int64_t));
 
@@ -181,7 +181,7 @@ extern "C" {
 
 		if (res == NULL) { return NULL; }
 
-		auto doubleMem = (double *)malloc(sizeof(double));
+		auto doubleMem = (double *) malloc(sizeof(double));
 
 		memcpy(doubleMem, &res->get(), sizeof(double));
 
@@ -205,7 +205,7 @@ extern "C" {
 
 		auto date = res->get();
 
-		auto dateMem = (CTOMLDate *)malloc(sizeof(CTOMLDate));
+		auto dateMem = (CTOMLDate *) malloc(sizeof(CTOMLDate));
 
 		CTOMLDate cTOMLDate = tomlDateToCTOMLDate(date);
 
@@ -222,7 +222,7 @@ extern "C" {
 
 		auto time = res->get();
 
-		auto timeMem = (CTOMLTime *)malloc(sizeof(CTOMLTime));
+		auto timeMem = (CTOMLTime *) malloc(sizeof(CTOMLTime));
 
 		CTOMLTime cTOMLTime = tomlTimeToCTOMLTime(time);
 
@@ -239,7 +239,7 @@ extern "C" {
 
 		auto dateTime = res->get();
 
-		auto dateTimeMem = (CTOMLDateTime *)malloc(sizeof(CTOMLDateTime));
+		auto dateTimeMem = (CTOMLDateTime *) malloc(sizeof(CTOMLDateTime));
 
 		CTOMLDateTime cTOMLDateTime = tomlDateTimeToCTOMLDateTime(dateTime);
 
