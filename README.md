@@ -1,6 +1,6 @@
 # TOMLKit
 
-**A small, simple TOML parser for Swift. Powered by [toml++](https://github.com/marzer/tomlplusplus/).**
+**A small, simple TOML parser and serializer for Swift. Powered by [toml++](https://github.com/marzer/tomlplusplus/).**
 
 [![Swift 5.4](https://img.shields.io/badge/Swift-5.4-brightgreen?logo=swift)](https://swift.org)
 [![SPM Compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager)
@@ -9,7 +9,7 @@
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FLebJe%2FTOMLKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/LebJe/TOMLKit)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FLebJe%2FTOMLKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/LebJe/TOMLKit)
 
-TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.com/marzer/tomlplusplus/), allowing you to read and write [TOML](https://toml.io) files in Swift.
+TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.com/marzer/tomlplusplus/), allowing you to parse and serialize [TOML](https://toml.io) files in Swift.
 
 ## Table of Contents
 
@@ -66,7 +66,7 @@ Also add this to the `targets` array in the aforementioned file:
 
 ## Usage
 
-Once you have installed TOMLKit, you will usually start with a `TOMLTable`, or by decoding a TOML document into a Swift structure.
+Once you have installed TOMLKit, you will usually create a `TOMLTable`, or decode a TOML document into a Swift structure.
 
 ### Creating TOML Values
 
@@ -89,15 +89,6 @@ or a regular table:
 field1 = ""
 ...
 ```
-
----
-
-**NOTE**
-
-Use `myTable.inline = true/false` to make a table inline/not inline,
-and `myTable.inline` to check if a table is inlined.
-
----
 
 To create a `TOMLTable` with values, use one of the below methods:
 

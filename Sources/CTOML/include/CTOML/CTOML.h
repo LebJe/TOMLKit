@@ -92,8 +92,9 @@ extern "C" {
 	};
 	typedef struct CTOMLDateTime CTOMLDateTime;
 
+	/// TOML data types.
 	enum CTOMLNodeType {
-		/// A TOML table (inlined or not inlined).
+		/// A TOML table.
 		table,
 
 		/// A TOML array.

@@ -158,7 +158,7 @@ extern "C" {
 	/// Retrieve all the keys from \c table . The size of the return value is the size of \c table .
 	const char * const * tableGetKeys(CTOMLTable * table) {
 		auto t = reinterpret_cast<toml::table *>(table);
-		auto keyArray = (char **)malloc(sizeof(char **) * t->size());
+		auto keyArray = (char **) malloc(sizeof(char **) * t->size());
 		int64_t index = 0;
 
 		for (auto && [k, v] : *t) {
@@ -173,7 +173,7 @@ extern "C" {
 	/// .
 	CTOMLNode const * const * tableGetValues(CTOMLTable * table) {
 		auto t = reinterpret_cast<toml::table *>(table);
-		auto valueArray = (CTOMLNode **)malloc(sizeof(CTOMLNode **) * t->size());
+		auto valueArray = (CTOMLNode **) malloc(sizeof(CTOMLNode **) * t->size());
 		int64_t index = 0;
 
 		for (auto && [k, v] : *t) {

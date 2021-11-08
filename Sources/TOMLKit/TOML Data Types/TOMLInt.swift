@@ -24,6 +24,7 @@ public struct TOMLInt: ExpressibleByIntegerLiteral, Equatable, TOMLValueConverti
 
 	public var value: Int
 
+	/// Formatting options for this `TOMLInt`.
 	public private(set) var options: ValueOptions = .none
 
 	public var tomlValue: TOMLValue { get { .init(self) } set {} }
@@ -57,13 +58,4 @@ public struct TOMLInt: ExpressibleByIntegerLiteral, Equatable, TOMLValueConverti
 	public static func == (lhs: TOMLInt, rhs: TOMLInt) -> Bool {
 		lhs.value == rhs.value
 	}
-
-	public func insertIntoTable(tablePointer: OpaquePointer, key: String) {
-		tableInsertInt(tablePointer, key, Int64(self.value), self.options.rawValue)
-	}
-}
-
-public extension FixedWidthInteger {
-	/// Creates a `TOMLInt` from `self`.
-	var tomlInt: TOMLInt { TOMLInt(self) }
 }

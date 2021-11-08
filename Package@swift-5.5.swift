@@ -1,4 +1,4 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.5
 
 import PackageDescription
 
@@ -30,8 +30,7 @@ let package = Package(
 		),
 		.target(
 			name: "TOMLKit",
-			dependencies: ["CTOML"],
-			exclude: ["TOMLKit.docc"]
+			dependencies: ["CTOML"]
 		),
 		.testTarget(
 			name: "TOMLKitTests",
