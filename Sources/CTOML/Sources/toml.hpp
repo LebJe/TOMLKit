@@ -3550,7 +3550,7 @@ TOML_NAMESPACE_START {
 				"A native TOML value type" TOML_SA_NATIVE_VALUE_TYPE_LIST
 
 					TOML_SA_LIST_NXT "A non-view type capable of losslessly representing a native "
-									 "TOML value type" TOML_SA_LIST_BEG "std::string"
+				"TOML value type" TOML_SA_LIST_BEG "std::string"
 #if TOML_WINDOWS_COMPAT
 				TOML_SA_LIST_SEP "std::wstring"
 #endif
@@ -3558,8 +3558,7 @@ TOML_NAMESPACE_START {
 				"any floating-point type >= 64 bits" TOML_SA_LIST_END
 
 					TOML_SA_LIST_NXT "A non-view type capable of (reasonably) representing a "
-									 "native TOML value type" TOML_SA_LIST_BEG
-				"any other integer type" TOML_SA_LIST_SEP
+				"native TOML value type" TOML_SA_LIST_BEG "any other integer type" TOML_SA_LIST_SEP
 				"any floating-point type >= 32 bits" TOML_SA_LIST_END
 
 					TOML_SA_LIST_NXT "A compatible view type" TOML_SA_LIST_BEG "std::string_view"
@@ -4698,7 +4697,7 @@ TOML_NAMESPACE_START {
 		//	);
 		//	static_assert(
 		//		(is_native<T> || can_represent_native<T> || can_partially_represent_native<T>) &&
-		//!is_cvref<T>, 		TOML_SA_VALUE_FUNC_MESSAGE("return type of node::select()")
+		//! is_cvref<T>, 		TOML_SA_VALUE_FUNC_MESSAGE("return type of node::select()")
 		//	);
 		//}
 
