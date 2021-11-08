@@ -78,7 +78,7 @@ public final class TOMLTable:
 		.allowBinaryIntegers,
 		.allowOctalIntegers,
 		.allowHexadecimalIntegers,
-		.indentations
+		.indentations,
 	]
 
 	private var defaultJSONConverterFlags: FormatOptions = .quoteDateAndTimes

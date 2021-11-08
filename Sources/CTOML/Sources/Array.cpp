@@ -157,7 +157,7 @@ extern "C" {
 	/// Replace the \c toml::table at \c index with \c table .
 	void arrayReplaceTable(CTOMLArray * array, int64_t index, CTOMLTable * _Nonnull table) {
 		auto arr = reinterpret_cast<toml::array *>(array);
-		
+
 		if (arr->get(index)) {
 			arr->replace(arr->cbegin() + index, *reinterpret_cast<toml::table *>(table));
 		} else {

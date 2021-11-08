@@ -153,7 +153,7 @@ extern "C" {
 		auto keyArray = (char **) malloc(sizeof(char **) * t->size());
 		int64_t index = 0;
 
-		for (auto && [k, v] : * t) {
+		for (auto && [k, v] : *t) {
 			keyArray[index] = strdup(k.c_str());
 			index++;
 		}
@@ -168,7 +168,7 @@ extern "C" {
 		auto valueArray = (CTOMLNode **) malloc(sizeof(CTOMLNode **) * t->size());
 		int64_t index = 0;
 
-		for (auto && [k, v] : * t) {
+		for (auto && [k, v] : *t) {
 			valueArray[index] = reinterpret_cast<CTOMLNode *>(t->get(k));
 			index++;
 		}
@@ -189,8 +189,8 @@ extern "C" {
 	char * tableConvertToTOML(CTOMLTable * table, uint64_t options) {
 		std::stringstream ss;
 
-		ss << toml::toml_formatter(*reinterpret_cast<toml::table *>(table),
-										toml::format_flags(options));
+		ss << toml::toml_formatter(
+			*reinterpret_cast<toml::table *>(table), toml::format_flags(options));
 
 		return strdup(ss.str().c_str());
 	}
@@ -199,18 +199,18 @@ extern "C" {
 	char * tableConvertToJSON(CTOMLTable * table, uint64_t options) {
 		std::stringstream ss;
 
-		ss << toml::json_formatter(*reinterpret_cast<toml::table *>(table),
-										toml::format_flags(options));
+		ss << toml::json_formatter(
+			*reinterpret_cast<toml::table *>(table), toml::format_flags(options));
 
 		return strdup(ss.str().c_str());
 	}
-	
+
 	/// Convert \c table to a YAML document.
 	char * tableConvertToYAML(CTOMLTable * table, uint64_t options) {
 		std::stringstream ss;
 
-		ss << toml::yaml_formatter(*reinterpret_cast<toml::table *>(table),
-										toml::format_flags(options));
+		ss << toml::yaml_formatter(
+			*reinterpret_cast<toml::table *>(table), toml::format_flags(options));
 
 		return strdup(ss.str().c_str());
 	}

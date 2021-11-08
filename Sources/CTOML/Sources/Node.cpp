@@ -47,7 +47,7 @@ extern "C" {
 				break;
 			default:
 				// FIXME: This shouldn't happen.
-				return  string;
+				return string;
 		}
 	}
 
@@ -72,8 +72,7 @@ extern "C" {
 				break;
 			}
 			case toml::node_type::floating_point: {
-				return reinterpret_cast<CTOMLNode *>(
-					new toml::value (*node->as_floating_point()));
+				return reinterpret_cast<CTOMLNode *>(new toml::value(*node->as_floating_point()));
 				break;
 			}
 			case toml::node_type::boolean: {

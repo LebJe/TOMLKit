@@ -14,7 +14,7 @@ public struct TOMLEncoder {
 	public var options: FormatOptions = [
 		.allowLiteralStrings,
 		.allowMultilineStrings,
-		//.allowValueFormatFlags,
+		// .allowValueFormatFlags,
 	]
 
 	/// Used to encode instances of `Data` into a type conforming to `TOMLValueConvertible` that can be inserted into a TOML document.
@@ -26,7 +26,7 @@ public struct TOMLEncoder {
 		options: FormatOptions = [
 			.allowLiteralStrings,
 			.allowMultilineStrings,
-			//.allowValueFormatFlags,
+			// .allowValueFormatFlags,
 		],
 		dataEncoder: @escaping (Data) -> TOMLValueConvertible = { $0.base64EncodedString() }
 	) {

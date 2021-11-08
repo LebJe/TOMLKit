@@ -11,7 +11,7 @@ public enum ConversionFormat {
 
 	/// The [JSON](https://www.json.org/) format.
 	case json
-	
+
 	/// The [YAML](https://yaml.org) format.
 	case yaml
 }
@@ -48,7 +48,7 @@ public struct FormatOptions: OptionSet {
 	/// Allow integers with ``ValueOptions/formatAsBinary`` to be emitted as binary.
 	public static let allowBinaryIntegers = Self(rawValue: 32)
 
-	///Allow integers with ``ValueOptions/formatAsOctal`` to be emitted as octal.
+	/// Allow integers with ``ValueOptions/formatAsOctal`` to be emitted as octal.
 	public static let allowOctalIntegers = Self(rawValue: 64)
 
 	/// Allow integers with ``ValueOptions/formatAsHexadecimal`` to be emitted as hexadecimal.
@@ -66,5 +66,4 @@ public struct FormatOptions: OptionSet {
 	/// Values with special format flags will be formatted accordingly.
 	///
 	/// This documentation comment was taken from the [toml++ documentation](https://marzer.github.io/tomlplusplus/namespacetoml.html#af1a6761a2f4d80b1a541ba819d9c8e0fa03f40167237c22f11f9bcf825269ab40).
-	
 }

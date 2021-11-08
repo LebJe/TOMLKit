@@ -6,7 +6,7 @@
 
 // Uncomment the dependency in package.swift, and uncomment this line when
 // XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>"
-//import CustomDump
+// import CustomDump
 import Checkit
 @testable import TOMLKit
 import XCTest
@@ -307,7 +307,7 @@ final class TOMLKitTests: XCTestCase {
 		// Test `TOMLTable`'s `Equatable` conformance.
 		XCTAssertEqual(try TOMLTable(string: self.expectedTOMLForTestTable), self.testTable)
 	}
-	
+
 	func testYAMLConversion() throws {
 		let expectedYAML = """
 		Array: 
@@ -328,7 +328,7 @@ final class TOMLKitTests: XCTestCase {
 		String: "Hello, World!"
 		Time: "04:27:05.000000294"
 		"""
-		
+
 		XCTAssertEqual(self.testTable.convert(to: .yaml), expectedYAML)
 	}
 }

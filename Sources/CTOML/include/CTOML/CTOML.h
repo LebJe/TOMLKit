@@ -294,7 +294,7 @@ extern "C" {
 
 	/// Convert \c table to a JSON document.
 	char * tableConvertToJSON(CTOMLTable * table, uint64_t options);
-	
+
 	/// Convert \c table to a YAML document.
 	char * tableConvertToYAML(CTOMLTable * table, uint64_t options);
 
