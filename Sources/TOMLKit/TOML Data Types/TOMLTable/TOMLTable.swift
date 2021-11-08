@@ -52,7 +52,7 @@ public final class TOMLTable:
 
 	/// Whether this `TOMLTable` is an [inline table](https://toml.io/en/v1.0.0#inline-table) or not.
 	///
-	/// Use the `get`ter to check if this table in an inline table, and use the `set`ter to make this an inline table.
+	/// Use the `get`ter to check if this table is an inline table, and use the `set`ter to make this an inline table.
 	public var inline: Bool {
 		get { tableInline(self.tablePointer) }
 		set { tableSetInline(self.tablePointer, newValue) }
@@ -75,7 +75,10 @@ public final class TOMLTable:
 	private var defaultTOMLConverterFlags: FormatOptions = [
 		.allowLiteralStrings,
 		.allowMultilineStrings,
-		.allowValueFormatFlags,
+		.allowBinaryIntegers,
+		.allowOctalIntegers,
+		.allowHexadecimalIntegers,
+		.indentations
 	]
 
 	private var defaultJSONConverterFlags: FormatOptions = .quoteDateAndTimes
@@ -135,13 +138,14 @@ public final class TOMLTable:
 		}
 	}
 
-	/// Converts this `TOMLTable` to a JSON or TOML document.
+	/// Converts this `TOMLTable` to a JSON, YAML, or TOML document.
 	/// - Parameter format: The format you want to convert `self` to.
-	/// - Returns: The `String` containing the JSON or TOML document.
+	/// - Returns: The `String` containing the JSON, YAML, or TOML document.
 	public func convert(to format: ConversionFormat = .toml, options: FormatOptions = []) -> String {
 		switch format {
 			case .toml: return String(cString: tableConvertToTOML(self.tablePointer, (options.isEmpty ? self.defaultTOMLConverterFlags : options).rawValue))
 			case .json: return String(cString: tableConvertToJSON(self.tablePointer, (options.isEmpty ? self.defaultJSONConverterFlags : options).rawValue))
+			case .yaml: return String(cString: tableConvertToYAML(self.tablePointer, (options.isEmpty ? self.defaultJSONConverterFlags : options).rawValue))
 		}
 	}
 

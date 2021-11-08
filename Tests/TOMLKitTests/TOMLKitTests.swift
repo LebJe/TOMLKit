@@ -4,11 +4,11 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
-import Checkit
-@testable import TOMLKit
 // Uncomment the dependency in package.swift, and uncomment this line when
 // XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>"
-// import CustomDump
+//import CustomDump
+import Checkit
+@testable import TOMLKit
 import XCTest
 
 // MARK: - Codable Structures
@@ -115,7 +115,7 @@ final class TOMLKitTests: XCTestCase {
 	Date = 2021-05-20
 	DateTime = 2021-05-20T04:27:05.000000294Z
 	Double = 50.10475
-	Inline-Table = { Data = 'dHR0dHQ=', "String 1" = 'Hello', Time = 04:27:05.000000294 }
+	Inline-Table = { Data = 'dHR0dHQ=', 'String 1' = 'Hello', Time = 04:27:05.000000294 }
 	Int = 0xEA64
 	String = 'Hello, World!'
 	Time = 04:27:05.000000294
@@ -305,6 +305,30 @@ final class TOMLKitTests: XCTestCase {
 
 	func testParseValidTOML() throws {
 		// Test `TOMLTable`'s `Equatable` conformance.
-		XCTAssert(try TOMLTable(string: self.expectedTOMLForTestTable) == self.testTable)
+		XCTAssertEqual(try TOMLTable(string: self.expectedTOMLForTestTable), self.testTable)
+	}
+	
+	func testYAMLConversion() throws {
+		let expectedYAML = """
+		Array: 
+		  - 1
+		  - "Hello, World!"
+		  - 2724.49
+		  - 169
+		  - "lpaWlpY="
+		Bool: false
+		Date: "2021-05-20"
+		DateTime: "2021-05-20T04:27:05.000000294Z"
+		Double: 50.10475
+		Inline-Table: 
+		  Data: "dHR0dHQ="
+		  "String 1": Hello
+		  Time: "04:27:05.000000294"
+		Int: 60004
+		String: "Hello, World!"
+		Time: "04:27:05.000000294"
+		"""
+		
+		XCTAssertEqual(self.testTable.convert(to: .yaml), expectedYAML)
 	}
 }

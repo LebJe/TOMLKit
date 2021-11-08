@@ -22,9 +22,9 @@ import struct Foundation.DateComponents
 
 /// A [date](https://toml.io/en/v1.0.0#local-date) in a TOML document.
 public struct TOMLDate: Codable, Equatable, CustomDebugStringConvertible, TOMLValueConvertible {
-	public let year: Int
-	public let month: Int
-	public let day: Int
+	public var year: Int
+	public var month: Int
+	public var day: Int
 
 	public var type: TOMLType { .date }
 	var cTOMLDate: CTOMLDate {
@@ -78,10 +78,10 @@ public struct TOMLDate: Codable, Equatable, CustomDebugStringConvertible, TOMLVa
 
 /// A [time](https://toml.io/en/v1.0.0#local-time) in a TOML document.
 public struct TOMLTime: Codable, Equatable, CustomDebugStringConvertible, TOMLValueConvertible {
-	public let hour: Int
-	public let minute: Int
-	public let second: Int
-	public let nanoSecond: Int
+	public var hour: Int
+	public var minute: Int
+	public var second: Int
+	public var nanoSecond: Int
 
 	public var type: TOMLType { .time }
 
@@ -134,6 +134,10 @@ public struct TOMLTimeOffset: Codable, Equatable {
 		self.offset = offset
 	}
 
+	public init(hours: Int, minutes: Int) {
+		self.offset = (hours * 60) + minutes
+	}
+
 	init(cTOMLTimeOffset: CTOMLTimeOffset) {
 		self.offset = Int(cTOMLTimeOffset.minutes)
 	}
@@ -141,8 +145,8 @@ public struct TOMLTimeOffset: Codable, Equatable {
 
 /// A [date and time](https://toml.io/en/v1.0.0#local-date-time) in a TOML document.
 public struct TOMLDateTime: Codable, Equatable, CustomDebugStringConvertible, TOMLValueConvertible {
-	public let date: TOMLDate
-	public let time: TOMLTime
+	public var date: TOMLDate
+	public var time: TOMLTime
 	public internal(set) var offset: TOMLTimeOffset?
 
 	var cTOMLDateTime: CTOMLDateTime {

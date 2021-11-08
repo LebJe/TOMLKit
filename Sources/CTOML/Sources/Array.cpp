@@ -43,13 +43,9 @@ extern "C" {
 	// MARK: - Value Insertion
 
 	/// Insert a \c int64_t into \c array .
-	void arrayInsertInt(CTOMLArray * array, int64_t index, int64_t integer, uint8_t flags) {
-		auto v = toml::value { integer };
-
+	void arrayInsertInt(CTOMLArray * array, int64_t index, int64_t integer, uint16_t flags) {
 		auto arr = reinterpret_cast<toml::array *>(array);
-		arr->insert(arr->cbegin() + index, integer);
-
-		arr->get(index)->as_integer()->flags(toml::value_flags { flags });
+		arr->insert(arr->cbegin() + index, integer, toml::value_flags(flags));
 	}
 
 	/// Insert a \c toml::table into \c array .
@@ -73,66 +69,72 @@ extern "C" {
 	/// Replace the \c bool at \c index with \c b .
 	void arrayReplaceBool(CTOMLArray * array, int64_t index, bool b) {
 		auto arr = reinterpret_cast<toml::array *>(array);
-
-		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
-
-		arr->emplace<bool>(arr->cbegin() + index, b);
+		if (arr->get(index)) {
+			arr->replace(arr->cbegin() + index, b);
+		} else {
+			arr->insert(arr->cbegin() + index, b);
+		}
 	}
 
 	/// Replace the \c int64_t at \c index with \c i .
-	void arrayReplaceInt(CTOMLArray * array, int64_t index, int64_t i, uint8_t flags) {
+	void arrayReplaceInt(CTOMLArray * array, int64_t index, int64_t i, uint16_t flags) {
 		auto arr = reinterpret_cast<toml::array *>(array);
-		auto v = toml::value { i };
-
-		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
-
-		arr->insert(arr->cbegin() + index, v);
-		arr->get(index)->as_integer()->flags(toml::value_flags { flags });
+		if (arr->get(index)) {
+			arr->replace(arr->cbegin() + index, i, toml::value_flags(flags));
+		} else {
+			arr->insert(arr->cbegin() + index, i, toml::value_flags(flags));
+		}
 	}
 
 	/// Replace the \c double at \c index with \c d .
 	void arrayReplaceDouble(CTOMLArray * array, int64_t index, double d) {
 		auto arr = reinterpret_cast<toml::array *>(array);
-
-		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
-
-		arr->insert(arr->cbegin() + index, d);
+		if (arr->get(index)) {
+			arr->replace(arr->cbegin() + index, d);
+		} else {
+			arr->insert(arr->cbegin() + index, d);
+		}
 	}
 
 	/// Replace the \c std::string at \c index with \c s .
 	void arrayReplaceString(CTOMLArray * array, int64_t index, const char * s) {
 		auto arr = reinterpret_cast<toml::array *>(array);
 
-		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
-
-		arr->insert(arr->cbegin() + index, std::string(s));
+		if (arr->get(index)) {
+			arr->replace(arr->cbegin() + index, s);
+		} else {
+			arr->insert(arr->cbegin() + index, s);
+		}
 	}
 
 	/// Replace the \c toml::date at \c index with \c date .
 	void arrayReplaceDate(CTOMLArray * array, int64_t index, CTOMLDate date) {
 		auto arr = reinterpret_cast<toml::array *>(array);
-
-		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
-
-		arr->insert(arr->cbegin() + index, cTOMLDateToTomlDate(date));
+		if (arr->get(index)) {
+			arr->replace(arr->cbegin() + index, cTOMLDateToTomlDate(date));
+		} else {
+			arr->insert(arr->cbegin() + index, cTOMLDateToTomlDate(date));
+		}
 	}
 
 	/// Replace the \c toml::time at \c index with \c time .
 	void arrayReplaceTime(CTOMLArray * array, int64_t index, CTOMLTime time) {
 		auto arr = reinterpret_cast<toml::array *>(array);
-
-		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
-
-		arr->insert(arr->cbegin() + index, cTOMLTimeToTomlTime(time));
+		if (arr->get(index)) {
+			arr->replace(arr->cbegin() + index, cTOMLTimeToTomlTime(time));
+		} else {
+			arr->insert(arr->cbegin() + index, cTOMLTimeToTomlTime(time));
+		}
 	}
 
 	/// Replace the \c toml::date_time at \c index with \c dateTime .
 	void arrayReplaceDateTime(CTOMLArray * array, int64_t index, CTOMLDateTime dateTime) {
 		auto arr = reinterpret_cast<toml::array *>(array);
-
-		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
-
-		arr->insert(arr->cbegin() + index, cTOMLDateTimeToTomlDateTime(dateTime));
+		if (arr->get(index)) {
+			arr->replace(arr->cbegin() + index, cTOMLDateTimeToTomlDateTime(dateTime));
+		} else {
+			arr->insert(arr->cbegin() + index, cTOMLDateTimeToTomlDateTime(dateTime));
+		}
 	}
 
 	/// Replace the \c toml::array at \c index with \c arrayToEmplace .
@@ -145,18 +147,22 @@ extern "C" {
 		auto arrToInsert = toml::array(*reinterpret_cast<toml::array *>(arrayToEmplace));
 		// auto arrToInsert = reinterpret_cast<toml::array *>(arrayToEmplace);
 
-		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
-
-		arr->insert(arr->cbegin() + index, arrToInsert);
+		if (arr->get(index)) {
+			arr->replace(arr->cbegin() + index, arrToInsert);
+		} else {
+			arr->insert(arr->cbegin() + index, arrToInsert);
+		}
 	}
 
 	/// Replace the \c toml::table at \c index with \c table .
 	void arrayReplaceTable(CTOMLArray * array, int64_t index, CTOMLTable * _Nonnull table) {
 		auto arr = reinterpret_cast<toml::array *>(array);
-
-		if (arr->get(index)) { arr->erase(arr->cbegin() + index); }
-
-		arr->insert(arr->cbegin() + index, *reinterpret_cast<toml::table *>(table));
+		
+		if (arr->get(index)) {
+			arr->replace(arr->cbegin() + index, *reinterpret_cast<toml::table *>(table));
+		} else {
+			arr->insert(arr->cbegin() + index, *reinterpret_cast<toml::table *>(table));
+		}
 	}
 
 	// MARK: - Value Retrieval
@@ -179,7 +185,7 @@ extern "C" {
 	const char * _Nonnull arrayConvertToTOML(CTOMLArray * _Nonnull array) {
 		std::stringstream ss;
 
-		ss << toml::default_formatter { *reinterpret_cast<toml::array *>(array) };
+		ss << toml::toml_formatter(*reinterpret_cast<toml::array *>(array));
 
 		return strdup(ss.str().c_str());
 	}

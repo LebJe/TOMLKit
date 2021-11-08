@@ -150,6 +150,9 @@ let toml1 = table.convert()
 // Convert to JSON using default settings.
 let json = table.convert(to: .json)
 
+// Convert to YAML using default settings.
+let yaml = table.convert(to: .yaml)
+
 // Convert to TOML with custom settings.
 let toml2 = table.convert(to: .toml, options: [.quoteDateAndTimes, .allowMultilineStrings])
 ```

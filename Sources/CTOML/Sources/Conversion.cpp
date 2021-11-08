@@ -14,7 +14,7 @@ CTOMLDate tomlDateToCTOMLDate(toml::date date) {
 }
 
 toml::date cTOMLDateToTomlDate(CTOMLDate date) {
-	return toml::date { .year = date.year, .month = date.month, .day = date.day };
+	return toml::date(date.year, date.month, date.day);
 }
 
 CTOMLTime tomlTimeToCTOMLTime(toml::time time) {
@@ -25,10 +25,10 @@ CTOMLTime tomlTimeToCTOMLTime(toml::time time) {
 }
 
 toml::time cTOMLTimeToTomlTime(CTOMLTime time) {
-	return toml::time { .hour = time.hour,
-						.minute = time.minute,
-						.second = time.second,
-						.nanosecond = time.nanoSecond };
+	return toml::time(time.hour,
+						time.minute,
+						time.second,
+						time.nanoSecond);
 }
 
 CTOMLDateTime tomlDateTimeToCTOMLDateTime(toml::date_time dateTime) {
@@ -42,12 +42,12 @@ CTOMLDateTime tomlDateTimeToCTOMLDateTime(toml::date_time dateTime) {
 }
 
 toml::date_time cTOMLDateTimeToTomlDateTime(CTOMLDateTime dateTime) {
-	return toml::date_time {
+	return toml::date_time(
 		cTOMLDateToTomlDate(dateTime.date), cTOMLTimeToTomlTime(dateTime.time),
-		dateTime.offset ? toml::time_offset { static_cast<int8_t>(dateTime.offset->minutes / 60),
-											  static_cast<int8_t>(dateTime.offset->minutes % 60) }
-						: toml::time_offset { 0, 0 }
-	};
+		dateTime.offset ? toml::time_offset(static_cast<int8_t>(dateTime.offset->minutes / 60),
+											  static_cast<int8_t>(dateTime.offset->minutes % 60))
+						: toml::time_offset(0, 0)
+	);
 }
 
 #endif

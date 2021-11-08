@@ -88,13 +88,9 @@ extern "C" {
 	void tableClear(CTOMLTable * table) { reinterpret_cast<toml::table *>(table)->clear(); }
 
 	/// Inserts \c integer into \c table at \c key .
-	void tableInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags) {
+	void tableInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint16_t flags) {
 		auto t = reinterpret_cast<toml::table *>(table);
-		auto v = toml::value { integer };
-
-		t->insert(key, integer);
-
-		t->get(key)->as_integer()->flags(toml::value_flags { flags });
+		t->insert(key, integer, toml::value_flags(flags));
 	}
 
 	/// Inserts \c tableToInsert into \c table at \c key .
@@ -116,13 +112,9 @@ extern "C" {
 
 	/// Replaces the value at \c key with \c integer .
 	void
-	tableReplaceOrInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags) {
+	tableReplaceOrInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint16_t flags) {
 		auto t = reinterpret_cast<toml::table *>(table);
-		auto v = toml::value { integer };
-
-		t->insert_or_assign(key, integer);
-
-		t->get(key)->as_integer()->flags(toml::value_flags { flags });
+		t->insert_or_assign(key, integer, toml::value_flags(flags));
 	}
 
 	/// Replaces the value at \c key with \c tableToInsert .
@@ -161,7 +153,7 @@ extern "C" {
 		auto keyArray = (char **) malloc(sizeof(char **) * t->size());
 		int64_t index = 0;
 
-		for (auto && [k, v] : *t) {
+		for (auto && [k, v] : * t) {
 			keyArray[index] = strdup(k.c_str());
 			index++;
 		}
@@ -176,7 +168,7 @@ extern "C" {
 		auto valueArray = (CTOMLNode **) malloc(sizeof(CTOMLNode **) * t->size());
 		int64_t index = 0;
 
-		for (auto && [k, v] : *t) {
+		for (auto && [k, v] : * t) {
 			valueArray[index] = reinterpret_cast<CTOMLNode *>(t->get(k));
 			index++;
 		}
@@ -194,21 +186,31 @@ extern "C" {
 	// MARK: - Table Conversion
 
 	/// Convert \c table to a TOML document.
-	char * tableConvertToTOML(CTOMLTable * table, uint8_t options) {
+	char * tableConvertToTOML(CTOMLTable * table, uint64_t options) {
 		std::stringstream ss;
 
-		ss << toml::default_formatter { *reinterpret_cast<toml::table *>(table),
-										toml::format_flags { options } };
+		ss << toml::toml_formatter(*reinterpret_cast<toml::table *>(table),
+										toml::format_flags(options));
 
 		return strdup(ss.str().c_str());
 	}
 
 	/// Convert \c table to a JSON document.
-	char * tableConvertToJSON(CTOMLTable * table, uint8_t options) {
+	char * tableConvertToJSON(CTOMLTable * table, uint64_t options) {
 		std::stringstream ss;
 
-		ss << toml::json_formatter { *reinterpret_cast<toml::table *>(table),
-									 toml::format_flags { options } };
+		ss << toml::json_formatter(*reinterpret_cast<toml::table *>(table),
+										toml::format_flags(options));
+
+		return strdup(ss.str().c_str());
+	}
+	
+	/// Convert \c table to a YAML document.
+	char * tableConvertToYAML(CTOMLTable * table, uint64_t options) {
+		std::stringstream ss;
+
+		ss << toml::yaml_formatter(*reinterpret_cast<toml::table *>(table),
+										toml::format_flags(options));
 
 		return strdup(ss.str().c_str());
 	}
