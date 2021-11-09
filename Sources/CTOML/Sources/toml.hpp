@@ -9093,14 +9093,34 @@ TOML_ANON_NAMESPACE_START {
 		}
 	};
 
-	struct parsed_key {
-		source_position position;
-		std::vector<std::string> segments;
-	};
+	struct parsed_key_buffer {
+		std::string buffer;
+		std::vector<std::pair<size_t, size_t>> segments;
+		source_region source;
 
-	struct parsed_key_value_pair {
-		parsed_key key;
-		node_ptr value;
+		void reset(source_position pos) noexcept {
+			buffer.clear();
+			segments.clear();
+			source.begin = pos;
+		}
+
+		void push_back(std::string_view segment) {
+			segments.push_back({ buffer.length(), segment.length() });
+			buffer.append(segment);
+		}
+
+		void finish(source_position pos) noexcept { source.end = pos; }
+
+		TOML_PURE_INLINE_GETTER
+		std::string_view operator[](size_t i) noexcept {
+			return std::string_view { buffer.c_str() + segments[i].first, segments[i].second };
+		}
+
+		TOML_PURE_INLINE_GETTER
+		std::string_view back() noexcept { return (*this)[segments.size() - 1u]; }
+
+		TOML_PURE_INLINE_GETTER
+		size_t size() noexcept { return segments.size(); }
 	};
 
 	struct parse_depth_counter {
@@ -9118,7 +9138,7 @@ TOML_ANON_NAMESPACE_START {
 	};
 
 	struct parsed_string {
-		std::string value;
+		std::string_view value;
 		bool was_multi_line;
 	};
 }
@@ -9190,7 +9210,8 @@ TOML_ANON_NAMESPACE_END;
 
 			#define set_error_and_return_if_eof(...)                                               \
 				do {                                                                               \
-					if (is_eof()) set_error_and_return(__VA_ARGS__, "encountered end-of-file"sv);  \
+					if TOML_UNLIKELY (is_eof())                                                    \
+						set_error_and_return(__VA_ARGS__, "encountered end-of-file"sv);            \
 				} while (false)
 
 			#define advance_and_return_if_error(...)                                               \
@@ -9224,6 +9245,8 @@ TOML_IMPL_NAMESPACE_START {
 		std::vector<table *> implicit_tables;
 		std::vector<table *> dotted_key_tables;
 		std::vector<array *> table_arrays;
+		parsed_key_buffer key_buffer;
+		std::string string_buffer;
 		std::string recording_buffer; // for diagnostics
 		bool recording = false, recording_whitespace = true;
 		std::string_view current_scope;
@@ -9431,7 +9454,7 @@ TOML_IMPL_NAMESPACE_START {
 		}
 
 		TOML_NODISCARD
-		std::string parse_basic_string(bool multi_line) {
+		std::string_view parse_basic_string(bool multi_line) {
 			return_if_error({});
 			assert_not_eof();
 			assert_or_assume(*cp == U'"');
@@ -9447,7 +9470,8 @@ TOML_IMPL_NAMESPACE_START {
 				set_error_and_return_if_eof({});
 			}
 
-			std::string str;
+			auto & str = string_buffer;
+			str.clear();
 			bool escaped = false;
 			bool skipping_whitespace = false;
 			do {
@@ -9648,7 +9672,7 @@ TOML_IMPL_NAMESPACE_START {
 		}
 
 		TOML_NODISCARD
-		std::string parse_literal_string(bool multi_line) {
+		std::string_view parse_literal_string(bool multi_line) {
 			return_if_error({});
 			assert_not_eof();
 			assert_or_assume(*cp == U'\'');
@@ -9664,7 +9688,8 @@ TOML_IMPL_NAMESPACE_START {
 				set_error_and_return_if_eof({});
 			}
 
-			std::string str;
+			auto & str = string_buffer;
+			str.clear();
 			do {
 				return_if_error({});
 
@@ -9786,13 +9811,13 @@ TOML_IMPL_NAMESPACE_START {
 
 		TOML_NODISCARD
 		TOML_NEVER_INLINE
-		std::string parse_bare_key_segment() {
+		std::string_view parse_bare_key_segment() {
 			return_if_error({});
 			assert_not_eof();
 			assert_or_assume(is_bare_key_character(*cp));
 
-			std::string segment;
-			segment.reserve(10u);
+			auto & segment = string_buffer;
+			segment.clear();
 
 			while (!is_eof()) {
 				if (!is_bare_key_character(*cp)) break;
@@ -10514,7 +10539,7 @@ TOML_IMPL_NAMESPACE_START {
 				case U'"':
 					[[fallthrough]];
 				case U'\'':
-					return new value { std::move(parse_string().value) };
+					return new value { parse_string().value };
 
 					// bools
 				case U't':
@@ -11059,17 +11084,15 @@ TOML_IMPL_NAMESPACE_START {
 			return val.release();
 		}
 
-		TOML_NODISCARD
-		parsed_key parse_key() {
+		bool parse_key() {
 			return_if_error({});
 			assert_not_eof();
 			assert_or_assume(is_bare_key_character(*cp) || is_string_delimiter(*cp));
 			push_parse_scope("key"sv);
 
-			parsed_key key;
-			key.position = current_position();
+			key_buffer.reset(current_position());
 			recording_whitespace = false;
-			std::string pending_key_segment;
+			std::string_view pending_key_segment;
 
 			while (!is_error()) {
 		#if TOML_LANG_UNRELEASED // toml/issues/687 (unicode bare keys)
@@ -11093,10 +11116,10 @@ TOML_IMPL_NAMESPACE_START {
 					if (str.was_multi_line) {
 						set_error_at(
 							begin_pos, "multi-line strings are prohibited in "sv,
-							key.segments.empty() ? ""sv : "dotted "sv, "keys"sv);
+							key_buffer.segments.empty() ? ""sv : "dotted "sv, "keys"sv);
 						return_after_error({});
 					} else
-						pending_key_segment = std::move(str.value);
+						pending_key_segment = str.value;
 				}
 
 				// ???
@@ -11108,55 +11131,21 @@ TOML_IMPL_NAMESPACE_START {
 				// whitespace following the key segment
 				consume_leading_whitespace();
 
+				// store segment
+				key_buffer.push_back(pending_key_segment);
+
 				// eof or no more key to come
-				if (is_eof() || *cp != U'.') {
-					key.segments.push_back(std::move(pending_key_segment));
-					break;
-				}
+				if (is_eof() || *cp != U'.') break;
 
-				// was a dotted key - reserve capacity for a few segments
-				if (!key.segments.capacity()) key.segments.reserve(3u);
-				key.segments.push_back(std::move(pending_key_segment));
-
-				// go around again to consume the next segment
+				// was a dotted key - go around again
 				advance_and_return_if_error_or_eof({});
 				consume_leading_whitespace();
 				set_error_and_return_if_eof({});
 			}
 			return_if_error({});
-			return key;
-		}
 
-		TOML_NODISCARD
-		parsed_key_value_pair parse_key_value_pair() {
-			return_if_error({});
-			assert_not_eof();
-			assert_or_assume(is_string_delimiter(*cp) || is_bare_key_character(*cp));
-			push_parse_scope("key-value pair"sv);
-
-			// get the key
-			start_recording();
-			auto key = parse_key();
-			stop_recording(1u);
-
-			// skip past any whitespace that followed the key
-			consume_leading_whitespace();
-			set_error_and_return_if_eof({});
-
-			// '='
-			if (*cp != U'=')
-				set_error_and_return_default("expected '=', saw '"sv, to_sv(*cp), "'"sv);
-			advance_and_return_if_error_or_eof({});
-
-			// skip past any whitespace that followed the '='
-			consume_leading_whitespace();
-			return_if_error({});
-			set_error_and_return_if_eof({});
-
-			// get the value
-			if (is_value_terminator(*cp))
-				set_error_and_return_default("expected value, saw '"sv, to_sv(*cp), "'"sv);
-			return { std::move(key), node_ptr { parse_value() } };
+			key_buffer.finish(current_position());
+			return true;
 		}
 
 		TOML_NODISCARD
@@ -11168,7 +11157,6 @@ TOML_IMPL_NAMESPACE_START {
 
 			const source_position header_begin_pos = cp->position;
 			source_position header_end_pos;
-			parsed_key key;
 			bool is_arr = false;
 
 			// parse header
@@ -11201,7 +11189,7 @@ TOML_IMPL_NAMESPACE_START {
 
 				// get the actual key
 				start_recording();
-				key = parse_key();
+				parse_key();
 				stop_recording(1u);
 				return_if_error({});
 
@@ -11227,14 +11215,15 @@ TOML_IMPL_NAMESPACE_START {
 					set_error_and_return_default(
 						"expected a comment or whitespace, saw '"sv, to_sv(cp), "'"sv);
 			}
-			TOML_ASSERT(!key.segments.empty());
+			TOML_ASSERT(!key_buffer.segments.empty());
 
 			// check if each parent is a table/table array, or can be created implicitly as a table.
 			auto parent = &root;
-			for (size_t i = 0; i < key.segments.size() - 1u; i++) {
-				auto child = parent->get(key.segments[i]);
+			for (size_t i = 0, e = key_buffer.size() - 1u; i < e; i++) {
+				const auto segment = key_buffer[i];
+				auto child = parent->get(segment);
 				if (!child) {
-					child = parent->map_.emplace(key.segments[i], new table {}).first->second.get();
+					child = parent->map_.emplace(segment, new table {}).first->second.get();
 					implicit_tables.push_back(&child->ref_cast<table>());
 					child->source_ = { header_begin_pos, header_end_pos, reader.source_path() };
 					parent = &child->ref_cast<table>();
@@ -11264,13 +11253,14 @@ TOML_IMPL_NAMESPACE_START {
 			// check the last parent table for a node matching the last key.
 			// if there was no matching node, then sweet;
 			// we can freely instantiate a new table/table array.
-			auto matching_node = parent->get(key.segments.back());
+			const auto last_segment = key_buffer.back();
+			auto matching_node = parent->get(last_segment);
 			if (!matching_node) {
 				// if it's an array we need to make the array and it's first table element,
 				// set the starting regions, and return the table element
 				if (is_arr) {
 					array & tbl_arr =
-						parent->emplace<array>(key.segments.back()).first->second.ref_cast<array>();
+						parent->emplace<array>(last_segment).first->second.ref_cast<array>();
 					table_arrays.push_back(&tbl_arr);
 					tbl_arr.source_ = { header_begin_pos, header_end_pos, reader.source_path() };
 
@@ -11282,7 +11272,7 @@ TOML_IMPL_NAMESPACE_START {
 				// otherwise we're just making a table
 				else {
 					table & tbl =
-						parent->emplace<table>(key.segments.back()).first->second.ref_cast<table>();
+						parent->emplace<table>(last_segment).first->second.ref_cast<table>();
 					tbl.source_ = { header_begin_pos, header_end_pos, reader.source_path() };
 					return &tbl;
 				}
@@ -11331,26 +11321,48 @@ TOML_IMPL_NAMESPACE_START {
 			}
 		}
 
-		void parse_key_value_pair_and_insert(table * tab) {
-			return_if_error();
+		bool parse_key_value_pair_and_insert(table * tbl) {
+			return_if_error({});
 			assert_not_eof();
+			assert_or_assume(is_string_delimiter(*cp) || is_bare_key_character(*cp));
 			push_parse_scope("key-value pair"sv);
 
-			auto kvp = parse_key_value_pair();
-			return_if_error();
+			// read the key into the key buffer
+			start_recording();
+			parse_key();
+			stop_recording(1u);
+			return_if_error({});
+			TOML_ASSERT(key_buffer.size() >= 1u);
 
-			TOML_ASSERT(kvp.key.segments.size() >= 1u);
+			// skip past any whitespace that followed the key
+			consume_leading_whitespace();
+			set_error_and_return_if_eof({});
+
+			// '='
+			if (*cp != U'=')
+				set_error_and_return_default("expected '=', saw '"sv, to_sv(*cp), "'"sv);
+			advance_and_return_if_error_or_eof({});
+
+			// skip past any whitespace that followed the '='
+			consume_leading_whitespace();
+			return_if_error({});
+			set_error_and_return_if_eof({});
+
+			// check that the next character could actually be a value
+			if (is_value_terminator(*cp))
+				set_error_and_return_default("expected value, saw '"sv, to_sv(*cp), "'"sv);
 
 			// if it's a dotted kvp we need to spawn the sub-tables if necessary,
 			// and set the target table to the second-to-last one in the chain
-			if (kvp.key.segments.size() > 1u) {
-				for (size_t i = 0; i < kvp.key.segments.size() - 1u; i++) {
-					auto child = tab->get(kvp.key.segments[i]);
+			if (key_buffer.size() > 1u) {
+				for (size_t i = 0; i < key_buffer.size() - 1u; i++) {
+					const auto segment = key_buffer[i];
+					auto child = tbl->get(segment);
 					if (!child) {
-						child = tab->map_.emplace(std::move(kvp.key.segments[i]), new table {})
+						child = tbl->map_.emplace(std::string { segment }, new table {})
 									.first->second.get();
 						dotted_key_tables.push_back(&child->ref_cast<table>());
-						child->source_ = kvp.value->source_;
+						child->source_ = key_buffer.source;
 					} else if (
 						!child->is_table() ||
 						!(impl::find(
@@ -11358,32 +11370,34 @@ TOML_IMPL_NAMESPACE_START {
 							  &child->ref_cast<table>()) ||
 						  impl::find(
 							  implicit_tables.begin(), implicit_tables.end(),
-							  &child->ref_cast<table>())))
+							  &child->ref_cast<table>()))) {
 						set_error_at(
-							kvp.key.position, "cannot redefine existing "sv, to_sv(child->type()),
-							" as dotted key-value pair"sv);
-					else
-						child->source_.end = kvp.value->source_.end;
+							key_buffer.source.begin, "cannot redefine existing "sv,
+							to_sv(child->type()), " as dotted key-value pair"sv);
+						return_after_error({});
+					}
 
-					return_if_error();
-					tab = &child->ref_cast<table>();
+					tbl = &child->ref_cast<table>();
 				}
 			}
 
-			if (auto conflicting_node = tab->get(kvp.key.segments.back())) {
-				if (conflicting_node->type() == kvp.value->type())
-					set_error(
-						"cannot redefine existing "sv, to_sv(conflicting_node->type()), " '"sv,
-						to_sv(recording_buffer), "'"sv);
-				else
-					set_error(
-						"cannot redefine existing "sv, to_sv(conflicting_node->type()), " '"sv,
-						to_sv(recording_buffer), "' as "sv, to_sv(kvp.value->type()));
+			// ensure this isn't a redefinition
+			if (auto conflicting_node = tbl->get(key_buffer.back())) {
+				set_error(
+					"cannot redefine existing "sv, to_sv(conflicting_node->type()), " '"sv,
+					to_sv(recording_buffer), "'"sv);
+				return_after_error({});
 			}
 
-			return_if_error();
-			tab->map_.emplace(
-				std::move(kvp.key.segments.back()), std::unique_ptr<node> { kvp.value.release() });
+			// cache the last segment since it might get overwritten by nested tables etc.
+			auto last_segment = std::string { key_buffer.back() };
+
+			// now we can actually parse the value
+			auto val = node_ptr { parse_value() };
+			return_if_error({});
+
+			tbl->map_.emplace(std::move(last_segment), std::unique_ptr<node> { val.release() });
+			return true;
 		}
 
 		void parse_document() {
@@ -11466,6 +11480,7 @@ TOML_IMPL_NAMESPACE_START {
 		parser(utf8_reader_interface && reader_) //
 			: reader { reader_ } {
 			root.source_ = { prev_pos, prev_pos, reader.source_path() };
+			key_buffer.source.path = reader.source_path();
 
 			if (!reader.peek_eof()) {
 				cp = reader.read_next();
