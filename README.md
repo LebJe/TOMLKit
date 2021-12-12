@@ -46,7 +46,7 @@ TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.c
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
-Documentation is available [here](https://lebje.github.io/TOMLKit).
+Documentation is available [here](https://lebje.github.io/TOMLKit/documentation/tomlkit).
 
 ## Installation
 
@@ -55,7 +55,7 @@ Documentation is available [here](https://lebje.github.io/TOMLKit).
 Add this to the `dependencies` array in `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/LebJe/TOMLKit.git", from: "0.3.0")
+.package(url: "https://github.com/LebJe/TOMLKit.git", from: "0.4.0")
 ```
 
 Also add this to the `targets` array in the aforementioned file:
