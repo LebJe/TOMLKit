@@ -9,10 +9,10 @@ import struct Foundation.Data
 final class InternalTOMLDecoder: Decoder {
 	var codingPath: [CodingKey] = []
 	var userInfo: [CodingUserInfoKey: Any] = [:]
-	var dataDecoder: (String) -> Data?
+	var dataDecoder: (TOMLValueConvertible) -> Data?
 
 	let tomlValue: TOMLValue
-	init(_ tomlValue: TOMLValue, userInfo: [CodingUserInfoKey: Any] = [:], dataDecoder: @escaping (String) -> Data?) {
+	init(_ tomlValue: TOMLValue, userInfo: [CodingUserInfoKey: Any] = [:], dataDecoder: @escaping (TOMLValueConvertible) -> Data?) {
 		self.tomlValue = tomlValue
 		self.userInfo = userInfo
 		self.dataDecoder = dataDecoder
@@ -46,14 +46,14 @@ final class InternalTOMLDecoder: Decoder {
 	struct SVDC: SingleValueDecodingContainer {
 		var codingPath: [CodingKey] = []
 		var userInfo: [CodingUserInfoKey: Any] = [:]
-		var dataDecoder: (String) -> Data?
+		var dataDecoder: (TOMLValueConvertible) -> Data?
 		let tomlValue: TOMLValue
 
 		init(
 			_ tomlValue: TOMLValue,
 			codingPath: [CodingKey],
 			userInfo: [CodingUserInfoKey: Any] = [:],
-			dataDecoder: @escaping (String) -> Data?
+			dataDecoder: @escaping (TOMLValueConvertible) -> Data?
 		) {
 			self.tomlValue = tomlValue
 			self.userInfo = userInfo
@@ -65,7 +65,7 @@ final class InternalTOMLDecoder: Decoder {
 	struct KDC<Key: CodingKey>: KeyedDecodingContainerProtocol {
 		var codingPath: [CodingKey] = []
 		var userInfo: [CodingUserInfoKey: Any] = [:]
-		var dataDecoder: (String) -> Data?
+		var dataDecoder: (TOMLValueConvertible) -> Data?
 		var allKeys: [Key] = []
 		let tomlValue: TOMLValue
 
@@ -73,7 +73,7 @@ final class InternalTOMLDecoder: Decoder {
 			tomlValue: TOMLValue,
 			codingPath: [CodingKey],
 			userInfo: [CodingUserInfoKey: Any],
-			dataDecoder: @escaping (String) -> Data?
+			dataDecoder: @escaping (TOMLValueConvertible) -> Data?
 		) {
 			self.tomlValue = tomlValue
 			self.userInfo = userInfo
@@ -86,7 +86,7 @@ final class InternalTOMLDecoder: Decoder {
 	struct UDC: UnkeyedDecodingContainer {
 		var codingPath: [CodingKey]
 		var userInfo: [CodingUserInfoKey: Any] = [:]
-		var dataDecoder: (String) -> Data?
+		var dataDecoder: (TOMLValueConvertible) -> Data?
 
 		var count: Int? { self.tomlArray.count }
 
@@ -103,7 +103,7 @@ final class InternalTOMLDecoder: Decoder {
 			_ tomlArray: TOMLArray,
 			codingPath: [CodingKey],
 			userInfo: [CodingUserInfoKey: Any],
-			dataDecoder: @escaping (String) -> Data?
+			dataDecoder: @escaping (TOMLValueConvertible) -> Data?
 		) {
 			self.tomlArray = tomlArray
 			self.codingPath = codingPath

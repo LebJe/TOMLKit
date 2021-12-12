@@ -4,11 +4,11 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
-#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+#if canImport(Darwin)
 	import Darwin.C
-#elseif os(Linux) || os(Android)
+#elseif canImport(Glibc)
 	import Glibc
-#elseif os(Windows)
+#elseif canImport(ucrt)
 	import ucrt
 #else
 	#error("Unsupported Platform")
@@ -18,11 +18,10 @@ import CTOML
 
 /// A [table](https://toml.io/en/v1.0.0#table) in a TOML document.
 public final class TOMLTable:
-	Equatable,
-	ExpressibleByDictionaryLiteral,
+	Equatable, Sequence, Encodable,
 	CustomDebugStringConvertible,
-	TOMLValueConvertible,
-	Sequence
+	ExpressibleByDictionaryLiteral,
+	TOMLValueConvertible
 {
 	public var type: TOMLType { .table }
 	public var debugDescription: String { self.convert() }
@@ -119,6 +118,24 @@ public final class TOMLTable:
 		self.tablePointer = tablePointer
 	}
 
+	public func encode(to encoder: Encoder) throws {
+		var c = encoder.container(keyedBy: TableCodingKey.self)
+
+		for (key, value) in self {
+			switch value.type {
+				case .bool: try c.encode(value.bool!, forKey: TableCodingKey(stringValue: key))
+				case .date: try c.encode(value.date!, forKey: TableCodingKey(stringValue: key))
+				case .time: try c.encode(value.time!, forKey: TableCodingKey(stringValue: key))
+				case .dateTime: try c.encode(value.dateTime!, forKey: TableCodingKey(stringValue: key))
+				case .double: try c.encode(value.double!, forKey: TableCodingKey(stringValue: key))
+				case .int: try c.encode(value.int!, forKey: TableCodingKey(stringValue: key))
+				case .string: try c.encode(value.string!, forKey: TableCodingKey(stringValue: key))
+				case .table: try c.encode(value.table!, forKey: TableCodingKey(stringValue: key))
+				case .array: try c.encode(value.array!, forKey: TableCodingKey(stringValue: key))
+			}
+		}
+	}
+
 	/// Removes all the values from the table.
 	public func clear() {
 		tableClear(self.tablePointer)
@@ -157,5 +174,19 @@ public final class TOMLTable:
 
 	func insertIntoArray(arrayPointer: OpaquePointer, index: Int) {
 		arrayInsertTable(arrayPointer, Int64(index), self.tablePointer)
+	}
+
+	struct TableCodingKey: CodingKey {
+		var stringValue: String
+		var intValue: Int?
+
+		init(intValue: Int) {
+			self.intValue = intValue
+			self.stringValue = String(intValue)
+		}
+
+		init(stringValue: String) {
+			self.stringValue = stringValue
+		}
 	}
 }

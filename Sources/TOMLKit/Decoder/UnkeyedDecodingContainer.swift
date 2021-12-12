@@ -104,12 +104,12 @@ extension InternalTOMLDecoder.UDC {
 
 	mutating func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
 		if type is Data.Type {
-			guard let s = self.tomlArray[self.currentIndex].string else {
+			guard let v = self.tomlArray[self.currentIndex] else {
 				throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
 			}
 
-			guard let data = self.dataDecoder(s) else {
-				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode Data from the string: \"\(s)\". TOMLArray index: \(self.currentIndex)."))
+			guard let data = self.dataDecoder(v) else {
+				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode Data from: \"\(v.debugDescription)\". TOMLArray index: \(self.currentIndex)."))
 			}
 
 			self.currentIndex += 1

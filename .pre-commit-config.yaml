@@ -10,10 +10,11 @@ repos:
       rev: "4309ae0bc8b9f39c207bca9c5040ec8a35561a41"
       hooks:
           - id: "prettier"
-            name: "Format Markdown"
+            name: "Format YAML & Markdown"
             tags: ["md"]
             exclude: "Sources/TOMLKit/TOMLKit.docc/"
     - repo: "git://github.com/doublify/pre-commit-clang-format"
       rev: "master"
       hooks:
           - id: "clang-format"
+            exclude: "tomlplusplus|Sources/CTOML/Sources/toml.hpp"

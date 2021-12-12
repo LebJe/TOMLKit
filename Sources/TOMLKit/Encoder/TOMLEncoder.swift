@@ -8,6 +8,29 @@ import struct Foundation.Data
 import class Foundation.JSONEncoder
 
 /// `TOMLEncoder` encodes Swift `struct`s into TOML documents.
+///
+/// ### Customizing Encoding
+///
+///	You can customize how `Data` is encoded, and how the resulting TOML is formatted.
+///
+/// To format the TOML document, insert or remove ``FormatOptions`` from `TOMLEncoder`'s `TOMLEncoder/options``.
+///
+/// To customize the encoding of `Data`, provide a function for ``TOMLEncoder/dataEncoder``:
+///
+/// ```swift
+/// var encoder = TOMLEncoder()
+///	encoder.dataEncoder = Array.init
+///
+/// let data = Data("Hello World!".utf8).base64EncodedData()
+///
+/// encoder.encode(MyStruct(data: data))
+/// ```
+///
+///	The resulting TOML would be:
+///
+/// ```toml
+/// data = [83, 71, 86, 115, 98, 71, 56, 103, 86, 50, 57, 121, 98, 71, 81, 104]
+/// ````
 public struct TOMLEncoder {
 	public var userInfo: [CodingUserInfoKey: Any] = [:]
 

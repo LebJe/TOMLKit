@@ -4,11 +4,11 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
-#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+#if canImport(Darwin)
 	import Darwin.C
-#elseif os(Linux) || os(Android)
+#elseif canImport(Glibc)
 	import Glibc
-#elseif os(Windows)
+#elseif canImport(ucrt)
 	import ucrt
 #else
 	#error("Unsupported Platform")
@@ -123,21 +123,15 @@ extension String: TOMLValueConvertible {
 	public var tomlValue: TOMLValue { get { .init(stringLiteral: self) } set {} }
 }
 
-extension Int: TOMLValueConvertible {
-	public var debugDescription: String { self.description }
-	public var type: TOMLType { .string }
-	public var tomlValue: TOMLValue { get { .init(self) } set {} }
-}
-
 extension Dictionary: TOMLValueConvertible where Self.Value: TOMLValueConvertible, Self.Key == String {
 	public var type: TOMLType { .table }
 	public var tomlValue: TOMLValue { get { .init(.init(self)) } set {} }
 }
 
-// extension Array: TOMLValueConvertible where Self.Element: TOMLValueConvertible {
-//	public var type: TOMLType { .array }
-//	public var tomlValue: TOMLValue { get { .init(.init(self)) } set {} }
-// }
+extension Array: TOMLValueConvertible where Self.Element: TOMLValueConvertible {
+	public var type: TOMLType { .array }
+	public var tomlValue: TOMLValue { get { .init(.init(self)) } set {} }
+}
 
 extension Data: TOMLValueConvertible {
 	public var debugDescription: String { self.description }

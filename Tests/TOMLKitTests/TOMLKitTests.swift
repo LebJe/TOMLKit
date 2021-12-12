@@ -233,13 +233,32 @@ final class TOMLKitTests: XCTestCase {
 		XCTAssertEqual(try TOMLTable(string: try TOMLEncoder().encode(CodableStruct())), try TOMLTable(string: tomlForCodableStruct))
 	}
 
-	func testCustomDataDecodingAndEncoding() {
+	func testCustomDataDecodingAndEncoding() throws {
 		struct Test: Codable, Equatable {
 			let data: Data
 		}
 
-		XCTAssertEqual(try TOMLEncoder(dataEncoder: { _ in "Hello" }).encode(Test(data: Data([0x01]))), "data = 'Hello'")
-		XCTAssertEqual(try TOMLDecoder(dataDecoder: { _ in Data([0x01]) }).decode(Test.self, from: "data = 'Hello'"), Test(data: Data([0x01])))
+		// Encoder
+
+		var encoder = TOMLEncoder()
+		encoder.dataEncoder = Array.init
+
+		let data = Data("Hello World!".utf8).base64EncodedData()
+
+		let toml = try encoder.encode(Test(data: data))
+
+		XCTAssertEqual(toml, "data = [ 83, 71, 86, 115, 98, 71, 56, 103, 86, 50, 57, 121, 98, 71, 81, 104 ]")
+
+		// Decoder
+		var decoder = TOMLDecoder()
+
+		decoder.dataDecoder = {
+			let arr = $0.array!.map({ UInt8($0.int!) })
+			return Data(base64Encoded: Data(arr))!
+		}
+
+		let test = try decoder.decode(Test.self, from: toml)
+		XCTAssertEqual(String(data: test.data, encoding: .utf8)!, "Hello World!")
 	}
 
 	func testMeasureEncoding() {

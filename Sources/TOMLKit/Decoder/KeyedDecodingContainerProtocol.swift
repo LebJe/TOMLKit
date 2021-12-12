@@ -119,7 +119,7 @@ extension InternalTOMLDecoder.KDC {
 			case .none:
 				throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The key \"\(key.stringValue)\" was not found in the TOML table."))
 			default:
-				if type is Data.Type, let value = self.tomlValue.table?[key.stringValue]?.string {
+				if type is Data.Type, let value = self.tomlValue.table?[key.stringValue] {
 					guard let data = self.dataDecoder(value) else {
 						throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode Data from the string: \"\(value)\". Key: \(key.stringValue)"))
 					}

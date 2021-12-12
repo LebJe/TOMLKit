@@ -6,11 +6,11 @@
 
 import CTOML
 
-#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+#if canImport(Darwin)
 	import Darwin.C
-#elseif os(Linux) || os(Android)
+#elseif canImport(Glibc)
 	import Glibc
-#elseif os(Windows)
+#elseif canImport(ucrt)
 	import ucrt
 #else
 	#error("Unsupported Platform")
@@ -43,12 +43,15 @@ public struct TOMLDate: Codable, Equatable, CustomDebugStringConvertible, TOMLVa
 		self.day = day
 	}
 
-	public init(date: Date) {
+	public init?(date: Date) {
 		let calendar = Calendar.current
 		let c = calendar.dateComponents([.year, .month, .day], from: date)
-		self.year = c.year!
-		self.month = c.month!
-		self.day = c.day!
+
+		guard let y = c.year, let m = c.month, let d = c.day else { return nil }
+
+		self.year = y
+		self.month = m
+		self.day = d
 	}
 
 	init(cTOMLDate: CTOMLDate) {
@@ -189,11 +192,21 @@ public struct TOMLDateTime: Codable, Equatable, CustomDebugStringConvertible, TO
 		}
 	}
 
-	public init(date: Date) {
+	public init?(date: Date) {
 		let calendar = Calendar.current
 		let c = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second, .nanosecond], from: date)
-		self.date = TOMLDate(date: date)
-		self.time = TOMLTime(hour: c.hour!, minute: c.minute!, second: c.second!, nanoSecond: c.nanosecond!)
+
+		guard
+			let date = TOMLDate(date: date),
+			let hour = c.hour,
+			let minute = c.minute,
+			let second = c.second,
+			let nanoSecond = c.nanosecond
+		else { return nil }
+
+		self.date = date
+
+		self.time = TOMLTime(hour: hour, minute: minute, second: second, nanoSecond: nanoSecond)
 	}
 
 	public init(date: TOMLDate, time: TOMLTime, offset: TOMLTimeOffset? = nil) {

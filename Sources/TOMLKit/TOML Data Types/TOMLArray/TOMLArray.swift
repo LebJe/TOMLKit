@@ -4,11 +4,11 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
-#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+#if canImport(Darwin)
 	import Darwin.C
-#elseif os(Linux) || os(Android)
+#elseif canImport(Glibc)
 	import Glibc
-#elseif os(Windows)
+#elseif canImport(ucrt)
 	import ucrt
 #else
 	#error("Unsupported Platform")
@@ -18,8 +18,7 @@ import CTOML
 
 /// An [array](https://toml.io/en/v1.0.0#array) in a TOML document.
 public final class TOMLArray:
-	Equatable,
-	Sequence,
+	Equatable, Sequence, Encodable,
 	ExpressibleByArrayLiteral,
 	CustomDebugStringConvertible,
 	TOMLValueConvertible
@@ -60,6 +59,12 @@ public final class TOMLArray:
 		array.forEach(self.append(_:))
 	}
 
+	/// Initialize a `TOMLArray` from the elements in `S`.
+	public convenience init<S: Sequence>(_ sequence: S) where S.Element: TOMLValueConvertible {
+		self.init()
+		sequence.forEach(self.append(_:))
+	}
+
 	public convenience init(arrayLiteral: TOMLValueConvertible...) {
 		self.init(arrayLiteral)
 	}
@@ -83,5 +88,23 @@ public final class TOMLArray:
 
 	public func makeIterator() -> TOMLArrayIterator {
 		TOMLArrayIterator(array: self)
+	}
+
+	public func encode(to encoder: Encoder) throws {
+		var c = encoder.unkeyedContainer()
+
+		for value in self {
+			switch value.type {
+				case .array: try c.encode(value.array!)
+				case .table: try c.encode(value.table!)
+				case .string: try c.encode(value.string!)
+				case .int: try c.encode(value.int!)
+				case .double: try c.encode(value.double!)
+				case .bool: try c.encode(value.bool!)
+				case .date: try c.encode(value.date!)
+				case .time: try c.encode(value.time!)
+				case .dateTime: try c.encode(value.dateTime!)
+			}
+		}
 	}
 }

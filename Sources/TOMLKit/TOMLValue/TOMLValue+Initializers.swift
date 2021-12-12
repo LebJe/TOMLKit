@@ -4,11 +4,11 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
-#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+#if canImport(Darwin)
 	import Darwin.C
-#elseif os(Linux) || os(Android)
+#elseif canImport(Glibc)
 	import Glibc
-#elseif os(Windows)
+#elseif canImport(ucrt)
 	import ucrt
 #else
 	#error("Unsupported Platform")

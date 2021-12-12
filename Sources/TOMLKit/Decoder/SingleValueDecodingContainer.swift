@@ -126,11 +126,11 @@ extension InternalTOMLDecoder.SVDC {
 	func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
 		let decoder = InternalTOMLDecoder(self.tomlValue, dataDecoder: self.dataDecoder)
 
-		if type is Data.Type, let s = self.tomlValue.string {
-			if let data = self.dataDecoder(s) {
+		if type is Data.Type {
+			if let data = self.dataDecoder(self.tomlValue) {
 				return data as! T
 			} else {
-				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode Data from the string: \"\(s)\"."))
+				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode Data from: \"\(self.tomlValue.debugDescription)\"."))
 			}
 		} else {
 			return try T(from: decoder)

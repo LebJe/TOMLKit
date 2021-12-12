@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0](https://github.com/LebJe/TOMLKit/releases/tag/0.4.0) - 2021-12-12
+
+### Added
+
+-   `Array` Conforms to `TOMLValueConvertible` when its `Element` conforms the the protocol.
+-   `TOMLArray` now conforms to `Encodable`, and can be initialized from a type conforming to `Sequence`.
+-   `TOMLTable` conforms to `Encodable`.
+-   `(U)Int8|16|32|64` now conforms to `TOMLValueConvertible`.
+
+### Changed
+
+-   The `TOMLDecoder.dataDecoder` closure now accepts a `TOMLValueConvertible` instead of a `String`.
+-   The `TOMLDate` initializer that accepts a `Date` as its parameter is now an optional initializer.
+-   The `TOMLDateTime` initializer that accepts a `Date` as its parameter is now an optional initializer.
+
 ## [0.3.2](https://github.com/LebJe/TOMLKit/releases/tag/0.3.2) - 2021-09-17
 
 ### Fixed

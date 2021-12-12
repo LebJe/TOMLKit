@@ -7,15 +7,34 @@
 import struct Foundation.Data
 
 /// `TOMLDecoder` decodes TOML documents into Swift `struct`s.
+///
+/// ### Customizing Decoding
+///
+/// By default, `Data` is decoded using Base64, but you can use another method by providing a function to ``TOMLDecoder/dataDecoder``:
+/// ```swift
+/// let toml = "data = [83, 71, 86, 115, 98, 71, 56, 103, 86, 50, 57, 121, 98, 71, 81, 104]"
+///
+/// var decoder = TOMLDecoder()
+///
+/// decoder.dataDecoder = {
+/// 	let arr = $0.array!.map({ UInt8($0.int!) })
+/// 	return Data(base64Encoded: Data(arr))!
+/// }
+///
+/// let myStruct = try decoder.decode(MyStruct.self, from: toml)
+/// String(data: myStruct.data, encoding: .utf8) // <== "Hello World!"
+/// ```
 public struct TOMLDecoder {
 	public var userInfo: [CodingUserInfoKey: Any] = [:]
 
-	/// This function will be used to decode instances of `Data` from a `String` in a TOML document.
+	/// This function will be used to decode `Data` in a TOML document.
 	///
 	/// The default decoding mechanism is [Base64](https://en.wikipedia.org/wiki/Base64).
-	public var dataDecoder: (String) -> Data? = { Data(base64Encoded: $0) }
+	public var dataDecoder: (TOMLValueConvertible) -> Data? = { $0.string != nil ? Data(base64Encoded: $0.string!) : nil }
 
-	public init(dataDecoder: @escaping (String) -> Data? = { Data(base64Encoded: $0) }) {
+	public init(
+		dataDecoder: @escaping (TOMLValueConvertible) -> Data? = { $0.string != nil ? Data(base64Encoded: $0.string!) : nil }
+	) {
 		self.dataDecoder = dataDecoder
 	}
 
