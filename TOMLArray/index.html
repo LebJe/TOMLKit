@@ -25,7 +25,7 @@
     <nav>
         <div class="wrapper">
             <h2>On This Page</h2>
-            <ol><li><a href="#relationships">Relationships</a><ul><li><a href="#relationships">Conforms To</a></li></ul></li><li><a href="#nested type aliases">Nested Type Aliases</a><ul><li class="typealias"><a href="#tomlarray.index">Index</a></li><li class="typealias"><a href="#tomlarray.element">Element</a></li></ul></li><li><a href="#initializers">Initializers</a><ul><li class="initializer"><a href="#tomlarray.init()">init()</a></li><li class="initializer"><a href="#tomlarray.init(_:)">init(_:​)</a></li><li class="initializer"><a href="#tomlarray.init(arrayliteral:)">init(array​Literal:​)</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#tomlarray.indices">indices</a></li><li class="variable"><a href="#tomlarray.type">type</a></li><li class="variable"><a href="#tomlarray.startindex">start​Index</a></li><li class="variable"><a href="#tomlarray.endindex">end​Index</a></li><li class="variable"><a href="#tomlarray.tomlvalue">toml​Value</a></li><li class="variable"><a href="#tomlarray.count">count</a></li><li class="variable"><a href="#tomlarray.isempty">is​Empty</a></li><li class="variable"><a href="#tomlarray.debugdescription">debug​Description</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#tomlarray.append(_:)">append(_:​)</a></li><li class="function"><a href="#tomlarray.insert(_:at:)">insert(_:​at:​)</a></li><li class="function"><a href="#tomlarray.removefirst()">remove​First()</a></li><li class="function"><a href="#tomlarray.remove(at:)">remove(at:​)</a></li><li class="function"><a href="#tomlarray.removesubrange(_:)">remove​Subrange(_:​)</a></li><li class="function"><a href="#tomlarray.replacesubrange(_:with:)">replace​Subrange(_:​with:​)</a></li><li class="function"><a href="#tomlarray.index(after:)">index(after:​)</a></li><li class="function"><a href="#tomlarray.clear()">clear()</a></li><li class="function"><a href="#tomlarray.makeiterator()">make​Iterator()</a></li></ul></li><li><a href="#operators">Operators</a><ul><li class="function"><a href="#tomlarray.==">==</a></li></ul></li></ol>
+            <ol><li><a href="#relationships">Relationships</a><ul><li><a href="#relationships">Conforms To</a></li></ul></li><li><a href="#nested type aliases">Nested Type Aliases</a><ul><li class="typealias"><a href="#tomlarray.index">Index</a></li><li class="typealias"><a href="#tomlarray.element">Element</a></li></ul></li><li><a href="#initializers">Initializers</a><ul><li class="initializer"><a href="#tomlarray.init()">init()</a></li><li class="initializer"><a href="#tomlarray.init(_:)">init(_:​)</a></li><li class="initializer"><a href="#tomlarray.init(_:)">init(_:​)</a></li><li class="initializer"><a href="#tomlarray.init(arrayliteral:)">init(array​Literal:​)</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#tomlarray.indices">indices</a></li><li class="variable"><a href="#tomlarray.type">type</a></li><li class="variable"><a href="#tomlarray.startindex">start​Index</a></li><li class="variable"><a href="#tomlarray.endindex">end​Index</a></li><li class="variable"><a href="#tomlarray.tomlvalue">toml​Value</a></li><li class="variable"><a href="#tomlarray.count">count</a></li><li class="variable"><a href="#tomlarray.isempty">is​Empty</a></li><li class="variable"><a href="#tomlarray.debugdescription">debug​Description</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#tomlarray.append(_:)">append(_:​)</a></li><li class="function"><a href="#tomlarray.insert(_:at:)">insert(_:​at:​)</a></li><li class="function"><a href="#tomlarray.removefirst()">remove​First()</a></li><li class="function"><a href="#tomlarray.remove(at:)">remove(at:​)</a></li><li class="function"><a href="#tomlarray.removesubrange(_:)">remove​Subrange(_:​)</a></li><li class="function"><a href="#tomlarray.replacesubrange(_:with:)">replace​Subrange(_:​with:​)</a></li><li class="function"><a href="#tomlarray.index(after:)">index(after:​)</a></li><li class="function"><a href="#tomlarray.clear()">clear()</a></li><li class="function"><a href="#tomlarray.makeiterator()">make​Iterator()</a></li><li class="function"><a href="#tomlarray.encode(to:)">encode(to:​)</a></li></ul></li><li><a href="#operators">Operators</a><ul><li class="function"><a href="#tomlarray.==">==</a></li></ul></li></ol>
         </div>
     </nav>
 
@@ -38,8 +38,7 @@
 
 <div class="declaration">
 <pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="attribute">final</span> <span class="keyword">class</span> <span class="type">TOMLArray</span>:
-	<span class="type">Equatable</span>,
-	<span class="type">Sequence</span>,
+	<span class="type">Equatable</span>, <span class="type">Sequence</span>, <span class="type">Encodable</span>,
 	<span class="type">ExpressibleByArrayLiteral</span>,
 	<span class="type">CustomDebugStringConvertible</span>,
 	<a href="https://lebje.github.io/TOMLKit/TOMLValueConvertible"><span class="type">TOMLValueConvertible</span></a></body></html></code></pre>
@@ -56,143 +55,155 @@
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
-<!-- Title: %75 Pages: 1 -->
-<svg width="1443pt" height="289pt"
- viewBox="0.00 0.00 1442.63 289.25" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 285.246)">
-<title>%75</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-285.246 1438.6307,-285.246 1438.6307,4 -4,4"/>
+<!-- Title: %35 Pages: 1 -->
+<svg width="1485pt" height="298pt"
+ viewBox="0.00 0.00 1484.77 298.50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 294.4978)">
+<title>%35</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-294.4978 1480.7687,-294.4978 1480.7687,4 -4,4"/>
 <!-- TOMLArray -->
 <g id="node1" class="node class current">
 <title>TOMLArray</title>
 <g id="a_node1"><a xlink:href="https://lebje.github.io/TOMLKit/TOMLArray" xlink:title="TOMLArray">
-<path fill="none" stroke="#000000" stroke-width="3" d="M813.331,-159.0347C813.331,-159.0347 621.331,-159.0347 621.331,-159.0347 615.331,-159.0347 609.331,-153.0347 609.331,-147.0347 609.331,-147.0347 609.331,-135.0347 609.331,-135.0347 609.331,-129.0347 615.331,-123.0347 621.331,-123.0347 621.331,-123.0347 813.331,-123.0347 813.331,-123.0347 819.331,-123.0347 825.331,-129.0347 825.331,-135.0347 825.331,-135.0347 825.331,-147.0347 825.331,-147.0347 825.331,-153.0347 819.331,-159.0347 813.331,-159.0347"/>
-<text text-anchor="middle" x="717.331" y="-137.3347" font-family="Menlo" font-size="14.00" fill="#000000">TOMLArray</text>
+<path fill="none" stroke="#000000" stroke-width="3" d="M820.9964,-162.1215C820.9964,-162.1215 628.9964,-162.1215 628.9964,-162.1215 622.9964,-162.1215 616.9964,-156.1215 616.9964,-150.1215 616.9964,-150.1215 616.9964,-138.1215 616.9964,-138.1215 616.9964,-132.1215 622.9964,-126.1215 628.9964,-126.1215 628.9964,-126.1215 820.9964,-126.1215 820.9964,-126.1215 826.9964,-126.1215 832.9964,-132.1215 832.9964,-138.1215 832.9964,-138.1215 832.9964,-150.1215 832.9964,-150.1215 832.9964,-156.1215 826.9964,-162.1215 820.9964,-162.1215"/>
+<text text-anchor="middle" x="724.9964" y="-140.4215" font-family="Menlo" font-size="14.00" fill="#000000">TOMLArray</text>
 </a>
 </g>
 </g>
-<!-- MutableCollection -->
+<!-- Sequence -->
 <g id="node2" class="node unknown">
-<title>MutableCollection</title>
-<path fill="none" stroke="#000000" d="M1310.6149,-233.1489C1310.6149,-233.1489 1118.6149,-233.1489 1118.6149,-233.1489 1112.6149,-233.1489 1106.6149,-227.1489 1106.6149,-221.1489 1106.6149,-221.1489 1106.6149,-209.1489 1106.6149,-209.1489 1106.6149,-203.1489 1112.6149,-197.1489 1118.6149,-197.1489 1118.6149,-197.1489 1310.6149,-197.1489 1310.6149,-197.1489 1316.6149,-197.1489 1322.6149,-203.1489 1322.6149,-209.1489 1322.6149,-209.1489 1322.6149,-221.1489 1322.6149,-221.1489 1322.6149,-227.1489 1316.6149,-233.1489 1310.6149,-233.1489"/>
-<text text-anchor="middle" x="1214.6149" y="-211.4489" font-family="Menlo" font-size="14.00" fill="#000000">MutableCollection</text>
+<title>Sequence</title>
+<path fill="none" stroke="#000000" d="M1371.1806,-225.5256C1371.1806,-225.5256 1179.1806,-225.5256 1179.1806,-225.5256 1173.1806,-225.5256 1167.1806,-219.5256 1167.1806,-213.5256 1167.1806,-213.5256 1167.1806,-201.5256 1167.1806,-201.5256 1167.1806,-195.5256 1173.1806,-189.5256 1179.1806,-189.5256 1179.1806,-189.5256 1371.1806,-189.5256 1371.1806,-189.5256 1377.1806,-189.5256 1383.1806,-195.5256 1383.1806,-201.5256 1383.1806,-201.5256 1383.1806,-213.5256 1383.1806,-213.5256 1383.1806,-219.5256 1377.1806,-225.5256 1371.1806,-225.5256"/>
+<text text-anchor="middle" x="1275.1806" y="-203.8256" font-family="Menlo" font-size="14.00" fill="#000000">Sequence</text>
 </g>
-<!-- TOMLArray&#45;&gt;MutableCollection -->
-<g id="edge1" class="edge conformsTo">
-<title>TOMLArray&#45;&gt;MutableCollection</title>
-<path fill="none" stroke="#000000" d="M825.5407,-157.1621C905.3559,-169.0576 1013.8968,-185.2343 1096.0583,-197.4795"/>
-<polygon fill="#000000" stroke="#000000" points="1095.7905,-200.9781 1106.1972,-198.9905 1096.8224,-194.0546 1095.7905,-200.9781"/>
+<!-- TOMLArray&#45;&gt;Sequence -->
+<g id="edge5" class="edge conformsTo">
+<title>TOMLArray&#45;&gt;Sequence</title>
+<path fill="none" stroke="#000000" d="M833.0387,-156.5725C926.2826,-167.3181 1060.7365,-182.8127 1156.8586,-193.89"/>
+<polygon fill="#000000" stroke="#000000" points="1156.5811,-197.3811 1166.9161,-195.049 1157.3826,-190.4271 1156.5811,-197.3811"/>
 </g>
 <!-- Collection -->
 <g id="node3" class="node unknown">
 <title>Collection</title>
-<path fill="none" stroke="#000000" d="M621.4672,-36C621.4672,-36 429.4672,-36 429.4672,-36 423.4672,-36 417.4672,-30 417.4672,-24 417.4672,-24 417.4672,-12 417.4672,-12 417.4672,-6 423.4672,0 429.4672,0 429.4672,0 621.4672,0 621.4672,0 627.4672,0 633.4672,-6 633.4672,-12 633.4672,-12 633.4672,-24 633.4672,-24 633.4672,-30 627.4672,-36 621.4672,-36"/>
-<text text-anchor="middle" x="525.4672" y="-14.3" font-family="Menlo" font-size="14.00" fill="#000000">Collection</text>
+<path fill="none" stroke="#000000" d="M700.6449,-36C700.6449,-36 508.6449,-36 508.6449,-36 502.6449,-36 496.6449,-30 496.6449,-24 496.6449,-24 496.6449,-12 496.6449,-12 496.6449,-6 502.6449,0 508.6449,0 508.6449,0 700.6449,0 700.6449,0 706.6449,0 712.6449,-6 712.6449,-12 712.6449,-12 712.6449,-24 712.6449,-24 712.6449,-30 706.6449,-36 700.6449,-36"/>
+<text text-anchor="middle" x="604.6449" y="-14.3" font-family="Menlo" font-size="14.00" fill="#000000">Collection</text>
 </g>
 <!-- TOMLArray&#45;&gt;Collection -->
-<g id="edge2" class="edge conformsTo">
+<g id="edge7" class="edge conformsTo">
 <title>TOMLArray&#45;&gt;Collection</title>
-<path fill="none" stroke="#000000" d="M689.0208,-122.8805C655.3416,-101.2834 599.0379,-65.178 562.076,-41.4758"/>
-<polygon fill="#000000" stroke="#000000" points="563.8882,-38.4801 553.5809,-36.0283 560.1095,-44.3726 563.8882,-38.4801"/>
+<path fill="none" stroke="#000000" d="M707.753,-126.0514C687.1084,-104.4171 652.3971,-68.0416 629.0169,-43.5405"/>
+<polygon fill="#000000" stroke="#000000" points="631.2921,-40.855 621.8563,-36.0366 626.2279,-45.6876 631.2921,-40.855"/>
+</g>
+<!-- ExpressibleByArrayLiteral -->
+<g id="node4" class="node unknown">
+<title>ExpressibleByArrayLiteral</title>
+<path fill="none" stroke="#000000" d="M431.6223,-263.8808C431.6223,-263.8808 239.6223,-263.8808 239.6223,-263.8808 233.6223,-263.8808 227.6223,-257.8808 227.6223,-251.8808 227.6223,-251.8808 227.6223,-239.8808 227.6223,-239.8808 227.6223,-233.8808 233.6223,-227.8808 239.6223,-227.8808 239.6223,-227.8808 431.6223,-227.8808 431.6223,-227.8808 437.6223,-227.8808 443.6223,-233.8808 443.6223,-239.8808 443.6223,-239.8808 443.6223,-251.8808 443.6223,-251.8808 443.6223,-257.8808 437.6223,-263.8808 431.6223,-263.8808"/>
+<text text-anchor="middle" x="335.6223" y="-242.1808" font-family="Menlo" font-size="14.00" fill="#000000">ExpressibleByArrayLiteral</text>
+</g>
+<!-- TOMLArray&#45;&gt;ExpressibleByArrayLiteral -->
+<g id="edge1" class="edge conformsTo">
+<title>TOMLArray&#45;&gt;ExpressibleByArrayLiteral</title>
+<path fill="none" stroke="#000000" d="M655.8328,-162.1968C588.2078,-179.87 485.3589,-206.7486 414.5659,-225.2497"/>
+<polygon fill="#000000" stroke="#000000" points="413.5865,-221.888 404.7964,-227.8028 415.3565,-228.6605 413.5865,-221.888"/>
+</g>
+<!-- MutableCollection -->
+<g id="node5" class="node unknown">
+<title>MutableCollection</title>
+<path fill="none" stroke="#000000" d="M1116.673,-276.3668C1116.673,-276.3668 924.673,-276.3668 924.673,-276.3668 918.673,-276.3668 912.673,-270.3668 912.673,-264.3668 912.673,-264.3668 912.673,-252.3668 912.673,-252.3668 912.673,-246.3668 918.673,-240.3668 924.673,-240.3668 924.673,-240.3668 1116.673,-240.3668 1116.673,-240.3668 1122.673,-240.3668 1128.673,-246.3668 1128.673,-252.3668 1128.673,-252.3668 1128.673,-264.3668 1128.673,-264.3668 1128.673,-270.3668 1122.673,-276.3668 1116.673,-276.3668"/>
+<text text-anchor="middle" x="1020.673" y="-254.6668" font-family="Menlo" font-size="14.00" fill="#000000">MutableCollection</text>
+</g>
+<!-- TOMLArray&#45;&gt;MutableCollection -->
+<g id="edge3" class="edge conformsTo">
+<title>TOMLArray&#45;&gt;MutableCollection</title>
+<path fill="none" stroke="#000000" d="M771.8473,-162.224C824.1842,-182.4463 908.8662,-215.1662 964.66,-236.7242"/>
+<polygon fill="#000000" stroke="#000000" points="963.4519,-240.0095 974.0413,-240.349 965.9749,-233.48 963.4519,-240.0095"/>
+</g>
+<!-- RangeReplaceableCollection -->
+<g id="node6" class="node unknown">
+<title>RangeReplaceableCollection</title>
+<path fill="none" stroke="#000000" d="M766.7426,-290.4978C766.7426,-290.4978 571.7426,-290.4978 571.7426,-290.4978 565.7426,-290.4978 559.7426,-284.4978 559.7426,-278.4978 559.7426,-278.4978 559.7426,-266.4978 559.7426,-266.4978 559.7426,-260.4978 565.7426,-254.4978 571.7426,-254.4978 571.7426,-254.4978 766.7426,-254.4978 766.7426,-254.4978 772.7426,-254.4978 778.7426,-260.4978 778.7426,-266.4978 778.7426,-266.4978 778.7426,-278.4978 778.7426,-278.4978 778.7426,-284.4978 772.7426,-290.4978 766.7426,-290.4978"/>
+<text text-anchor="middle" x="669.2426" y="-268.7978" font-family="Menlo" font-size="14.00" fill="#000000">RangeReplaceableCollection</text>
+</g>
+<!-- TOMLArray&#45;&gt;RangeReplaceableCollection -->
+<g id="edge9" class="edge conformsTo">
+<title>TOMLArray&#45;&gt;RangeReplaceableCollection</title>
+<path fill="none" stroke="#000000" d="M717.1265,-162.2424C707.7458,-183.842 691.9768,-220.151 681.1131,-245.1654"/>
+<polygon fill="#000000" stroke="#000000" points="677.8458,-243.9025 677.0725,-254.469 684.2664,-246.691 677.8458,-243.9025"/>
+</g>
+<!-- Equatable -->
+<g id="node7" class="node unknown">
+<title>Equatable</title>
+<path fill="none" stroke="#000000" d="M204,-131.9699C204,-131.9699 12,-131.9699 12,-131.9699 6,-131.9699 0,-125.9699 0,-119.9699 0,-119.9699 0,-107.9699 0,-107.9699 0,-101.9699 6,-95.9699 12,-95.9699 12,-95.9699 204,-95.9699 204,-95.9699 210,-95.9699 216,-101.9699 216,-107.9699 216,-107.9699 216,-119.9699 216,-119.9699 216,-125.9699 210,-131.9699 204,-131.9699"/>
+<text text-anchor="middle" x="108" y="-110.2699" font-family="Menlo" font-size="14.00" fill="#000000">Equatable</text>
+</g>
+<!-- TOMLArray&#45;&gt;Equatable -->
+<g id="edge2" class="edge conformsTo">
+<title>TOMLArray&#45;&gt;Equatable</title>
+<path fill="none" stroke="#000000" d="M616.8178,-138.835C507.4501,-133.4904 338.9045,-125.2538 226.1115,-119.7418"/>
+<polygon fill="#000000" stroke="#000000" points="226.2133,-116.2427 216.0544,-119.2504 225.8716,-123.2344 226.2133,-116.2427"/>
+</g>
+<!-- RandomAccessCollection -->
+<g id="node8" class="node unknown">
+<title>RandomAccessCollection</title>
+<path fill="none" stroke="#000000" d="M1464.7687,-154.5235C1464.7687,-154.5235 1272.7687,-154.5235 1272.7687,-154.5235 1266.7687,-154.5235 1260.7687,-148.5235 1260.7687,-142.5235 1260.7687,-142.5235 1260.7687,-130.5235 1260.7687,-130.5235 1260.7687,-124.5235 1266.7687,-118.5235 1272.7687,-118.5235 1272.7687,-118.5235 1464.7687,-118.5235 1464.7687,-118.5235 1470.7687,-118.5235 1476.7687,-124.5235 1476.7687,-130.5235 1476.7687,-130.5235 1476.7687,-142.5235 1476.7687,-142.5235 1476.7687,-148.5235 1470.7687,-154.5235 1464.7687,-154.5235"/>
+<text text-anchor="middle" x="1368.7687" y="-132.8235" font-family="Menlo" font-size="14.00" fill="#000000">RandomAccessCollection</text>
+</g>
+<!-- TOMLArray&#45;&gt;RandomAccessCollection -->
+<g id="edge4" class="edge conformsTo">
+<title>TOMLArray&#45;&gt;RandomAccessCollection</title>
+<path fill="none" stroke="#000000" d="M833.1123,-142.8455C948.561,-141.4829 1130.9684,-139.3301 1250.257,-137.9222"/>
+<polygon fill="#000000" stroke="#000000" points="1250.5652,-141.4189 1260.5232,-137.801 1250.4825,-134.4194 1250.5652,-141.4189"/>
+</g>
+<!-- CustomDebugStringConvertible -->
+<g id="node9" class="node unknown">
+<title>CustomDebugStringConvertible</title>
+<path fill="none" stroke="#000000" d="M395.3307,-68.8059C395.3307,-68.8059 177.3307,-68.8059 177.3307,-68.8059 171.3307,-68.8059 165.3307,-62.8059 165.3307,-56.8059 165.3307,-56.8059 165.3307,-44.8059 165.3307,-44.8059 165.3307,-38.8059 171.3307,-32.8059 177.3307,-32.8059 177.3307,-32.8059 395.3307,-32.8059 395.3307,-32.8059 401.3307,-32.8059 407.3307,-38.8059 407.3307,-44.8059 407.3307,-44.8059 407.3307,-56.8059 407.3307,-56.8059 407.3307,-62.8059 401.3307,-68.8059 395.3307,-68.8059"/>
+<text text-anchor="middle" x="286.3307" y="-47.1059" font-family="Menlo" font-size="14.00" fill="#000000">CustomDebugStringConvertible</text>
+</g>
+<!-- TOMLArray&#45;&gt;CustomDebugStringConvertible -->
+<g id="edge8" class="edge conformsTo">
+<title>TOMLArray&#45;&gt;CustomDebugStringConvertible</title>
+<path fill="none" stroke="#000000" d="M640.1574,-126.074C566.0278,-110.3047 458.5141,-87.4338 381.4811,-71.0468"/>
+<polygon fill="#000000" stroke="#000000" points="381.8047,-67.5374 371.2953,-68.8801 380.3482,-74.3842 381.8047,-67.5374"/>
 </g>
 <!-- BidirectionalCollection -->
-<g id="node4" class="node unknown">
+<g id="node10" class="node unknown">
 <title>BidirectionalCollection</title>
-<path fill="none" stroke="#000000" d="M629.8085,-281.246C629.8085,-281.246 437.8085,-281.246 437.8085,-281.246 431.8085,-281.246 425.8085,-275.246 425.8085,-269.246 425.8085,-269.246 425.8085,-257.246 425.8085,-257.246 425.8085,-251.246 431.8085,-245.246 437.8085,-245.246 437.8085,-245.246 629.8085,-245.246 629.8085,-245.246 635.8085,-245.246 641.8085,-251.246 641.8085,-257.246 641.8085,-257.246 641.8085,-269.246 641.8085,-269.246 641.8085,-275.246 635.8085,-281.246 629.8085,-281.246"/>
-<text text-anchor="middle" x="533.8085" y="-259.546" font-family="Menlo" font-size="14.00" fill="#000000">BidirectionalCollection</text>
+<path fill="none" stroke="#000000" d="M1062.2148,-40.5548C1062.2148,-40.5548 870.2148,-40.5548 870.2148,-40.5548 864.2148,-40.5548 858.2148,-34.5548 858.2148,-28.5548 858.2148,-28.5548 858.2148,-16.5548 858.2148,-16.5548 858.2148,-10.5548 864.2148,-4.5548 870.2148,-4.5548 870.2148,-4.5548 1062.2148,-4.5548 1062.2148,-4.5548 1068.2148,-4.5548 1074.2148,-10.5548 1074.2148,-16.5548 1074.2148,-16.5548 1074.2148,-28.5548 1074.2148,-28.5548 1074.2148,-34.5548 1068.2148,-40.5548 1062.2148,-40.5548"/>
+<text text-anchor="middle" x="966.2148" y="-18.8548" font-family="Menlo" font-size="14.00" fill="#000000">BidirectionalCollection</text>
 </g>
 <!-- TOMLArray&#45;&gt;BidirectionalCollection -->
-<g id="edge5" class="edge conformsTo">
+<g id="edge11" class="edge conformsTo">
 <title>TOMLArray&#45;&gt;BidirectionalCollection</title>
-<path fill="none" stroke="#000000" d="M690.2516,-159.0674C658.2644,-180.3683 604.9415,-215.8771 569.5787,-239.4259"/>
-<polygon fill="#000000" stroke="#000000" points="567.3824,-236.6834 560.999,-245.1393 571.2623,-242.5097 567.3824,-236.6834"/>
+<path fill="none" stroke="#000000" d="M760.8488,-126.053C803.4546,-104.581 874.5935,-68.7292 920.954,-45.3649"/>
+<polygon fill="#000000" stroke="#000000" points="922.8108,-48.3485 930.1656,-40.7225 919.6604,-42.0975 922.8108,-48.3485"/>
 </g>
 <!-- TOMLValueConvertible -->
-<g id="node5" class="node protocol">
+<g id="node11" class="node protocol">
 <title>TOMLValueConvertible</title>
-<g id="a_node5"><a xlink:href="https://lebje.github.io/TOMLKit/TOMLValueConvertible" xlink:title="TOMLValueConvertible">
-<path fill="none" stroke="#000000" d="M1007.4991,-280.5136C1007.4991,-280.5136 815.4991,-280.5136 815.4991,-280.5136 809.4991,-280.5136 803.4991,-274.5136 803.4991,-268.5136 803.4991,-268.5136 803.4991,-256.5136 803.4991,-256.5136 803.4991,-250.5136 809.4991,-244.5136 815.4991,-244.5136 815.4991,-244.5136 1007.4991,-244.5136 1007.4991,-244.5136 1013.4991,-244.5136 1019.4991,-250.5136 1019.4991,-256.5136 1019.4991,-256.5136 1019.4991,-268.5136 1019.4991,-268.5136 1019.4991,-274.5136 1013.4991,-280.5136 1007.4991,-280.5136"/>
-<text text-anchor="middle" x="911.4991" y="-258.8136" font-family="Menlo" font-size="14.00" fill="#000000">TOMLValueConvertible</text>
+<g id="a_node11"><a xlink:href="https://lebje.github.io/TOMLKit/TOMLValueConvertible" xlink:title="TOMLValueConvertible">
+<path fill="none" stroke="#000000" d="M1323.5966,-88.7585C1323.5966,-88.7585 1131.5966,-88.7585 1131.5966,-88.7585 1125.5966,-88.7585 1119.5966,-82.7585 1119.5966,-76.7585 1119.5966,-76.7585 1119.5966,-64.7585 1119.5966,-64.7585 1119.5966,-58.7585 1125.5966,-52.7585 1131.5966,-52.7585 1131.5966,-52.7585 1323.5966,-52.7585 1323.5966,-52.7585 1329.5966,-52.7585 1335.5966,-58.7585 1335.5966,-64.7585 1335.5966,-64.7585 1335.5966,-76.7585 1335.5966,-76.7585 1335.5966,-82.7585 1329.5966,-88.7585 1323.5966,-88.7585"/>
+<text text-anchor="middle" x="1227.5966" y="-67.0585" font-family="Menlo" font-size="14.00" fill="#000000">TOMLValueConvertible</text>
 </a>
 </g>
 </g>
 <!-- TOMLArray&#45;&gt;TOMLValueConvertible -->
-<g id="edge3" class="edge conformsTo">
-<title>TOMLArray&#45;&gt;TOMLValueConvertible</title>
-<path fill="none" stroke="#000000" d="M746.3999,-159.2213C780.3857,-180.4841 836.719,-215.7283 873.9773,-239.0385"/>
-<polygon fill="#000000" stroke="#000000" points="872.2151,-242.0645 882.549,-244.4013 875.9278,-236.1302 872.2151,-242.0645"/>
-</g>
-<!-- Equatable -->
-<g id="node6" class="node unknown">
-<title>Equatable</title>
-<path fill="none" stroke="#000000" d="M322.8539,-234.9436C322.8539,-234.9436 130.8539,-234.9436 130.8539,-234.9436 124.8539,-234.9436 118.8539,-228.9436 118.8539,-222.9436 118.8539,-222.9436 118.8539,-210.9436 118.8539,-210.9436 118.8539,-204.9436 124.8539,-198.9436 130.8539,-198.9436 130.8539,-198.9436 322.8539,-198.9436 322.8539,-198.9436 328.8539,-198.9436 334.8539,-204.9436 334.8539,-210.9436 334.8539,-210.9436 334.8539,-222.9436 334.8539,-222.9436 334.8539,-228.9436 328.8539,-234.9436 322.8539,-234.9436"/>
-<text text-anchor="middle" x="226.8539" y="-213.2436" font-family="Menlo" font-size="14.00" fill="#000000">Equatable</text>
-</g>
-<!-- TOMLArray&#45;&gt;Equatable -->
-<g id="edge7" class="edge conformsTo">
-<title>TOMLArray&#45;&gt;Equatable</title>
-<path fill="none" stroke="#000000" d="M609.0865,-157.7872C531.036,-169.8667 425.7272,-186.1649 345.4093,-198.5954"/>
-<polygon fill="#000000" stroke="#000000" points="344.592,-195.1801 335.245,-200.1684 345.6627,-202.0977 344.592,-195.1801"/>
-</g>
-<!-- Sequence -->
-<g id="node7" class="node unknown">
-<title>Sequence</title>
-<path fill="none" stroke="#000000" d="M204,-159.5591C204,-159.5591 12,-159.5591 12,-159.5591 6,-159.5591 0,-153.5591 0,-147.5591 0,-147.5591 0,-135.5591 0,-135.5591 0,-129.5591 6,-123.5591 12,-123.5591 12,-123.5591 204,-123.5591 204,-123.5591 210,-123.5591 216,-129.5591 216,-135.5591 216,-135.5591 216,-147.5591 216,-147.5591 216,-153.5591 210,-159.5591 204,-159.5591"/>
-<text text-anchor="middle" x="108" y="-137.8591" font-family="Menlo" font-size="14.00" fill="#000000">Sequence</text>
-</g>
-<!-- TOMLArray&#45;&gt;Sequence -->
-<g id="edge9" class="edge conformsTo">
-<title>TOMLArray&#45;&gt;Sequence</title>
-<path fill="none" stroke="#000000" d="M609.0969,-141.1279C501.6475,-141.2203 337.3725,-141.3617 226.477,-141.4571"/>
-<polygon fill="#000000" stroke="#000000" points="226.2474,-137.9572 216.2505,-141.4659 226.2535,-144.9572 226.2474,-137.9572"/>
-</g>
-<!-- RangeReplaceableCollection -->
-<g id="node8" class="node unknown">
-<title>RangeReplaceableCollection</title>
-<path fill="none" stroke="#000000" d="M1422.6307,-157.4233C1422.6307,-157.4233 1227.6307,-157.4233 1227.6307,-157.4233 1221.6307,-157.4233 1215.6307,-151.4233 1215.6307,-145.4233 1215.6307,-145.4233 1215.6307,-133.4233 1215.6307,-133.4233 1215.6307,-127.4233 1221.6307,-121.4233 1227.6307,-121.4233 1227.6307,-121.4233 1422.6307,-121.4233 1422.6307,-121.4233 1428.6307,-121.4233 1434.6307,-127.4233 1434.6307,-133.4233 1434.6307,-133.4233 1434.6307,-145.4233 1434.6307,-145.4233 1434.6307,-151.4233 1428.6307,-157.4233 1422.6307,-157.4233"/>
-<text text-anchor="middle" x="1325.1307" y="-135.7233" font-family="Menlo" font-size="14.00" fill="#000000">RangeReplaceableCollection</text>
-</g>
-<!-- TOMLArray&#45;&gt;RangeReplaceableCollection -->
-<g id="edge4" class="edge conformsTo">
-<title>TOMLArray&#45;&gt;RangeReplaceableCollection</title>
-<path fill="none" stroke="#000000" d="M825.643,-140.7476C932.2948,-140.4648 1094.8257,-140.0339 1205.2957,-139.741"/>
-<polygon fill="#000000" stroke="#000000" points="1205.4957,-143.2406 1215.4863,-139.714 1205.4771,-136.2406 1205.4957,-143.2406"/>
-</g>
-<!-- ExpressibleByArrayLiteral -->
-<g id="node9" class="node unknown">
-<title>ExpressibleByArrayLiteral</title>
-<path fill="none" stroke="#000000" d="M319.8031,-84.2338C319.8031,-84.2338 127.8031,-84.2338 127.8031,-84.2338 121.8031,-84.2338 115.8031,-78.2338 115.8031,-72.2338 115.8031,-72.2338 115.8031,-60.2338 115.8031,-60.2338 115.8031,-54.2338 121.8031,-48.2338 127.8031,-48.2338 127.8031,-48.2338 319.8031,-48.2338 319.8031,-48.2338 325.8031,-48.2338 331.8031,-54.2338 331.8031,-60.2338 331.8031,-60.2338 331.8031,-72.2338 331.8031,-72.2338 331.8031,-78.2338 325.8031,-84.2338 319.8031,-84.2338"/>
-<text text-anchor="middle" x="223.8031" y="-62.5338" font-family="Menlo" font-size="14.00" fill="#000000">ExpressibleByArrayLiteral</text>
-</g>
-<!-- TOMLArray&#45;&gt;ExpressibleByArrayLiteral -->
-<g id="edge8" class="edge conformsTo">
-<title>TOMLArray&#45;&gt;ExpressibleByArrayLiteral</title>
-<path fill="none" stroke="#000000" d="M609.3293,-124.6656C530.4348,-112.708 423.5021,-96.5009 342.2675,-84.1887"/>
-<polygon fill="#000000" stroke="#000000" points="342.4011,-80.6691 331.9895,-82.6309 341.3521,-87.59 342.4011,-80.6691"/>
-</g>
-<!-- CustomDebugStringConvertible -->
-<g id="node10" class="node unknown">
-<title>CustomDebugStringConvertible</title>
-<path fill="none" stroke="#000000" d="M1318.4651,-81.2951C1318.4651,-81.2951 1100.4651,-81.2951 1100.4651,-81.2951 1094.4651,-81.2951 1088.4651,-75.2951 1088.4651,-69.2951 1088.4651,-69.2951 1088.4651,-57.2951 1088.4651,-57.2951 1088.4651,-51.2951 1094.4651,-45.2951 1100.4651,-45.2951 1100.4651,-45.2951 1318.4651,-45.2951 1318.4651,-45.2951 1324.4651,-45.2951 1330.4651,-51.2951 1330.4651,-57.2951 1330.4651,-57.2951 1330.4651,-69.2951 1330.4651,-69.2951 1330.4651,-75.2951 1324.4651,-81.2951 1318.4651,-81.2951"/>
-<text text-anchor="middle" x="1209.4651" y="-59.5951" font-family="Menlo" font-size="14.00" fill="#000000">CustomDebugStringConvertible</text>
-</g>
-<!-- TOMLArray&#45;&gt;CustomDebugStringConvertible -->
-<g id="edge6" class="edge conformsTo">
-<title>TOMLArray&#45;&gt;CustomDebugStringConvertible</title>
-<path fill="none" stroke="#000000" d="M825.3319,-123.9744C901.9853,-111.8659 1005.0678,-95.5826 1085.1496,-82.9325"/>
-<polygon fill="#000000" stroke="#000000" points="1085.9634,-86.3475 1095.2948,-81.33 1084.8711,-79.4332 1085.9634,-86.3475"/>
-</g>
-<!-- RandomAccessCollection -->
-<g id="node11" class="node unknown">
-<title>RandomAccessCollection</title>
-<path fill="none" stroke="#000000" d="M993.777,-38.4679C993.777,-38.4679 801.777,-38.4679 801.777,-38.4679 795.777,-38.4679 789.777,-32.4679 789.777,-26.4679 789.777,-26.4679 789.777,-14.4679 789.777,-14.4679 789.777,-8.4679 795.777,-2.4679 801.777,-2.4679 801.777,-2.4679 993.777,-2.4679 993.777,-2.4679 999.777,-2.4679 1005.777,-8.4679 1005.777,-14.4679 1005.777,-14.4679 1005.777,-26.4679 1005.777,-26.4679 1005.777,-32.4679 999.777,-38.4679 993.777,-38.4679"/>
-<text text-anchor="middle" x="897.777" y="-16.7679" font-family="Menlo" font-size="14.00" fill="#000000">RandomAccessCollection</text>
-</g>
-<!-- TOMLArray&#45;&gt;RandomAccessCollection -->
 <g id="edge10" class="edge conformsTo">
-<title>TOMLArray&#45;&gt;RandomAccessCollection</title>
-<path fill="none" stroke="#000000" d="M744.3456,-122.9847C775.7057,-102.0311 827.5405,-67.3972 862.1679,-44.2606"/>
-<polygon fill="#000000" stroke="#000000" points="864.2074,-47.1072 870.5778,-38.6414 860.3185,-41.2869 864.2074,-47.1072"/>
+<title>TOMLArray&#45;&gt;TOMLValueConvertible</title>
+<path fill="none" stroke="#000000" d="M833.1254,-128.3383C914.3561,-116.4813 1025.5365,-100.2526 1109.1629,-88.0459"/>
+<polygon fill="#000000" stroke="#000000" points="1109.8312,-91.4855 1119.2208,-86.5778 1108.8201,-84.5589 1109.8312,-91.4855"/>
+</g>
+<!-- Encodable -->
+<g id="node12" class="node unknown">
+<title>Encodable</title>
+<path fill="none" stroke="#000000" d="M222.5187,-204.7035C222.5187,-204.7035 30.5187,-204.7035 30.5187,-204.7035 24.5187,-204.7035 18.5187,-198.7035 18.5187,-192.7035 18.5187,-192.7035 18.5187,-180.7035 18.5187,-180.7035 18.5187,-174.7035 24.5187,-168.7035 30.5187,-168.7035 30.5187,-168.7035 222.5187,-168.7035 222.5187,-168.7035 228.5187,-168.7035 234.5187,-174.7035 234.5187,-180.7035 234.5187,-180.7035 234.5187,-192.7035 234.5187,-192.7035 234.5187,-198.7035 228.5187,-204.7035 222.5187,-204.7035"/>
+<text text-anchor="middle" x="126.5187" y="-183.0035" font-family="Menlo" font-size="14.00" fill="#000000">Encodable</text>
+</g>
+<!-- TOMLArray&#45;&gt;Encodable -->
+<g id="edge6" class="edge conformsTo">
+<title>TOMLArray&#45;&gt;Encodable</title>
+<path fill="none" stroke="#000000" d="M616.9632,-151.8082C511.9942,-159.2768 353.0119,-170.5884 244.7166,-178.2937"/>
+<polygon fill="#000000" stroke="#000000" points="244.4519,-174.8036 234.7255,-179.0046 244.9487,-181.7859 244.4519,-174.8036"/>
 </g>
 </g>
 </svg>
@@ -208,6 +219,7 @@
 <dt class="unknown"><code>BidirectionalCollection</code></dt>
 <dt class="unknown"><code>Collection</code></dt>
 <dt class="unknown"><code>CustomDebugStringConvertible</code></dt>
+<dt class="unknown"><code>Encodable</code></dt>
 <dt class="unknown"><code>Equatable</code></dt>
 <dt class="unknown"><code>ExpressibleByArrayLiteral</code></dt>
 <dt class="unknown"><code>MutableCollection</code></dt>
@@ -260,6 +272,18 @@
 </div>
 <div class="summary" role="doc-abstract">
     <p>Creates a new <code>TOMLArray</code> using the contents of a Swift <code>Array</code>.</p>
+
+</div>
+</div>
+<div role="article" class="initializer" id="tomlarray.init(_:)">
+    <h3>
+        <code><a href="#tomlarray.init(_:)">init(_:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="attribute">convenience</span> <span class="keyword">init</span>&lt;<span class="variable">S</span>: <span class="type">Sequence</span>&gt;(<span class="keyword">_</span> <span class="variable">sequence</span>: <span class="type">S</span>) <span class="keyword">where</span> <span class="type">S</span>.<span class="type">Element</span>: <a href="https://lebje.github.io/TOMLKit/TOMLValueConvertible"><span class="type">TOMLValueConvertible</span></a>  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Initialize a <code>TOMLArray</code> from the elements in <code>S</code>.</p>
 
 </div>
 </div>
@@ -424,6 +448,14 @@
 <pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">makeIterator</span>() -&gt; <a href="https://lebje.github.io/TOMLKit/TOMLArrayIterator"><span class="type">TOMLArrayIterator</span></a>  </body></html></code></pre>
 </div>
 </div>
+<div role="article" class="function" id="tomlarray.encode(to:)">
+    <h3>
+        <code><a href="#tomlarray.encode(to:)">encode(to:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">encode</span>(<span class="variable">to</span> <span class="variable">encoder</span>: <span class="type">Encoder</span>) <span class="keyword">throws</span>  </body></html></code></pre>
+</div>
+</div>
     </section>
     <section id="operators">
         <h2>Operators</h2>
@@ -445,7 +477,7 @@
 
     <footer>
         <p>
-    Generated on <time datetime="2021-11-08T18:44:40+0000">November 8, 2021</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+    Generated on <time datetime="2021-12-12T16:38:10+0000">December 12, 2021</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
 </p>
     </footer>
 </body>

@@ -43,6 +43,28 @@
     <p><code>TOMLEncoder</code> encodes Swift <code>struct</code>s into TOML documents.</p>
 
 </div>
+<div class="discussion">
+    <h3>Customizing Encoding</h3>
+
+<p>You can customize how <code>Data</code> is encoded, and how the resulting TOML is formatted.</p>
+
+<p>To format the TOML document, insert or remove <code>FormatOptions</code> from <code>TOMLEncoder</code>'s `TOMLEncoder/options``.</p>
+
+<p>To customize the encoding of <code>Data</code>, provide a function for <code>TOMLEncoder/dataEncoder</code>:</p>
+
+<html><body><pre class="highlight"><code><span class="keyword">var</span> <span class="variable">encoder</span> = <span class="variable">TOMLEncoder</span>()
+<span class="variable">encoder</span>.<span class="variable">dataEncoder</span> = <span class="variable">Array</span>.<span class="variable">init</span>
+
+<span class="keyword">let</span> <span class="variable">data</span> = <span class="variable">Data</span>(<span class="string literal">"</span><span class="string literal">Hello World!</span><span class="string literal">"</span>.<span class="variable">utf8</span>).<span class="variable">base64EncodedData</span>()
+
+<span class="variable">encoder</span>.<span class="variable">encode</span>(<span class="variable">MyStruct</span>(<span class="variable">data</span>: <span class="type">data</span>))
+</code></pre></body></html>
+<p>The resulting TOML would be:</p>
+
+<html><body><pre><code class="language-toml">data = [83, 71, 86, 115, 98, 71, 56, 103, 86, 50, 57, 121, 98, 71, 81, 104]
+</code></pre>
+ </body></html>
+</div>
 
     <section id="initializers">
         <h2>Initializers</h2>
@@ -194,7 +216,7 @@
 
     <footer>
         <p>
-    Generated on <time datetime="2021-11-08T18:44:41+0000">November 8, 2021</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+    Generated on <time datetime="2021-12-12T16:38:10+0000">December 12, 2021</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
 </p>
     </footer>
 </body>

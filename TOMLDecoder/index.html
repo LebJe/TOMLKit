@@ -43,6 +43,24 @@
     <p><code>TOMLDecoder</code> decodes TOML documents into Swift <code>struct</code>s.</p>
 
 </div>
+<div class="discussion">
+    <h3>Customizing Decoding</h3>
+
+<p>By default, <code>Data</code> is decoded using Base64, but you can use another method by providing a function to <code>TOMLDecoder/dataDecoder</code>:</p>
+
+<html><body><pre class="highlight"><code><span class="keyword">let</span> <span class="variable">toml</span> = <span class="string literal">"</span><span class="string literal">data = [83, 71, 86, 115, 98, 71, 56, 103, 86, 50, 57, 121, 98, 71, 81, 104]</span><span class="string literal">"</span>
+
+<span class="keyword">var</span> <span class="variable">decoder</span> = <span class="variable">TOMLDecoder</span>()
+
+<span class="variable">decoder</span>.<span class="variable">dataDecoder</span> = {
+	<span class="keyword">let</span> <span class="variable">arr</span> = <span class="variable">$0</span>.<span class="variable">array</span>!.<span class="variable">map</span>({ <span class="variable">UInt8</span>(<span class="variable">$0</span>.<span class="variable">int</span>!) })
+	<span class="keyword">return</span> <span class="variable">Data</span>(<span class="variable">base64Encoded</span>: <span class="type">Data</span>(<span class="variable">arr</span>))!
+}
+
+<span class="keyword">let</span> <span class="variable">myStruct</span> = <span class="keyword">try</span> <span class="variable">decoder</span>.<span class="variable">decode</span>(<span class="variable">MyStruct</span>.<span class="keyword">self</span>, <span class="variable">from</span>: <span class="type">toml</span>)
+<span class="variable">String</span>(<span class="variable">data</span>: <span class="type">myStruct</span>.<span class="variable">data</span>, <span class="variable">encoding</span>: .<span class="variable">utf8</span>) <span class="comment">// &lt;== "Hello World!"</span>
+</code></pre></body></html>
+</div>
 
     <section id="initializers">
         <h2>Initializers</h2>
@@ -52,7 +70,9 @@
         <code><a href="#tomldecoder.init(datadecoder:)">init(data​Decoder:​)</a></code>
     </h3>
     <div class="declaration">
-<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">init</span>(<span class="variable">dataDecoder</span>: <span class="attribute">@</span><span class="attribute">escaping</span> (<span class="type">String</span>) -&gt; <span class="type">Data</span>? = { <span class="variable">Data</span>(<span class="variable">base64Encoded</span>: <span class="variable">$0</span>) })  </body></html></code></pre>
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">init</span>(
+		<span class="variable">dataDecoder</span>: <span class="attribute">@</span><span class="attribute">escaping</span> (<a href="https://lebje.github.io/TOMLKit/TOMLValueConvertible"><span class="type">TOMLValueConvertible</span></a>) -&gt; <span class="type">Data</span>? = { <span class="variable">$0</span>.<span class="variable">string</span> != <span class="keyword">nil</span> ? <span class="variable">Data</span>(<span class="variable">base64Encoded</span>: <span class="variable">$0</span>.<span class="variable">string</span>!) : <span class="keyword">nil</span> }
+	)  </body></html></code></pre>
 </div>
 </div>
     </section>
@@ -72,10 +92,10 @@
         <code><a href="#tomldecoder.datadecoder">data​Decoder</a></code>
     </h3>
     <div class="declaration">
-<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">dataDecoder</span>: (<span class="type">String</span>) -&gt; <span class="type">Data</span>?  </body></html></code></pre>
+<pre class="highlight"><code><html><body><span class="keyword">public</span> <span class="keyword">var</span> <span class="variable">dataDecoder</span>: (<a href="https://lebje.github.io/TOMLKit/TOMLValueConvertible"><span class="type">TOMLValueConvertible</span></a>) -&gt; <span class="type">Data</span>?  </body></html></code></pre>
 </div>
 <div class="summary" role="doc-abstract">
-    <p>This function will be used to decode instances of <code>Data</code> from a <code>String</code> in a TOML document.</p>
+    <p>This function will be used to decode <code>Data</code> in a TOML document.</p>
 
 </div>
 <div class="discussion">
@@ -182,7 +202,7 @@
 
     <footer>
         <p>
-    Generated on <time datetime="2021-11-08T18:44:40+0000">November 8, 2021</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+    Generated on <time datetime="2021-12-12T16:38:10+0000">December 12, 2021</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
 </p>
     </footer>
 </body>
