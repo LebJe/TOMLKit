@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   `Array` Conforms to `TOMLValueConvertible` when its `Element` conforms the the protocol.
+-   `Array` conforms to `TOMLValueConvertible` when its `Element` conforms to the protocol.
 -   `TOMLArray` now conforms to `Encodable`, and can be initialized from a type conforming to `Sequence`.
 -   `TOMLTable` conforms to `Encodable`.
 -   `(U)Int8|16|32|64` now conforms to `TOMLValueConvertible`.
