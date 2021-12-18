@@ -30,7 +30,7 @@ import class Foundation.JSONEncoder
 ///
 /// ```toml
 /// data = [83, 71, 86, 115, 98, 71, 56, 103, 86, 50, 57, 121, 98, 71, 81, 104]
-/// ````
+/// ```
 public struct TOMLEncoder {
 	public var userInfo: [CodingUserInfoKey: Any] = [:]
 

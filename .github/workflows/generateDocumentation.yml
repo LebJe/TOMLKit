@@ -11,7 +11,7 @@ jobs:
         steps:
             - uses: "actions/checkout@v2"
             - name: "Clone swift-docc and swift-docc-render"
-              run: "gh repo clone apple/swift-docc && gh repo clone apple/swift-docc-render"
+              run: "gh repo clone apple/swift-docc && gh repo clone LebJe/swift-docc-render"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - name: "Build swift-docc-render"
