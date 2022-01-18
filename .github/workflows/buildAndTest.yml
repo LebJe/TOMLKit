@@ -37,9 +37,9 @@ jobs:
         steps:
             - uses: "actions/checkout@v2"
             - uses: "seanmiddleditch/gha-setup-vsdevenv@master"
-            - name: "Install swift-5.4-RELEASE"
+            - name: "Install swift-5.5.2-RELEASE"
               run: |
-                  Install-Binary -Url "https://swift.org/builds/swift-5.4-release/windows10/swift-5.4-RELEASE/swift-5.4-RELEASE-windows10.exe" -Name "installer.exe" -ArgumentList ("-q")
+                  Install-Binary -Url "https://download.swift.org/swift-5.5.2-release/windows10/swift-5.5.2-RELEASE/swift-5.5.2-RELEASE-windows10.exe" -Name "installer.exe" -ArgumentList ("-q")
             - name: "Set Environment Variables"
               run: |
                   echo "SDKROOT=C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
