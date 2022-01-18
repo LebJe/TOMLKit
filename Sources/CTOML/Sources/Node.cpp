@@ -7,6 +7,7 @@
 #include "Conversion.hpp"
 #include "toml.hpp"
 #include <CTOML/CTOML.h>
+#include <iostream>
 #include <string>
 
 #ifdef __cplusplus
@@ -15,39 +16,42 @@ extern "C" {
 
 	/// The TOML type of \c node .
 	CTOMLNodeType nodeType(CTOMLNode * node) {
+		auto a = reinterpret_cast<toml::node *>(node);
+		auto b = a->as<toml::date_time>()->type();
+
 		auto type = reinterpret_cast<toml::node *>(node)->type();
 
 		switch (type) {
-			case toml::v2::node_type::array:
-				return CTOMLNodeType { array };
+			case toml::node_type::array:
+				return CTOMLNodeType(array);
 				break;
-			case toml::v2::node_type::boolean:
-				return CTOMLNodeType { boolean };
+			case toml::node_type::boolean:
+				return CTOMLNodeType(boolean);
 				break;
-			case toml::v2::node_type::date:
-				return CTOMLNodeType { date };
+			case toml::node_type::date:
+				return CTOMLNodeType(date);
 				break;
-			case toml::v2::node_type::date_time:
-				return CTOMLNodeType { dateTime };
+			case toml::node_type::date_time:
+				return CTOMLNodeType(dateTime);
 				break;
-			case toml::v2::node_type::floating_point:
-				return CTOMLNodeType { floatingPoint };
+			case toml::node_type::floating_point:
+				return CTOMLNodeType(floatingPoint);
 				break;
-			case toml::v2::node_type::integer:
-				return CTOMLNodeType { integer };
+			case toml::node_type::integer:
+				return CTOMLNodeType(integer);
 				break;
-			case toml::v2::node_type::string:
-				return CTOMLNodeType { string };
+			case toml::node_type::string:
+				return CTOMLNodeType(string);
 				break;
-			case toml::v2::node_type::table:
-				return CTOMLNodeType { table };
+			case toml::node_type::table:
+				return CTOMLNodeType(table);
 				break;
-			case toml::v2::node_type::time:
-				return CTOMLNodeType { timeType };
+			case toml::node_type::time:
+				return CTOMLNodeType(timeType);
 				break;
 			default:
 				// FIXME: This shouldn't happen.
-				return CTOMLNodeType { string };
+				return CTOMLNodeType(string);
 		}
 	}
 
@@ -55,44 +59,43 @@ extern "C" {
 	CTOMLNode * copyNode(CTOMLNode * n) {
 		auto node = reinterpret_cast<toml::node *>(n);
 		switch (node->type()) {
-			case toml::v2::node_type::array: {
+			case toml::node_type::array: {
 				return reinterpret_cast<CTOMLNode *>(new toml::array(*node->as_array()));
 				break;
 			}
-			case toml::v2::node_type::table: {
+			case toml::node_type::table: {
 				return reinterpret_cast<CTOMLNode *>(new toml::table(*node->as_table()));
 				break;
 			}
-			case toml::v2::node_type::string: {
-				return reinterpret_cast<CTOMLNode *>(new toml::value { *node->as_string() });
+			case toml::node_type::string: {
+				return reinterpret_cast<CTOMLNode *>(new toml::value(*node->as_string()));
 				break;
 			}
-			case toml::v2::node_type::integer: {
-				return reinterpret_cast<CTOMLNode *>(new toml::value { *node->as_integer() });
+			case toml::node_type::integer: {
+				return reinterpret_cast<CTOMLNode *>(new toml::value(*node->as_integer()));
 				break;
 			}
-			case toml::v2::node_type::floating_point: {
-				return reinterpret_cast<CTOMLNode *>(
-					new toml::value { *node->as_floating_point() });
+			case toml::node_type::floating_point: {
+				return reinterpret_cast<CTOMLNode *>(new toml::value(*node->as_floating_point()));
 				break;
 			}
-			case toml::v2::node_type::boolean: {
-				return reinterpret_cast<CTOMLNode *>(new toml::value { *node->as_boolean() });
+			case toml::node_type::boolean: {
+				return reinterpret_cast<CTOMLNode *>(new toml::value(*node->as_boolean()));
 				break;
 			}
-			case toml::v2::node_type::date: {
-				return reinterpret_cast<CTOMLNode *>(new toml::value { *node->as_date() });
+			case toml::node_type::date: {
+				return reinterpret_cast<CTOMLNode *>(new toml::value(*node->as_date()));
 				break;
 			}
-			case toml::v2::node_type::time: {
-				return reinterpret_cast<CTOMLNode *>(new toml::value { *node->as_time() });
+			case toml::node_type::time: {
+				return reinterpret_cast<CTOMLNode *>(new toml::value(*node->as_time()));
 				break;
 			}
-			case toml::v2::node_type::date_time: {
-				return reinterpret_cast<CTOMLNode *>(new toml::value { *node->as_date_time() });
+			case toml::node_type::date_time: {
+				return reinterpret_cast<CTOMLNode *>(new toml::value(*node->as_date_time()));
 				break;
 			}
-			case toml::v2::node_type::none: {
+			case toml::node_type::none: {
 				// This shouldn't happen.
 				return nullptr;
 			}
@@ -250,7 +253,7 @@ extern "C" {
 
 	/// Retrieves a \c CTOMLTable from the \c node .
 	CTOMLTable * _Nullable nodeAsTable(CTOMLNode * _Nonnull node) {
-		auto res = reinterpret_cast<toml::node *>(node)->as_table();
+		auto res = reinterpret_cast<toml::table *>(node);
 
 		if (res == NULL) { return NULL; }
 
@@ -259,7 +262,7 @@ extern "C" {
 
 	/// Retrieves a \c CTOMLArray from the \c node .
 	CTOMLArray * _Nullable nodeAsArray(CTOMLNode * _Nonnull node) {
-		auto res = reinterpret_cast<toml::node *>(node)->as_array();
+		auto res = reinterpret_cast<toml::array *>(node);
 
 		if (res == NULL) { return NULL; }
 

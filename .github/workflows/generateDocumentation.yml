@@ -20,8 +20,8 @@ jobs:
               id: "cache-docc"
               uses: "actions/cache@v2"
               with:
-                key: "TOMLKit-docc-build"
-                path: "swift-docc/.build"
+                  key: "TOMLKit-docc-build"
+                  path: "swift-docc/.build"
             - name: "Build swift-docc"
               if: "${{ !steps.cache-docc.outputs.cache-hit }}"
               run: "swift build --product docc --package-path swift-docc -c release"

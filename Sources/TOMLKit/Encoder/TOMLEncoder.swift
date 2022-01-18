@@ -1,11 +1,10 @@
-// Copyright (c) 2021 Jeff Lebrun
+// Copyright (c) 2022 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
 //  The full text of the license can be found in the file named LICENSE.
 
 import struct Foundation.Data
-import class Foundation.JSONEncoder
 
 /// `TOMLEncoder` encodes Swift `struct`s into TOML documents.
 ///
@@ -38,7 +37,11 @@ public struct TOMLEncoder {
 	public var options: FormatOptions = [
 		.allowLiteralStrings,
 		.allowMultilineStrings,
-		.allowValueFormatFlags,
+		.allowUnicodeStrings,
+		.allowBinaryIntegers,
+		.allowOctalIntegers,
+		.allowHexadecimalIntegers,
+		.indentations,
 	]
 
 	/// Used to encode instances of `Data` into a type conforming to `TOMLValueConvertible` that can be inserted into a TOML document.
@@ -50,7 +53,7 @@ public struct TOMLEncoder {
 		options: FormatOptions = [
 			.allowLiteralStrings,
 			.allowMultilineStrings,
-			.allowValueFormatFlags,
+			// .allowValueFormatFlags,
 		],
 		dataEncoder: @escaping (Data) -> TOMLValueConvertible = { $0.base64EncodedString() }
 	) {

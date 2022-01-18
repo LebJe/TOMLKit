@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Jeff Lebrun
+// Copyright (c) 2022 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
@@ -23,6 +23,7 @@ public extension TOMLTable {
 
 	func contains(element: TOMLValueConvertible) -> Bool {
 		let e = element.tomlValue
+
 		for v in self.values {
 			if e == v { return true }
 		}

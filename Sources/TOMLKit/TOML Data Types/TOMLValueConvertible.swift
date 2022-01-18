@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Jeff Lebrun
+// Copyright (c) 2022 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
@@ -18,6 +18,30 @@ import CTOML
 import struct Foundation.Data
 
 /// A type that can be converted into a value in a TOML document.
+///
+/// You should not conform your types to this protocol. Instead, interact with this protocol through the types that conform to it:
+///
+/// ```swift
+/// myTOMLTable["string"]! // <- subscript returns `TOMLValueConvertible`
+/// myTOMLArray[0] // <- subscript returns `TOMLValueConvertible`
+///
+/// myTOMLTable["int"] = 1 // as TOMLValueConvertible
+/// myTOMLArray.append(true /* as TOMLValueConvertible */)
+/// ```
+///
+/// The properties in this protocol are used to determine the TOML type of a ``TOMLValueConvertible`` conformant type,
+/// or to convert a generic ``TOMLValueConvertible`` to a concrete type:
+///
+/// ```swift
+///	let array: TOMLArray? = myTOMLArray[0].array
+///	let int: Int? = myTOMLTable["int"]?.int
+///	let table: TOMLTable? = myTOMLArray[0]?[6]?["table"]?.table // `TOMLValueConvertible` provides subscripts for nesting
+///
+///	switch myTOMLTable["table"]?.type {
+///		...
+///	}
+/// ```
+///
 public protocol TOMLValueConvertible: CustomDebugStringConvertible {
 	/// What kind of TOML value this is.
 	var type: TOMLType { get }
@@ -81,7 +105,7 @@ public extension TOMLValueConvertible {
 		return TOMLArray(arrayPointer: pointer)
 	}
 
-	/// Converts this `TOMLValueConvertible` to a `TOMLArray`. then returns the `TOMLValue` at `index`, If the conversion fails, this will return `nil`.
+	/// Converts this `TOMLValueConvertible` to a `TOMLArray`, then returns the `TOMLValue` at `index`, If the conversion fails, this will return `nil`.
 	subscript(index: Int) -> TOMLValue? {
 		get {
 			guard self.type == .array else { return nil }
@@ -93,7 +117,7 @@ public extension TOMLValueConvertible {
 		}
 	}
 
-	/// Converts this `TOMLValueConvertible` to a `TOMLTable`. then returns the `TOMLValue` at `key`, If the conversion fails, this will return `nil`.
+	/// Converts this `TOMLValueConvertible` to a `TOMLTable`, then returns the `TOMLValue` at `key`, If the conversion fails, this will return `nil`.
 	subscript(key: String) -> TOMLValue? {
 		get {
 			guard self.type == .table else { return nil }
