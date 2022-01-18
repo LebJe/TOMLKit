@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   `TOMLTable` can now be converted to YAML.
--   More `FormattingOptions` have been added.
+-   More `FormatOptions` have been added.
 -   Better and more organized documentation.
 
 ### Changed
