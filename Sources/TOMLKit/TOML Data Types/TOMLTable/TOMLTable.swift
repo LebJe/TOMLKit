@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Jeff Lebrun
+// Copyright (c) 2022 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
@@ -17,6 +17,129 @@
 import CTOML
 
 /// A [table](https://toml.io/en/v1.0.0#table) in a TOML document.
+///
+/// TOML tables are key-value pairs, similar to a Swift `Dictionary`, but unlike a `Dictionary`, their values can be of any type.
+/// They are either the root element in a document, or nested inside the root (or another) table.
+///
+/// To create a ``TOMLTable`` with values, use one of the below methods:
+///
+/// * From a Dictionary
+///
+/// ```swift
+/// let table = TOMLTable(["string": "Hello, World!", "int": 345025, "double": 025307.350])
+///
+/// // Or use `TOMLTable`'s `ExpressibleByDictionaryLiteral` conformance.
+/// let table = ["string": "Hello, World!", "int": 345025, "double": 025307.350] as TOMLTable
+/// ```
+///
+/// * From a TOML String
+///
+/// ```swift
+/// let toml = """
+/// string = "Hello, World!"
+/// int = 523053
+/// double = 3250.34
+/// """
+///
+/// do {
+///    let table = try TOMLTable(string: toml)
+/// } catch let error as TOMLParseError {
+///    // TOMLParseError occurs when the TOML document is invalid.
+///
+///    /// `error.source.begin` contains the line and column where the error started,
+///    /// and `error.source.end` contains the line where the error ended.
+///     print(error.source.begin)
+///     print(error.source.end)
+/// }
+/// ```
+///
+/// ### Inserting Values
+///
+/// To insert values, make sure the value conforms to ``TOMLValueConvertible``, then use the ``TOMLTable/subscript(_:)-76dpr``, or the ``TOMLTable/insert(_:at:)`` method:
+/// ```swift
+/// let table = TOMLTable()
+///
+/// table["string"] = "Hello, World!"
+/// table.insert(127, at: "int")
+/// table["table"] = TOMLTable(["string 1": "Hello, Again!"], inline: true)
+/// table["table2"] = TOMLTable(["string 2": "Hello, Again!"], inline: false)
+///
+/// // Insert an integer using an octal representation.
+/// table.insert(TOMLInt(0o755, options: .formatAsOctal), at: "octalInt")
+/// ```
+///
+/// ### Retrieving Values
+///
+/// #### Iteration
+///	```swift
+/// let table = TOMLTable(["string": "Hello, World!", "int": 345025, "double": 025307.350])
+///
+/// for (key, value) in table {
+///		print("\(key) => \(value.debugDescription)")
+/// }
+///
+/// // string => "Hello, World!"
+/// // int => 345025
+/// // double => 25307.35
+/// ```
+///
+/// #### Subscript
+///
+/// ```swift
+/// let table = TOMLTable(
+///		[
+///			"string": "Hello, World!",
+///			"int": 345025,
+///			"double": 025307.350,
+/// 		"InnerTable": TOMLTable(["date": TOMLDate(year: 2022, month: 1, day: 18)]),
+///			"array": TOMLArray([1, 2, "3"])
+///		]
+///	)
+///
+///	let integer: Int? = table["int"]?.int
+///	let string: String? = table["string"]?.string
+///	let double: Double? = table["double"]?.double
+///	let date: TOMLDate? = table["innerTable"]?["date"]?.date
+///	let arrayInt: Int? = table["array"]?[0].int
+/// ```
+///
+/// ### Conversion
+///
+/// You can convert a table to TOML, JSON, or YAML using the ``TOMLTable/convert(to:options:)`` function:
+///
+/// ```swift
+/// let table: TOMLTable = ...
+///
+/// // Convert to TOML.
+/// let toml = table.convert()
+///
+/// // Convert to JSON.
+/// let json = table.convert(to: .json)
+///
+/// // Convert to YAML.
+/// let yaml = table.convert(to: .yaml)
+/// ```
+/// You can customize the encoding using ``FormatOptions``:
+///
+/// ```swift
+/// // Convert to TOML with custom settings.
+/// let toml = table.convert(to: .toml, options: [.quoteDateAndTimes, .allowMultilineStrings])
+/// let json = table.convert(to: .json, options: .quoteDateAndTimes)
+/// ```
+///
+/// If your table has a ``TOMLInt`` with ``ValueOptions``:
+///
+/// ```swift
+/// let toml = TOMLTable(["int": TOMLInt(0o755, options: .formatAsOctal)])
+/// 	.convert(to: .toml, options: .allowValueFormatFlags)
+/// ```
+///
+/// The resulting TOML:
+///
+/// ```toml
+///	int = 0o755
+/// ```
+///
 public final class TOMLTable:
 	Equatable, Sequence, Encodable,
 	CustomDebugStringConvertible,
@@ -42,6 +165,7 @@ public final class TOMLTable:
 	public var values: [TOMLValue] {
 		let pointer = tableGetValues(self.tablePointer)
 		var tomlValueArray: [TOMLValue] = []
+
 		for i in 0..<self.count {
 			tomlValueArray.append(TOMLValue(tomlValuePointer: pointer[i]))
 		}
@@ -51,7 +175,7 @@ public final class TOMLTable:
 
 	/// Whether this `TOMLTable` is an [inline table](https://toml.io/en/v1.0.0#inline-table) or not.
 	///
-	/// Use the `get`ter to check if this table in an inline table, and use the `set`ter to make this an inline table.
+	/// Use the `get`ter to check if this table is an inline table, and use the `set`ter to make this an inline table.
 	public var inline: Bool {
 		get { tableInline(self.tablePointer) }
 		set { tableSetInline(self.tablePointer, newValue) }
@@ -70,14 +194,6 @@ public final class TOMLTable:
 	public var isHomogeneous: Bool {
 		tableIsHomogeneous(self.tablePointer)
 	}
-
-	private var defaultTOMLConverterFlags: FormatOptions = [
-		.allowLiteralStrings,
-		.allowMultilineStrings,
-		.allowValueFormatFlags,
-	]
-
-	private var defaultJSONConverterFlags: FormatOptions = .quoteDateAndTimes
 
 	/// Create a new `TOMLTable`.
 	/// - Parameter inline: Whether this table will be an [inline table](https://toml.io/en/v1.0.0#inline-table) or not.
@@ -98,7 +214,7 @@ public final class TOMLTable:
 	/// Creates a `TOMLTable` from a `String` containing a TOML document.
 	/// - Parameters:
 	///   - string: The `String` containing a TOML document.
-	/// - Throws: `TOMLParseError` if an error occurs during parsing.
+	/// - Throws: ``TOMLParseError`` if an error occurs during parsing.
 	public init(string: String) throws {
 		let errorPointer = UnsafeMutablePointer<CTOMLParseError>.allocate(capacity: 1)
 
@@ -107,6 +223,14 @@ public final class TOMLTable:
 		}
 
 		self.tablePointer = table
+	}
+
+	/// Creates a `TOMLTable` by encoding `value` using ``TOMLEncoder``.
+	/// - Parameters:
+	///   - string: An `Encodable` struct.
+	/// - Throws: ``EncodingError`` if an error occurs during encoding.
+	public convenience init<V: Encodable>(_ value: V) throws {
+		self.init(tablePointer: try TOMLEncoder().encode(value).tablePointer)
 	}
 
 	public required convenience init(dictionaryLiteral elements: (String, TOMLValueConvertible)...) {
@@ -152,13 +276,25 @@ public final class TOMLTable:
 		}
 	}
 
-	/// Converts this `TOMLTable` to a JSON or TOML document.
+	/// Converts this `TOMLTable` to a JSON, YAML, or TOML document.
 	/// - Parameter format: The format you want to convert `self` to.
-	/// - Returns: The `String` containing the JSON or TOML document.
-	public func convert(to format: ConversionFormat = .toml, options: FormatOptions = []) -> String {
+	/// - Returns: The `String` containing the JSON, YAML, or TOML document.
+	public func convert(
+		to format: ConversionFormat = .toml,
+		options: FormatOptions = [
+			.allowLiteralStrings,
+			.allowMultilineStrings,
+			.allowUnicodeStrings,
+			.allowBinaryIntegers,
+			.allowOctalIntegers,
+			.allowHexadecimalIntegers,
+			.indentations,
+		]
+	) -> String {
 		switch format {
-			case .toml: return String(cString: tableConvertToTOML(self.tablePointer, (options.isEmpty ? self.defaultTOMLConverterFlags : options).rawValue))
-			case .json: return String(cString: tableConvertToJSON(self.tablePointer, (options.isEmpty ? self.defaultJSONConverterFlags : options).rawValue))
+			case .toml: return String(cString: tableConvertToTOML(self.tablePointer, options.rawValue))
+			case .json: return String(cString: tableConvertToJSON(self.tablePointer, options.rawValue))
+			case .yaml: return String(cString: tableConvertToYAML(self.tablePointer, options.rawValue))
 		}
 	}
 

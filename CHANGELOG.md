@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0](https://github.com/LebJe/TOMLKit/releases/tag/0.5.0) - 2022-01-18
+
+### Added
+
+-   `TOMLTable` can now be converted to YAML.
+-   More `FormattingOptions` have been added.
+-   Better and more organized documentation.
+
+### Changed
+
+-   Upgraded to [toml++ v3.0.1](https://github.com/marzer/tomlplusplus/releases/tag/v3.0.1).
+-   Documentation has been moved out of the README and into the [main documentation page](https://lebje.github.io/TOMLKit/documentation/tomlkit/).
+-   The `public` variables in `TOMLDate`, `TOMLTime` and `TOMLDateTime` are now mutable.
+-   `TOMLDate.date` and `TOMLDateTime.fDate` now return an `Optional<Foundation.Date>`.
+
+### Removed
+
+-   `FormatOptions.allowValueFormatFlags`.
+
 ## [0.4.0](https://github.com/LebJe/TOMLKit/releases/tag/0.4.0) - 2021-12-12
 
 ### Added

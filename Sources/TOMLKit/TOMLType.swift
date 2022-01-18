@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Jeff Lebrun
+// Copyright (c) 2022 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
@@ -17,7 +17,7 @@ public enum TOMLType: String, CaseIterable {
 	/// A [TOML string](https://toml.io/en/v1.0.0#string).
 	case string
 
-	/// A [TOML integer](https://toml.io/en/v1.0.0#integer.
+	/// A [TOML integer](https://toml.io/en/v1.0.0#integer).
 	case int
 
 	/// A [TOML floating-point](https://toml.io/en/v1.0.0#float) (double) value.

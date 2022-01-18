@@ -158,7 +158,7 @@ extern "C" {
 	// MARK: - Array - Value Manipulation - Insertion
 
 	/// Insert a \c int64_t into \c array .
-	void arrayInsertInt(CTOMLArray * array, int64_t index, int64_t integer, uint8_t flags);
+	void arrayInsertInt(CTOMLArray * array, int64_t index, int64_t integer, uint16_t flags);
 
 	/// Insert a \c toml::table into \c array .
 	void arrayInsertTable(CTOMLArray * array, int64_t index, CTOMLTable * _Nonnull table);
@@ -173,7 +173,7 @@ extern "C" {
 	void arrayReplaceBool(CTOMLArray * array, int64_t index, bool b);
 
 	/// Replace the \c int64_t at \c index with \c i .
-	void arrayReplaceInt(CTOMLArray * array, int64_t index, int64_t i, uint8_t flags);
+	void arrayReplaceInt(CTOMLArray * array, int64_t index, int64_t i, uint16_t flags);
 
 	/// Replace the \c double at \c index with \c d .
 	void arrayReplaceDouble(CTOMLArray * array, int64_t index, double d);
@@ -198,7 +198,7 @@ extern "C" {
 
 	/// Replaces the value at \c key with \c integer .
 	void
-	tableReplaceOrInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags);
+	tableReplaceOrInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint16_t flags);
 
 	/// Replaces the value at \c key with \c tableToInsert .
 	void
@@ -260,7 +260,7 @@ extern "C" {
 	void tableClear(CTOMLTable * table);
 
 	/// Inserts \c integer into \c table at \c key .
-	void tableInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint8_t flags);
+	void tableInsertInt(CTOMLTable * table, const char * key, int64_t integer, uint16_t flags);
 
 	/// Inserts \c tableToInsert into \c table at \c key .
 	void tableInsertTable(CTOMLTable * table, const char * key, CTOMLTable * tableToInsert);
@@ -290,10 +290,13 @@ extern "C" {
 	// MARK: - Table Conversion
 
 	/// Convert \c table to a TOML document.
-	char * tableConvertToTOML(CTOMLTable * table, uint8_t options);
+	char * tableConvertToTOML(CTOMLTable * table, uint64_t options);
 
 	/// Convert \c table to a JSON document.
-	char * tableConvertToJSON(CTOMLTable * table, uint8_t options);
+	char * tableConvertToJSON(CTOMLTable * table, uint64_t options);
+
+	/// Convert \c table to a YAML document.
+	char * tableConvertToYAML(CTOMLTable * table, uint64_t options);
 
 	// MARK: - Node - Information
 	/// The TOML type of \c node .

@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Jeff Lebrun
+// Copyright (c) 2022 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
@@ -17,6 +17,86 @@
 import CTOML
 
 /// An [array](https://toml.io/en/v1.0.0#array) in a TOML document.
+///
+/// TOML arrays are similar to Swift `Array`s. They can be nested inside another array, and their values can be of any type.
+///
+///
+/// To create an empty array, use the ``TOMLArray/init()`` initializer.
+///
+/// To create a an array with values, use one of the below methods:
+///
+/// ```swift
+/// let array = TOMLArray(
+/// 	[
+/// 		"Hello, World!",
+/// 		"Hello, Again!",
+/// 		3294923,
+/// 		2350.53,
+/// 		TOMLTable(["string": "string 1"])
+/// 	]
+/// )
+///
+/// // Or use `TOMLArray`'s `ExpressibleByArrayLiteral` conformance.
+/// let array = [
+/// 	"Hello, World!",
+/// 	"Hello, Again!",
+/// 	3294923,
+/// 	2350.53,
+/// 	TOMLTable(["string": "string 1"])
+/// ] as TOMLArray
+/// ```
+///
+/// ### Inserting Values
+///
+/// To insert values, use the ``TOMLArray/subscript(_:)-6f1f``, the ``TOMLArray/append(_:)`` method, or the  ``TOMLArray/insert(_:at:)`` method:
+///
+/// ```swift
+/// let array = TOMLArray()
+///
+/// array.append("Hello, World")
+/// array.insert(TOMLInt(0x123abc, options: .formatAsHexadecimal), at: 1)
+/// array[0] = TOMLTable(["double": 02734.23])
+/// ```
+///
+/// ### Retrieving Values
+///
+/// #### Iteration
+///
+/// ```swift
+/// let array: TOMLArray = [1358, 5.149, ["string": "String", "date": TOMLDate(date: Foundation.Date())!] as TOMLTable]
+///
+/// for value in array {
+///    print(value.debugDescription)
+/// }
+///
+/// // 1358
+/// // 5.149
+/// // date = 2021-12-21
+/// // string = 'String'
+/// ```
+///
+/// ### Subscript
+///
+/// ```swift
+/// let array: TOMLArray = [1358, 5.149, ["string": "String", "date": TOMLDate(date: Foundation.Date())!] as TOMLTable]
+///
+/// if let int = array[0].int {
+///    print(int) // <= 1358
+/// }
+///
+/// if let double = array[1].double {
+///    print(double) // <= 5.149
+/// }
+///
+/// if let date = array[2]?["date"]?.date {
+///    print(date) <= 2021-12-21
+/// }
+///
+/// if let string = array[2]?["string"]?.string {
+///    print(string) // <= String
+/// }
+/// ```
+///
 public final class TOMLArray:
 	Equatable, Sequence, Encodable,
 	ExpressibleByArrayLiteral,
@@ -29,8 +109,6 @@ public final class TOMLArray:
 
 	public var endIndex: Int { self.count }
 
-	public var tomlValue: TOMLValue { get { .init(self) } set {} }
-
 	public var count: Int { arraySize(self.arrayPointer) }
 
 	/// If this array is empty.
@@ -38,8 +116,9 @@ public final class TOMLArray:
 
 	public var debugDescription: String {
 		String(cString: arrayConvertToTOML(self.arrayPointer))
-		// "[\(self.map({ "\($0.debugDescription)" }).joined(separator: ", "))]"
 	}
+
+	public var tomlValue: TOMLValue { get { .init(self) } set {} }
 
 	/// A pointer to the underlying `toml::array`.
 	let arrayPointer: OpaquePointer

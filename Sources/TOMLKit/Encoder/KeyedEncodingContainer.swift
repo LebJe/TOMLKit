@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Jeff Lebrun
+// Copyright (c) 2022 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
@@ -207,7 +207,7 @@ extension InternalTOMLEncoder.KEC {
 	}
 
 	func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
-		self.self.setupTable()
+		self.setupTable()
 		if let parentKey = self.parentKey {
 			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = TOMLArray().tomlValue
 			return InternalTOMLEncoder.UEC(

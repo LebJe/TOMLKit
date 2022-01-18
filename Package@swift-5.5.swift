@@ -23,7 +23,6 @@ let package = Package(
 		.target(
 			name: "CTOML",
 			cxxSettings: [
-				.define("TOML_LARGE_FILES", to: "1"),
 				.define("TOML_EXCEPTIONS", to: "1"),
 				.define("_CRT_NONSTDC_NO_WARNINGS", .when(platforms: [.windows])),
 			]

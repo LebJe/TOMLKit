@@ -1,11 +1,11 @@
-// Copyright (c) 2021 Jeff Lebrun
+// Copyright (c) 2022 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
 //  The full text of the license can be found in the file named LICENSE.
 
 /// Formatting options for TOML integers.
-public enum ValueOptions: UInt8 {
+public enum ValueOptions: UInt16 {
 	/// The value will not be formatted.
 	case none = 0
 
