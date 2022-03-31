@@ -5,13 +5,13 @@
 //  The full text of the license can be found in the file named LICENSE.
 
 #if canImport(Darwin)
-	import Darwin.C
+import Darwin.C
 #elseif canImport(Glibc)
-	import Glibc
+import Glibc
 #elseif canImport(ucrt)
-	import ucrt
+import ucrt
 #else
-	#error("Unsupported Platform")
+#error("Unsupported Platform")
 #endif
 
 import CTOML
@@ -53,81 +53,81 @@ public protocol TOMLValueConvertible: CustomDebugStringConvertible {
 public extension TOMLValueConvertible {
 	/// Converts this `TOMLValueConvertible` to a `Bool`. If the conversion fails, this will return `nil`.
 	var bool: Bool? {
-    if self.tomlValue.type != .bool {
-      return nil
-    }
+		if self.tomlValue.type != .bool {
+			return nil
+		}
 		guard let pointer = nodeAsBool(self.tomlValue.tomlValuePointer) else { return nil }
 		return pointer.pointee
 	}
 
 	/// Converts this `TOMLValueConvertible` to an `Int`. If the conversion fails, this will return `nil`.
 	var int: Int? {
-    if self.tomlValue.type != .int {
-      return nil
-    }
+		if self.tomlValue.type != .int {
+			return nil
+		}
 		guard let pointer = nodeAsInt(self.tomlValue.tomlValuePointer) else { return nil }
 		return Int(pointer.pointee)
 	}
 
 	/// Converts this `TOMLValueConvertible` to a `Double`. If the conversion fails, this will return `nil`.
 	var double: Double? {
-    if self.tomlValue.type != .double {
-      return nil
-    }
+		if self.tomlValue.type != .double {
+			return nil
+		}
 		guard let pointer = nodeAsDouble(self.tomlValue.tomlValuePointer) else { return nil }
 		return pointer.pointee
 	}
 
 	/// Converts this `TOMLValueConvertible` to a `String`. If the conversion fails, this will return `nil`.
 	var string: String? {
-    if self.tomlValue.type != .string {
-      return nil
-    }
+		if self.tomlValue.type != .string {
+			return nil
+		}
 		guard let pointer = nodeAsString(self.tomlValue.tomlValuePointer) else { return nil }
 		return String(cString: pointer)
 	}
 
 	/// Converts this `TOMLValueConvertible` to a `TOMLDate`. If the conversion fails, this will return `nil`.
 	var date: TOMLDate? {
-    if self.tomlValue.type != .date {
-      return nil
-    }
+		if self.tomlValue.type != .date {
+			return nil
+		}
 		guard let pointer = nodeAsDate(self.tomlValue.tomlValuePointer) else { return nil }
 		return TOMLDate(cTOMLDate: pointer.pointee)
 	}
 
 	/// Converts this `TOMLValueConvertible` to a `TOMLTime`. If the conversion fails, this will return `nil`.
 	var time: TOMLTime? {
-    if self.tomlValue.type != .time {
-      return nil
-    }
+		if self.tomlValue.type != .time {
+			return nil
+		}
 		guard let pointer = nodeAsTime(self.tomlValue.tomlValuePointer) else { return nil }
 		return TOMLTime(cTOMLTime: pointer.pointee)
 	}
 
 	/// Converts this `TOMLValueConvertible` to a `TOMLDateTime`. If the conversion fails, this will return `nil`.
 	var dateTime: TOMLDateTime? {
-    if self.tomlValue.type != .dateTime {
-      return nil
-    }
+		if self.tomlValue.type != .dateTime {
+			return nil
+		}
 		guard let pointer = nodeAsDateTime(self.tomlValue.tomlValuePointer) else { return nil }
 		return TOMLDateTime(cTOMLDateTime: pointer.pointee)
 	}
 
 	/// Converts this `TOMLValueConvertible` to a `TOMLTable`. If the conversion fails, this will return `nil`.
 	var table: TOMLTable? {
-    if self.tomlValue.type != .table {
-      return nil
-    }
+		if self.tomlValue.type != .table {
+			return nil
+		}
 		guard let pointer = nodeAsTable(self.tomlValue.tomlValuePointer) else { return nil }
 		return TOMLTable(tablePointer: pointer)
 	}
 
 	/// Converts this `TOMLValueConvertible` to a `TOMLArray`. If the conversion fails, this will return `nil`.
 	var array: TOMLArray? {
-    if self.tomlValue.type != .array {
-      return nil
-    }
+		if self.tomlValue.type != .array {
+			return nil
+		}
 		guard let pointer = nodeAsArray(self.tomlValue.tomlValuePointer) else { return nil }
 		return TOMLArray(arrayPointer: pointer)
 	}
