@@ -7,13 +7,13 @@ repos:
           - id: "swift-format"
             name: "Format Swift"
     - repo: "https://github.com/pre-commit/mirrors-prettier"
-      rev: "v2.5.1"
+      rev: "v2.6.1"
       hooks:
           - id: "prettier"
             name: "Format YAML & Markdown"
             tags: ["md"]
             exclude: "Sources/TOMLKit/TOMLKit.docc/"
-    - repo: "git://github.com/doublify/pre-commit-clang-format"
+    - repo: "https://github.com/doublify/pre-commit-clang-format"
       rev: "62302476d0da01515660132d76902359bed0f782"
       hooks:
           - id: "clang-format"
