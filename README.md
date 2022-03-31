@@ -31,8 +31,6 @@ TOMLKit is a [Swift](https://swift.org) wrapper around [toml++](https://github.c
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
-Documentation is available [here](https://lebje.github.io/TOMLKit/documentation/tomlkit).
-
 ## Installation
 
 ### Swift Package Manager
@@ -40,7 +38,7 @@ Documentation is available [here](https://lebje.github.io/TOMLKit/documentation/
 Add this to the `dependencies` array in `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/LebJe/TOMLKit.git", from: "0.4.0")
+.package(url: "https://github.com/LebJe/TOMLKit.git", from: "0.5.0")
 ```
 
 Also add this to the `targets` array in the aforementioned file:
@@ -61,6 +59,12 @@ int = 523053
 double = 3250.34
 """
 
+struct Test: Codable {
+    let string: String
+    let int: Int
+    let double: Double
+}
+
 do {
    let table = try TOMLTable(string: toml)
    table.remove(at: "double")
@@ -70,6 +74,17 @@ do {
       TOMLArray([1, 2, "3", TOMLTable(["time": TOMLTime(hour: 10, minute: 26, second: 49, nanoSecond: 203)])]),
       at: "array"
    )
+
+   let test = Test(string: "Goodbye, World!", int: 24598, double: 18.247)
+   let encodedTest: TOMLTable = try TOMLEncoder().encode(test)
+   let decodedTest = try TOMLDecoder().decode(Test.self, from: encodedTest)
+
+   print("----Encoding & Decoding----\n")
+
+   print("Encoded Test: \n\(encodedTest))\n")
+   print("Decoded Test: \(decodedTest)")
+
+   print("\n----Conversion----\n")
 
    print("TOML:\n\(table.convert(to: .toml))\n")
    print("JSON:\n\(table.convert(to: .json))\n")
@@ -82,9 +97,20 @@ do {
     print(error.source.end)
 }
 
+// ----Encoding & Decoding----
+//
+// Encoded Test:
+// double = 18.247
+// int = 24598
+// string = 'Goodbye, World!')
+//
+// Decoded Test: Test(string: "Goodbye, World!", int: 24598, double: 18.247)
+//
+// ----Conversion----
+//
 // TOML:
 // array = [ 1, 2, '3', { time = 10:26:49.000000203 } ]
-// dateTime = 2022-01-18T10:47:49.640691995Z
+// dateTime = 2022-03-31T12:19:38.160653948Z
 // int = 523053
 // string = 'Hello, World!'
 //
@@ -98,7 +124,7 @@ do {
 //             "time" : "10:26:49.000000203"
 //         }
 //     ],
-//     "dateTime" : "2022-01-18T10:47:49.640691995Z",
+//     "dateTime" : "2022-03-31T12:19:38.160653948Z",
 //     "int" : 523053,
 //     "string" : "Hello, World!"
 // }
@@ -109,7 +135,7 @@ do {
 //   - 2
 //   - 3
 //   - time: '10:26:49.000000203'
-// dateTime: '2022-01-18T10:47:49.640691995Z'
+// dateTime: '2022-03-31T12:19:38.160653948Z'
 // int: 523053
 // string: 'Hello, World!'
 ```
