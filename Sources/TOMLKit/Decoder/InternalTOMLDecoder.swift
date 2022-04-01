@@ -12,9 +12,15 @@ final class InternalTOMLDecoder: Decoder {
 	var dataDecoder: (TOMLValueConvertible) -> Data?
 
 	let tomlValue: TOMLValue
-	init(_ tomlValue: TOMLValue, userInfo: [CodingUserInfoKey: Any] = [:], dataDecoder: @escaping (TOMLValueConvertible) -> Data?) {
+	init(
+		_ tomlValue: TOMLValue,
+		userInfo: [CodingUserInfoKey: Any] = [:],
+		codingPath: [CodingKey] = [],
+		dataDecoder: @escaping (TOMLValueConvertible) -> Data?
+	) {
 		self.tomlValue = tomlValue
 		self.userInfo = userInfo
+		self.codingPath = codingPath
 		self.dataDecoder = dataDecoder
 	}
 
@@ -33,7 +39,10 @@ final class InternalTOMLDecoder: Decoder {
 		guard let array = self.tomlValue.array else {
 			throw DecodingError.typeMismatch(
 				TOMLArray.self,
-				DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected a TOMLArray but found a \(self.tomlValue.type) instead.")
+				DecodingError.Context(
+					codingPath: self.codingPath,
+					debugDescription: "Expected a TOMLArray but found a \(self.tomlValue.type.description) instead."
+				)
 			)
 		}
 		return UDC(array, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder)

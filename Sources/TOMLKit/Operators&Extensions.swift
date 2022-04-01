@@ -10,3 +10,7 @@ extension String {
 		return String(repeating: padding, count: length - self.count) + self
 	}
 }
+
+func + <C: Collection, D>(lhs: C, rhs: D) -> [D] where C.Element == D {
+	lhs + [rhs]
+}

@@ -5,13 +5,13 @@
 //  The full text of the license can be found in the file named LICENSE.
 
 #if canImport(Darwin)
-import Darwin.C
+	import Darwin.C
 #elseif canImport(Glibc)
-import Glibc
+	import Glibc
 #elseif canImport(ucrt)
-import ucrt
+	import ucrt
 #else
-#error("Unsupported Platform")
+	#error("Unsupported Platform")
 #endif
 
 import CTOML

@@ -164,7 +164,7 @@ extension InternalTOMLEncoder.KEC {
 				let encoder = InternalTOMLEncoder(
 					.left(self.tomlValue.table![parentKey.stringValue]!.table!.tomlValue),
 					parentKey: key,
-					codingPath: self.codingPath,
+					codingPath: self.codingPath + key,
 					userInfo: self.userInfo,
 					dataEncoder: self.dataEncoder
 				)
@@ -173,7 +173,7 @@ extension InternalTOMLEncoder.KEC {
 				let encoder = InternalTOMLEncoder(
 					.left(self.tomlValue),
 					parentKey: key,
-					codingPath: self.codingPath,
+					codingPath: self.codingPath + key,
 					userInfo: self.userInfo,
 					dataEncoder: self.dataEncoder
 				)
@@ -182,13 +182,15 @@ extension InternalTOMLEncoder.KEC {
 		}
 	}
 
-	func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
+	func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey>
+		where NestedKey: CodingKey
+	{
 		if let parentKey = self.parentKey {
 			return KeyedEncodingContainer(
 				InternalTOMLEncoder.KEC<NestedKey>(
 					self.tomlValue.table![parentKey.stringValue]!.table!.tomlValue,
 					parentKey: key,
-					codingPath: self.codingPath,
+					codingPath: self.codingPath + key,
 					userInfo: self.userInfo,
 					dataEncoder: self.dataEncoder
 				)
@@ -198,7 +200,7 @@ extension InternalTOMLEncoder.KEC {
 				InternalTOMLEncoder.KEC<NestedKey>(
 					self.tomlValue,
 					parentKey: key,
-					codingPath: self.codingPath,
+					codingPath: self.codingPath + key,
 					userInfo: self.userInfo,
 					dataEncoder: self.dataEncoder
 				)
@@ -212,7 +214,7 @@ extension InternalTOMLEncoder.KEC {
 			self.tomlValue.table?[parentKey.stringValue]?.table?[key.stringValue] = TOMLArray().tomlValue
 			return InternalTOMLEncoder.UEC(
 				self.tomlValue.table![parentKey.stringValue]!.table![key.stringValue]!.array!,
-				codingPath: self.codingPath,
+				codingPath: self.codingPath + key,
 				userInfo: self.userInfo,
 				dataEncoder: self.dataEncoder
 			)
@@ -220,7 +222,7 @@ extension InternalTOMLEncoder.KEC {
 			self.tomlValue.table?[key.stringValue] = TOMLArray().tomlValue
 			return InternalTOMLEncoder.UEC(
 				self.tomlValue.table![key.stringValue]!.array!,
-				codingPath: self.codingPath,
+				codingPath: self.codingPath + key,
 				userInfo: self.userInfo,
 				dataEncoder: self.dataEncoder
 			)

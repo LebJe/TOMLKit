@@ -12,7 +12,7 @@ import struct Foundation.Data
 ///
 ///	You can customize how `Data` is encoded, and how the resulting TOML is formatted.
 ///
-/// To format the TOML document, insert or remove ``FormatOptions`` from `TOMLEncoder`'s `TOMLEncoder/options``.
+/// To format the TOML document, insert or remove ``FormatOptions`` from `TOMLEncoder`'s ``TOMLEncoder/options``.
 ///
 /// To customize the encoding of `Data`, provide a function for ``TOMLEncoder/dataEncoder``:
 ///
