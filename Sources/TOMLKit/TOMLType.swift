@@ -7,7 +7,7 @@
 import CTOML
 
 /// TOML data types.
-public enum TOMLType: String, CaseIterable {
+public enum TOMLType: String, CaseIterable, CustomStringConvertible {
 	/// A [TOML table](https://toml.io/en/v1.0.0#table).
 	case table
 
@@ -37,6 +37,15 @@ public enum TOMLType: String, CaseIterable {
 
 	init(cTOMLNodeType: CTOMLNodeType) {
 		self = cTOMLNodeType.tomlType
+	}
+
+	public var description: String {
+		switch self {
+			case .int: return "integer"
+			case .double: return "floating-point number"
+			case .dateTime: return "date-time"
+			default: return self.rawValue
+		}
 	}
 }
 

@@ -9,7 +9,14 @@ import struct Foundation.Data
 extension InternalTOMLDecoder.KDC {
 	private func decodeInt(key: Key) throws -> Int {
 		guard let i = self.tomlValue.table?[key.stringValue]?.int else {
-			throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "A \"Int\" does not exist at \"\(key.stringValue)\" in the TOML table."))
+			throw DecodingError.keyNotFound(
+				key,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + key,
+						debugDescription: "A \"Int\" does not exist at \"\(key.stringValue)\" in the TOML table."
+					)
+			)
 		}
 
 		return i
@@ -25,7 +32,14 @@ extension InternalTOMLDecoder.KDC {
 
 	func decode(_ type: Bool.Type, forKey key: Key) throws -> Bool {
 		guard let b = self.tomlValue.table?[key.stringValue]?.bool else {
-			throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "A \"\(type)\" does not exist at \"\(key.stringValue)\" in the TOML table."))
+			throw DecodingError.keyNotFound(
+				key,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + key,
+						debugDescription: "A \"\(type)\" does not exist at \"\(key.stringValue)\" in the TOML table."
+					)
+			)
 		}
 
 		return b
@@ -33,7 +47,14 @@ extension InternalTOMLDecoder.KDC {
 
 	func decode(_ type: String.Type, forKey key: Key) throws -> String {
 		guard let s = self.tomlValue.table?[key.stringValue]?.string else {
-			throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "A \"\(type)\" does not exist at \"\(key.stringValue)\" in the TOML table."))
+			throw DecodingError.keyNotFound(
+				key,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + key,
+						debugDescription: "A \"\(type)\" does not exist at \"\(key.stringValue)\" in the TOML table."
+					)
+			)
 		}
 
 		return s
@@ -41,7 +62,14 @@ extension InternalTOMLDecoder.KDC {
 
 	func decode(_ type: Double.Type, forKey key: Key) throws -> Double {
 		guard let d = self.tomlValue.table?[key.stringValue]?.double else {
-			throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "A \"\(type)\" does not exist at \"\(key.stringValue)\" in the TOML table."))
+			throw DecodingError.keyNotFound(
+				key,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + key,
+						debugDescription: "A \"\(type)\" does not exist at \"\(key.stringValue)\" in the TOML table."
+					)
+			)
 		}
 
 		return d
@@ -49,7 +77,14 @@ extension InternalTOMLDecoder.KDC {
 
 	func decode(_ type: Float.Type, forKey key: Key) throws -> Float {
 		guard let d = self.tomlValue.table?[key.stringValue]?.double else {
-			throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "A \"\(type)\" does not exist at \"\(key.stringValue)\" in the TOML table."))
+			throw DecodingError.keyNotFound(
+				key,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + key,
+						debugDescription: "A \"\(type)\" does not exist at \"\(key.stringValue)\" in the TOML table."
+					)
+			)
 		}
 
 		return Float(d)
@@ -100,56 +135,126 @@ extension InternalTOMLDecoder.KDC {
 		switch self.tomlValue.table?[key.stringValue]?.type {
 			case .time:
 				guard let value = self.tomlValue.table?[key.stringValue]?.time as? T else {
-					throw DecodingError.typeMismatch(TOMLTime.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The type (\(type)) being decoded is not a \(TOMLTime.self)"))
+					throw DecodingError.typeMismatch(
+						TOMLTime.self,
+						DecodingError
+							.Context(
+								codingPath: self.codingPath + key,
+								debugDescription: "Expected to decode a \(self.tomlValue.table?[key.stringValue]?.type.description ?? "") type at \(key.stringValue) but found a \(T.self) instead."
+							)
+					)
 				}
 
 				return value
 			case .date:
 				guard let value = self.tomlValue.table?[key.stringValue]?.date as? T else {
-					throw DecodingError.typeMismatch(TOMLDate.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The type (\(type)) being decoded is not a \(TOMLDate.self)"))
+					throw DecodingError.typeMismatch(
+						TOMLDate.self,
+						DecodingError
+							.Context(
+								codingPath: self.codingPath + key,
+								debugDescription: "Expected to decode a \(self.tomlValue.table?[key.stringValue]?.type.description ?? "") type at \(key.stringValue) but found a \(T.self) instead."
+							)
+					)
 				}
 
 				return value
 			case .dateTime:
 				guard let value = self.tomlValue.table?[key.stringValue]?.dateTime as? T else {
-					throw DecodingError.typeMismatch(TOMLDateTime.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The type (\(type)) being decoded is not a \(TOMLDateTime.self)"))
+					throw DecodingError.typeMismatch(
+						TOMLDateTime.self,
+						DecodingError
+							.Context(
+								codingPath: self.codingPath + key,
+								debugDescription: "Expected to decode a \(self.tomlValue.table?[key.stringValue]?.type.description ?? "") type at \(key.stringValue) but found a \(T.self) instead."
+							)
+					)
 				}
 
 				return value
 			case .none:
-				throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The key \"\(key.stringValue)\" was not found in the TOML table."))
+				throw DecodingError.keyNotFound(
+					key,
+					DecodingError
+						.Context(
+							codingPath: self.codingPath + key,
+							debugDescription: "The key \"\(key.stringValue)\" was not found in the TOML table."
+						)
+				)
 			default:
 				if type is Data.Type, let value = self.tomlValue.table?[key.stringValue] {
 					guard let data = self.dataDecoder(value) else {
-						throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode Data from the string: \"\(value)\". Key: \(key.stringValue)"))
+						throw DecodingError.dataCorrupted(DecodingError.Context(
+							codingPath: self.codingPath + key,
+							debugDescription: "Unable to decode Data from the string: \"\(value)\". Key: \(key.stringValue)"
+						))
 					}
 
 					return data as! T
 				} else {
 					guard let value = self.tomlValue.table?[key.stringValue]?.tomlValue else {
-						throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "The key \"\(key.stringValue)\" was not found in the TOML table."))
+						throw DecodingError.keyNotFound(
+							key,
+							DecodingError
+								.Context(
+									codingPath: self.codingPath + key,
+									debugDescription: "The key \"\(key.stringValue)\" was not found in the TOML table."
+								)
+						)
 					}
 
-					let decoder = InternalTOMLDecoder(value, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
+					let decoder = InternalTOMLDecoder(
+						value,
+						userInfo: self.userInfo,
+						codingPath: self.codingPath + key,
+						dataDecoder: self.dataDecoder
+					)
 					return try T(from: decoder)
 				}
 		}
 	}
 
-	func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
+	func nestedContainer<NestedKey>(
+		keyedBy type: NestedKey.Type,
+		forKey key: Key
+	) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
 		guard let value = self.tomlValue.table?[key.stringValue]?.table?.tomlValue else {
-			throw DecodingError.typeMismatch(TOMLTable.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected a TOMLTable but found a \(self.tomlValue.table?[key.stringValue]?.type.rawValue ?? "No type") instead."))
+			throw DecodingError.typeMismatch(
+				TOMLTable.self,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + key,
+						debugDescription: "Expected a TOMLTable but found a \(self.tomlValue.table?[key.stringValue]?.type.rawValue ?? "No type") instead."
+					)
+			)
 		}
 
-		return KeyedDecodingContainer<NestedKey>(InternalTOMLDecoder.KDC<NestedKey>(tomlValue: value, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder))
+		return KeyedDecodingContainer<NestedKey>(InternalTOMLDecoder.KDC<NestedKey>(
+			tomlValue: value,
+			codingPath: self.codingPath + key,
+			userInfo: self.userInfo,
+			dataDecoder: self.dataDecoder
+		))
 	}
 
 	func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
 		guard let array = self.tomlValue.table?[key.stringValue]?.array else {
-			throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.codingPath, debugDescription: "An array does not exist at \"\(key.stringValue)\" in the TOML table."))
+			throw DecodingError.keyNotFound(
+				key,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + key,
+						debugDescription: "An array does not exist at \"\(key.stringValue)\" in the TOML table."
+					)
+			)
 		}
 
-		return InternalTOMLDecoder.UDC(array, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
+		return InternalTOMLDecoder.UDC(
+			array,
+			codingPath: self.codingPath + key,
+			userInfo: self.userInfo,
+			dataDecoder: self.dataDecoder
+		)
 	}
 
 	func superDecoder() throws -> Decoder {

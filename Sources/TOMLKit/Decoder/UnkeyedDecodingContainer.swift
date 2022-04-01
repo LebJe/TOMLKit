@@ -8,13 +8,20 @@ import struct Foundation.Data
 
 extension InternalTOMLDecoder.UDC {
 	mutating func decodeNil() throws -> Bool {
-		// There is no `null` in TOML.
+		// There is no `nil` in TOML.
 		false
 	}
 
 	mutating func decodeInt(type: Any.Type) throws -> Int {
 		guard let i = self.tomlArray[self.currentIndex].int else {
-			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
+			throw DecodingError.typeMismatch(
+				type,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
+						debugDescription: "Unable to retrieve a \"\(type)\" from the TOML array at index \(self.currentIndex), found a \(self.tomlArray[self.currentIndex].type.description) instead."
+					)
+			)
 		}
 
 		self.currentIndex += 1
@@ -24,7 +31,14 @@ extension InternalTOMLDecoder.UDC {
 
 	mutating func decode(_ type: Bool.Type) throws -> Bool {
 		guard let b = self.tomlArray[self.currentIndex].bool else {
-			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
+			throw DecodingError.typeMismatch(
+				type,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
+						debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex), found a \(self.tomlArray[self.currentIndex].type.description) instead."
+					)
+			)
 		}
 
 		self.currentIndex += 1
@@ -34,7 +48,14 @@ extension InternalTOMLDecoder.UDC {
 
 	mutating func decode(_ type: String.Type) throws -> String {
 		guard let s = self.tomlArray[self.currentIndex].string else {
-			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
+			throw DecodingError.typeMismatch(
+				type,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
+						debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex), found a \(self.tomlArray[self.currentIndex].type.description) instead."
+					)
+			)
 		}
 
 		self.currentIndex += 1
@@ -44,7 +65,14 @@ extension InternalTOMLDecoder.UDC {
 
 	mutating func decode(_ type: Double.Type) throws -> Double {
 		guard let d = self.tomlArray[self.currentIndex].double else {
-			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
+			throw DecodingError.typeMismatch(
+				type,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
+						debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex), found a \(self.tomlArray[self.currentIndex].type.description) instead."
+					)
+			)
 		}
 
 		self.currentIndex += 1
@@ -54,7 +82,14 @@ extension InternalTOMLDecoder.UDC {
 
 	mutating func decode(_ type: Float.Type) throws -> Float {
 		guard let d = self.tomlArray[self.currentIndex].double else {
-			throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
+			throw DecodingError.typeMismatch(
+				type,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
+						debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex), found a \(self.tomlArray[self.currentIndex].type.description) instead."
+					)
+			)
 		}
 
 		self.currentIndex += 1
@@ -105,27 +140,44 @@ extension InternalTOMLDecoder.UDC {
 	mutating func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
 		if type is Data.Type {
 			guard let v = self.tomlArray[self.currentIndex] else {
-				throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex)."))
+				throw DecodingError.typeMismatch(
+					type,
+					DecodingError
+						.Context(
+							codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
+							debugDescription: "Unable to retrieve \"\(type)\" from the TOML array at index \(self.currentIndex), found a \(self.tomlArray[self.currentIndex].type.description) instead."
+						)
+				)
 			}
 
 			guard let data = self.dataDecoder(v) else {
-				throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to decode Data from: \"\(v.debugDescription)\". TOMLArray index: \(self.currentIndex)."))
+				throw DecodingError.dataCorrupted(DecodingError.Context(
+					codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
+					debugDescription: "Unable to decode Data from \"\(v.debugDescription)\", at index \(self.currentIndex)."
+				))
 			}
 
 			self.currentIndex += 1
 			return data as! T
 		} else {
-			let decoder = InternalTOMLDecoder(self.tomlArray[self.currentIndex].tomlValue, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
+			let decoder = InternalTOMLDecoder(
+				self.tomlArray[self.currentIndex].tomlValue,
+				userInfo: self.userInfo,
+				codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
+				dataDecoder: self.dataDecoder
+			)
 			self.currentIndex += 1
 			return try T(from: decoder)
 		}
 	}
 
-	mutating func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
+	mutating func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey>
+		where NestedKey: CodingKey
+	{
 		KeyedDecodingContainer<NestedKey>(
 			InternalTOMLDecoder.KDC(
 				tomlValue: self.tomlArray.tomlValue,
-				codingPath: self.codingPath,
+				codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
 				userInfo: self.userInfo,
 				dataDecoder: self.dataDecoder
 			)
@@ -134,10 +186,22 @@ extension InternalTOMLDecoder.UDC {
 
 	mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
 		guard let nestedArray = self.tomlArray[self.currentIndex].array else {
-			throw DecodingError.typeMismatch(TOMLArray.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Unable to retrieve an array from the TOML array at index \(self.currentIndex)."))
+			throw DecodingError.typeMismatch(
+				TOMLArray.self,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
+						debugDescription: "Unable to retrieve an array from the TOML array at index \(self.currentIndex), found a \(self.tomlArray[self.currentIndex].type.description) instead."
+					)
+			)
 		}
 
-		return InternalTOMLDecoder.UDC(nestedArray, codingPath: self.codingPath, userInfo: self.userInfo, dataDecoder: self.dataDecoder)
+		return InternalTOMLDecoder.UDC(
+			nestedArray,
+			codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
+			userInfo: self.userInfo,
+			dataDecoder: self.dataDecoder
+		)
 	}
 
 	mutating func superDecoder() throws -> Decoder {

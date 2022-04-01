@@ -87,7 +87,7 @@ extension InternalTOMLEncoder.UEC {
 				let encoder = InternalTOMLEncoder(
 					.right((array: self.tomlArray, index: self.currentIndex)),
 					parentKey: nil,
-					codingPath: self.codingPath,
+					codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
 					userInfo: self.userInfo,
 					dataEncoder: self.dataEncoder
 				)
@@ -98,14 +98,16 @@ extension InternalTOMLEncoder.UEC {
 		self.currentIndex += 1
 	}
 
-	mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
+	mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey>
+		where NestedKey: CodingKey
+	{
 		let table = TOMLTable()
 		self.tomlArray[self.currentIndex] = table
 
 		return KeyedEncodingContainer(
 			InternalTOMLEncoder.KEC<NestedKey>(
 				table.tomlValue,
-				codingPath: self.codingPath,
+				codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
 				userInfo: self.userInfo,
 				dataEncoder: self.dataEncoder
 			)
@@ -116,7 +118,7 @@ extension InternalTOMLEncoder.UEC {
 		self.tomlArray[self.currentIndex] = TOMLArray()
 		return InternalTOMLEncoder.UEC(
 			self.tomlArray[self.currentIndex].array!,
-			codingPath: self.codingPath,
+			codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
 			userInfo: self.userInfo,
 			dataEncoder: self.dataEncoder
 		)

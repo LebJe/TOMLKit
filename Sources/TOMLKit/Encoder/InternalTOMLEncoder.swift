@@ -35,11 +35,13 @@ final class InternalTOMLEncoder: Encoder {
 	func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
 		switch self.tomlValueOrArray {
 			case let .left(value):
+				var c: [CodingKey] = []
+				if let k = self.parentKey { c.append(k) }
 				return KeyedEncodingContainer(
 					KEC(
 						value,
 						parentKey: self.parentKey,
-						codingPath: self.codingPath,
+						codingPath: self.codingPath + c,
 						userInfo: self.userInfo,
 						dataEncoder: self.dataEncoder
 					)
@@ -51,7 +53,7 @@ final class InternalTOMLEncoder: Encoder {
 					KEC(
 						array[index].tomlValue,
 						parentKey: self.parentKey,
-						codingPath: self.codingPath,
+						codingPath: self.codingPath + TOMLCodingKey(index: index),
 						userInfo: self.userInfo,
 						dataEncoder: self.dataEncoder
 					)
@@ -66,7 +68,7 @@ final class InternalTOMLEncoder: Encoder {
 					value.table?[parentKey.stringValue] = TOMLArray()
 					return UEC(
 						value.table![parentKey.stringValue]!.array!,
-						codingPath: self.codingPath,
+						codingPath: self.codingPath + parentKey,
 						userInfo: self.userInfo,
 						dataEncoder: self.dataEncoder
 					)
@@ -74,7 +76,7 @@ final class InternalTOMLEncoder: Encoder {
 					containerArray[index] = TOMLArray()
 					return UEC(
 						containerArray[index].array!,
-						codingPath: self.codingPath,
+						codingPath: self.codingPath + TOMLCodingKey(index: index),
 						userInfo: self.userInfo,
 						dataEncoder: self.dataEncoder
 					)

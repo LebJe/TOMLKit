@@ -12,6 +12,7 @@
 --wraparguments before-first
 --wrapparameters before-first
 --disable trailingClosures, typeSugar
+--maxwidth 120
 --header "Copyright (c) 2022 Jeff Lebrun \n\n \
 Licensed under the MIT License. \n\n \
 The full text of the license can be found in the file named LICENSE.

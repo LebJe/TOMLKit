@@ -33,7 +33,10 @@ let package = Package(
 		),
 		.testTarget(
 			name: "TOMLKitTests",
-			dependencies: ["TOMLKit", .product(name: "Checkit", package: "Checkit") /* .product(name: "CustomDump", package: "swift-custom-dump") */ ]
+			dependencies: [
+				"TOMLKit",
+				.product(name: "Checkit", package: "Checkit"), /* .product(name: "CustomDump", package: "swift-custom-dump") */
+			]
 		),
 	],
 	cLanguageStandard: .c99,

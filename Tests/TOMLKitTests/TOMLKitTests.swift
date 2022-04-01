@@ -231,7 +231,10 @@ final class TOMLKitTests: XCTestCase {
 	}
 
 	func testTOMLEncoder() throws {
-		XCTAssertEqual(try TOMLTable(string: try TOMLEncoder().encode(CodableStruct())), try TOMLTable(string: tomlForCodableStruct))
+		XCTAssertEqual(
+			try TOMLTable(string: try TOMLEncoder().encode(CodableStruct())),
+			try TOMLTable(string: tomlForCodableStruct)
+		)
 	}
 
 	func testCustomDataDecodingAndEncoding() throws {
@@ -260,6 +263,49 @@ final class TOMLKitTests: XCTestCase {
 
 		let test = try decoder.decode(Test.self, from: toml)
 		XCTAssertEqual(String(data: test.data, encoding: .utf8)!, "Hello World!")
+	}
+
+	func testFailedDecoding() throws {
+		let toml1 = """
+		  bool = true
+		  double = 439.4904
+		  e = 'abc'
+		  int = 44330
+		  string = 'Hello, World!'
+
+		  [b]
+		  array = [ 'String 1', 'String 2' ]
+		  date = 2021-05-20
+		  dateTime = 2021-05-20T04:27:05.000000294Z
+		  time = 04:27:05.000000294
+
+			  [[b.c]]
+			  #a = 'Array of C 1'
+			  data = 'YyA='
+
+			  [[b.c]]
+			  a = 'Array of C 2'
+			  data = 'Yic='
+		"""
+
+		let decoder = TOMLDecoder()
+
+		do {
+			_ = try decoder.decode(CodableStruct.self, from: toml1)
+		} catch let error as DecodingError {
+			switch error {
+				case let .keyNotFound(key, context):
+					XCTAssertEqual(key.stringValue, "a")
+					XCTAssertEqual(context.codingPath.count, 4)
+					XCTAssertEqual(context.codingPath[0].stringValue, "b")
+					XCTAssertEqual(context.codingPath[1].stringValue, "c")
+					XCTAssertEqual(context.codingPath[2].intValue, 0)
+					XCTAssertEqual(context.codingPath[3].stringValue, "a")
+				default: XCTFail("An error other than \"keyNotFound\" occurred: \(error)")
+			}
+		} catch {
+			XCTFail("An error other than \"DecodingError\" occurred: \(error)")
+		}
 	}
 
 	func testMeasureEncoding() {

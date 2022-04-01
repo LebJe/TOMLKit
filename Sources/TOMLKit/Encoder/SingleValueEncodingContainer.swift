@@ -165,7 +165,7 @@ extension InternalTOMLEncoder.SVEC {
 					let encoder = InternalTOMLEncoder(
 						.right((array: array, index: index)),
 						parentKey: self.parentKey,
-						codingPath: self.codingPath,
+						codingPath: self.codingPath + TOMLCodingKey(index: index),
 						userInfo: self.userInfo,
 						dataEncoder: self.dataEncoder
 					)
