@@ -81,7 +81,7 @@ do {
 
    print("----Encoding & Decoding----\n")
 
-   print("Encoded Test: \n\(encodedTest))\n")
+   print("Encoded Test: \n\(encodedTest)\n")
    print("Decoded Test: \(decodedTest)")
 
    print("\n----Conversion----\n")
@@ -102,7 +102,7 @@ do {
 // Encoded Test:
 // double = 18.247
 // int = 24598
-// string = 'Goodbye, World!')
+// string = 'Goodbye, World!'
 //
 // Decoded Test: Test(string: "Goodbye, World!", int: 24598, double: 18.247)
 //
