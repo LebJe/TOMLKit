@@ -31,6 +31,8 @@ final class InternalTOMLEncoder: Encoder {
 		self.codingPath = codingPath
 		self.dataEncoder = dataEncoder
 	}
+	
+	private let triedToEncodeSingleValueOrArrayMessage = "You can only pass a key-value object (struct, class, `Dictionary`, etc) to `TOMLEncoder.encode()`."
 
 	func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
 		switch self.tomlValueOrArray {
@@ -65,7 +67,7 @@ final class InternalTOMLEncoder: Encoder {
 		if let parentKey = parentKey {
 			switch self.tomlValueOrArray {
 				case let .left(value):
-					value.table?[parentKey.stringValue] = TOMLArray()
+					value.table![parentKey.stringValue] = TOMLArray()
 					return UEC(
 						value.table![parentKey.stringValue]!.array!,
 						codingPath: self.codingPath + parentKey,
@@ -82,21 +84,17 @@ final class InternalTOMLEncoder: Encoder {
 					)
 			}
 		} else {
-			return UEC(
-				TOMLArray(),
-				codingPath: self.codingPath,
-				userInfo: self.userInfo,
-				dataEncoder: self.dataEncoder
-			)
+			fatalError(self.triedToEncodeSingleValueOrArrayMessage)
 		}
 	}
 
 	func singleValueContainer() -> SingleValueEncodingContainer {
 		switch self.tomlValueOrArray {
 			case let .left(value):
+				guard let parentKey = self.parentKey else { fatalError(self.triedToEncodeSingleValueOrArrayMessage) }
 				return SVEC(
 					.left(value),
-					parentKey: self.parentKey!,
+					parentKey: parentKey,
 					userInfo: self.userInfo,
 					dataEncoder: self.dataEncoder
 				)

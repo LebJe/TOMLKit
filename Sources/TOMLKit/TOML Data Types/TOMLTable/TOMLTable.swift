@@ -131,7 +131,7 @@ import CTOML
 ///
 /// ```swift
 /// let toml = TOMLTable(["int": TOMLInt(0o755, options: .formatAsOctal)])
-/// 	.convert(to: .toml, options: .allowValueFormatFlags)
+/// 	.convert(to: .toml)
 /// ```
 ///
 /// The resulting TOML:
