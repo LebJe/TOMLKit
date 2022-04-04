@@ -31,8 +31,9 @@ final class InternalTOMLEncoder: Encoder {
 		self.codingPath = codingPath
 		self.dataEncoder = dataEncoder
 	}
-	
-	private let triedToEncodeSingleValueOrArrayMessage = "You can only pass a key-value object (struct, class, `Dictionary`, etc) to `TOMLEncoder.encode()`."
+
+	private let triedToEncodeSingleValueOrArrayMessage =
+		"You can only pass a key-value object (struct, class, `Dictionary`, etc) to `TOMLEncoder.encode()`."
 
 	func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
 		switch self.tomlValueOrArray {
