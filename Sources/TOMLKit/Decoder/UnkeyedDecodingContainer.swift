@@ -175,9 +175,16 @@ extension InternalTOMLDecoder.UDC {
 		where NestedKey: CodingKey
 	{
 		guard let table = self.tomlArray[self.currentIndex].table else {
-			throw DecodingError.typeMismatch(TOMLTable.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected a table, but found a \(self.tomlArray[self.currentIndex].type.description) instead"))
+			throw DecodingError.typeMismatch(
+				TOMLTable.self,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath,
+						debugDescription: "Expected a table, but found a \(self.tomlArray[self.currentIndex].type.description) instead"
+					)
+			)
 		}
-		
+
 		return KeyedDecodingContainer<NestedKey>(
 			InternalTOMLDecoder.KDC(
 				table: table,

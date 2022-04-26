@@ -26,9 +26,16 @@ final class InternalTOMLDecoder: Decoder {
 
 	func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
 		guard let table = self.tomlValue.table else {
-			throw DecodingError.typeMismatch(TOMLTable.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected a table, but found a \(self.tomlValue.type.description) instead."))
+			throw DecodingError.typeMismatch(
+				TOMLTable.self,
+				DecodingError
+					.Context(
+						codingPath: self.codingPath,
+						debugDescription: "Expected a table, but found a \(self.tomlValue.type.description) instead."
+					)
+			)
 		}
-		
+
 		return KeyedDecodingContainer<Key>(
 			KDC(
 				table: table,
