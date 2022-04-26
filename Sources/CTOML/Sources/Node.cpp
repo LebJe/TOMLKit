@@ -253,7 +253,7 @@ extern "C" {
 
 	/// Retrieves a \c CTOMLTable from the \c node .
 	CTOMLTable * _Nullable nodeAsTable(CTOMLNode * _Nonnull node) {
-		auto res = reinterpret_cast<toml::table *>(node);
+		auto res = reinterpret_cast<toml::node *>(node)->as_table();
 
 		if (res == NULL) { return NULL; }
 
@@ -262,7 +262,7 @@ extern "C" {
 
 	/// Retrieves a \c CTOMLArray from the \c node .
 	CTOMLArray * _Nullable nodeAsArray(CTOMLNode * _Nonnull node) {
-		auto res = reinterpret_cast<toml::array *>(node);
+		auto res = reinterpret_cast<toml::node *>(node)->as_array();
 
 		if (res == NULL) { return NULL; }
 

@@ -25,9 +25,13 @@ final class InternalTOMLDecoder: Decoder {
 	}
 
 	func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
-		KeyedDecodingContainer<Key>(
+		guard let table = self.tomlValue.table else {
+			throw DecodingError.typeMismatch(TOMLTable.self, DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected a table, but found a \(self.tomlValue.type.description) instead."))
+		}
+		
+		return KeyedDecodingContainer<Key>(
 			KDC(
-				tomlValue: self.tomlValue,
+				table: table,
 				codingPath: self.codingPath,
 				userInfo: self.userInfo,
 				dataDecoder: self.dataDecoder
@@ -76,19 +80,19 @@ final class InternalTOMLDecoder: Decoder {
 		var userInfo: [CodingUserInfoKey: Any] = [:]
 		var dataDecoder: (TOMLValueConvertible) -> Data?
 		var allKeys: [Key] = []
-		let tomlValue: TOMLValue
+		let tomlValue: TOMLTable
 
 		init(
-			tomlValue: TOMLValue,
+			table: TOMLTable,
 			codingPath: [CodingKey],
 			userInfo: [CodingUserInfoKey: Any],
 			dataDecoder: @escaping (TOMLValueConvertible) -> Data?
 		) {
-			self.tomlValue = tomlValue
+			self.tomlValue = table
 			self.userInfo = userInfo
 			self.codingPath = codingPath
 			self.dataDecoder = dataDecoder
-			self.allKeys = tomlValue.table?.keys.compactMap(Self.Key.init(stringValue:)) ?? []
+			self.allKeys = tomlValue.keys.compactMap(Self.Key.init(stringValue:))
 		}
 	}
 

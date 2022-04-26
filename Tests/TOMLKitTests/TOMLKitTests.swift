@@ -397,4 +397,30 @@ final class TOMLKitTests: XCTestCase {
 
 		XCTAssertEqual(self.testTable.convert(to: .yaml), expectedYAML)
 	}
+	
+	// https://github.com/LebJe/TOMLKit/issues/12
+	func testIssue12() throws {
+		let string = "[[apps.test]]"
+
+		struct Child: Codable {
+			var value: String // if Child is an empty struct it doesn't crash
+		}
+
+		struct Parent: Codable {
+			var apps: [String: Child] // if this is just `[String: String]` it doesn't crash
+		}
+		
+		do {
+			_ = try TOMLDecoder().decode(Parent.self, from: string)
+		} catch let error as DecodingError {
+			switch error {
+				case .typeMismatch(let type, let context):
+					XCTAssert(type == TOMLTable.self)
+					XCTAssertEqual(context.debugDescription, "Expected a table, but found a array instead.")
+				default: XCTFail("DecodingError.typeMismatch was not thrown: \(error)")
+			}
+		} catch {
+			XCTFail("DecodingError did not occur.")
+		}
+	}
 }

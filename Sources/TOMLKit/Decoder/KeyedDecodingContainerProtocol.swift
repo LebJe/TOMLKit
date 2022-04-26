@@ -218,19 +218,19 @@ extension InternalTOMLDecoder.KDC {
 		keyedBy type: NestedKey.Type,
 		forKey key: Key
 	) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
-		guard let value = self.tomlValue.table?[key.stringValue]?.table?.tomlValue else {
+		guard let table = self.tomlValue.table?[key.stringValue]?.table else {
 			throw DecodingError.typeMismatch(
 				TOMLTable.self,
 				DecodingError
 					.Context(
 						codingPath: self.codingPath + key,
-						debugDescription: "Expected a TOMLTable but found a \(self.tomlValue.table?[key.stringValue]?.type.rawValue ?? "No type") instead."
+						debugDescription: "Expected a TOMLTable but found a \(self.tomlValue.table?[key.stringValue]?.type.description ?? "No type") instead."
 					)
 			)
 		}
 
 		return KeyedDecodingContainer<NestedKey>(InternalTOMLDecoder.KDC<NestedKey>(
-			tomlValue: value,
+			table: table,
 			codingPath: self.codingPath + key,
 			userInfo: self.userInfo,
 			dataDecoder: self.dataDecoder
