@@ -19,6 +19,8 @@ extension InternalTOMLDecoder.KDC {
 			)
 		}
 
+		self.decodedKeys.append(key)
+
 		return i
 	}
 
@@ -27,7 +29,8 @@ extension InternalTOMLDecoder.KDC {
 	}
 
 	func decodeNil(forKey key: Key) throws -> Bool {
-		self.tomlValue.table?[key.stringValue] == nil
+		self.decodedKeys.append(key)
+		return self.tomlValue.table?[key.stringValue] == nil
 	}
 
 	func decode(_ type: Bool.Type, forKey key: Key) throws -> Bool {
@@ -41,6 +44,8 @@ extension InternalTOMLDecoder.KDC {
 					)
 			)
 		}
+
+		self.decodedKeys.append(key)
 
 		return b
 	}
@@ -57,6 +62,8 @@ extension InternalTOMLDecoder.KDC {
 			)
 		}
 
+		self.decodedKeys.append(key)
+
 		return s
 	}
 
@@ -72,6 +79,8 @@ extension InternalTOMLDecoder.KDC {
 			)
 		}
 
+		self.decodedKeys.append(key)
+
 		return d
 	}
 
@@ -86,6 +95,8 @@ extension InternalTOMLDecoder.KDC {
 					)
 			)
 		}
+
+		self.decodedKeys.append(key)
 
 		return Float(d)
 	}
@@ -145,6 +156,8 @@ extension InternalTOMLDecoder.KDC {
 					)
 				}
 
+				self.decodedKeys.append(key)
+
 				return value
 			case .date:
 				guard let value = self.tomlValue.table?[key.stringValue]?.date as? T else {
@@ -158,6 +171,8 @@ extension InternalTOMLDecoder.KDC {
 					)
 				}
 
+				self.decodedKeys.append(key)
+
 				return value
 			case .dateTime:
 				guard let value = self.tomlValue.table?[key.stringValue]?.dateTime as? T else {
@@ -170,6 +185,8 @@ extension InternalTOMLDecoder.KDC {
 							)
 					)
 				}
+
+				self.decodedKeys.append(key)
 
 				return value
 			case .none:
@@ -186,9 +203,11 @@ extension InternalTOMLDecoder.KDC {
 					guard let data = self.dataDecoder(value) else {
 						throw DecodingError.dataCorrupted(DecodingError.Context(
 							codingPath: self.codingPath + key,
-							debugDescription: "Unable to decode Data from the string: \"\(value)\". Key: \(key.stringValue)"
+							debugDescription: "Unable to decode Data from \"\(value)\". Key: \(key.stringValue)"
 						))
 					}
+
+					self.decodedKeys.append(key)
 
 					return data as! T
 				} else {
@@ -207,8 +226,13 @@ extension InternalTOMLDecoder.KDC {
 						value,
 						userInfo: self.userInfo,
 						codingPath: self.codingPath + key,
-						dataDecoder: self.dataDecoder
+						dataDecoder: self.dataDecoder,
+						strictDecoding: self.strictDecoding,
+						notDecodedKeys: self.notDecodedKeys
 					)
+
+					self.decodedKeys.append(key)
+
 					return try T(from: decoder)
 				}
 		}
@@ -229,11 +253,15 @@ extension InternalTOMLDecoder.KDC {
 			)
 		}
 
+		self.decodedKeys.append(key)
+
 		return KeyedDecodingContainer<NestedKey>(InternalTOMLDecoder.KDC<NestedKey>(
 			table: table,
 			codingPath: self.codingPath + key,
 			userInfo: self.userInfo,
-			dataDecoder: self.dataDecoder
+			dataDecoder: self.dataDecoder,
+			strictDecoding: self.strictDecoding,
+			notDecodedKeys: self.notDecodedKeys
 		))
 	}
 
@@ -249,11 +277,15 @@ extension InternalTOMLDecoder.KDC {
 			)
 		}
 
+		self.decodedKeys.append(key)
+
 		return InternalTOMLDecoder.UDC(
 			array,
 			codingPath: self.codingPath + key,
 			userInfo: self.userInfo,
-			dataDecoder: self.dataDecoder
+			dataDecoder: self.dataDecoder,
+			strictDecoding: self.strictDecoding,
+			notDecodedKeys: self.notDecodedKeys
 		)
 	}
 

@@ -308,6 +308,36 @@ final class TOMLKitTests: XCTestCase {
 		}
 	}
 
+	func testStrictDecoding() throws {
+		let decoder = TOMLDecoder(strictDecoding: true)
+
+		struct A: Decodable {
+			let a: String
+			let b: B
+
+			struct B: Decodable {
+				let c: Double
+			}
+		}
+
+		let tomlA = """
+		a = "abc"
+
+		[b]
+		c = 25.353
+		d = "def"
+		f = [1, 2, 3]
+		"""
+
+		do {
+			_ = try decoder.decode(A.self, from: tomlA)
+		} catch let error as UnexpectedKeysError {
+			XCTAssertEqual(error.keys, ["f", "d"])
+		} catch {
+			XCTFail("Expected to catch `UnexpectedKeysError` Instead caught \(error)")
+		}
+	}
+
 	func testMeasureEncoding() {
 		self.measure {
 			_ = try! TOMLEncoder().encode(CodableStruct())
