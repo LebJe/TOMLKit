@@ -114,11 +114,11 @@ final class InternalTOMLDecoder: Decoder {
 		var userInfo: [CodingUserInfoKey: Any] = [:]
 		var dataDecoder: (TOMLValueConvertible) -> Data?
 		var allKeys: [Key] = []
-		let tomlValue: TOMLTable
+		let table: TOMLTable
 		let strictDecoding: Bool
 		var notDecodedKeys: NotDecodedKeys
 
-		var decodedKeys: [CodingKey] = []
+		var decodedKeys: [String] = []
 
 		init(
 			table: TOMLTable,
@@ -128,11 +128,11 @@ final class InternalTOMLDecoder: Decoder {
 			strictDecoding: Bool,
 			notDecodedKeys: NotDecodedKeys
 		) {
-			self.tomlValue = table
+			self.table = table
 			self.userInfo = userInfo
 			self.codingPath = codingPath
 			self.dataDecoder = dataDecoder
-			self.allKeys = tomlValue.keys.compactMap(Self.Key.init(stringValue:))
+			self.allKeys = table.keys.compactMap(Self.Key.init(stringValue:))
 			self.strictDecoding = strictDecoding
 			self.notDecodedKeys = notDecodedKeys
 		}
@@ -140,18 +140,19 @@ final class InternalTOMLDecoder: Decoder {
 		deinit {
 			guard self.strictDecoding else { return }
 
-			let diff = self.decodedKeys.map(\.stringValue).difference(from: self.tomlValue.keys)
+			let sortedDecodedKeys = self.decodedKeys.sorted()
+			let sortedTableKeys = self.table.keys.sorted()
+
+			let diff = sortedDecodedKeys.difference(from: sortedTableKeys)
 
 			if !diff.isEmpty {
-				self.notDecodedKeys.keys = diff.compactMap({ a in
-					switch a {
+				for diffElement in diff {
+					switch diffElement {
 						case .remove(offset: _, element: let e, associatedWith: _):
-							return e
-						// case .insert(offset: _, element: let e, associatedWith: _):
-						// return e
-						default: return nil
+							self.notDecodedKeys.keys[e] = self.codingPath + (Key(stringValue: e) ?? TOMLCodingKey(stringValue: e)!)
+						default: break
 					}
-				})
+				}
 			}
 		}
 	}
@@ -192,6 +193,6 @@ final class InternalTOMLDecoder: Decoder {
 	}
 
 	final class NotDecodedKeys {
-		var keys: [String] = []
+		var keys: [String: [CodingKey]] = [:]
 	}
 }

@@ -310,31 +310,15 @@ final class TOMLKitTests: XCTestCase {
 
 	func testStrictDecoding() throws {
 		let decoder = TOMLDecoder(strictDecoding: true)
-
-		struct A: Decodable {
-			let a: String
-			let b: B
-
-			struct B: Decodable {
-				let c: Double
-			}
-		}
-
-		let tomlA = """
-		a = "abc"
-
-		[b]
-		c = 25.353
-		d = "def"
-		f = [1, 2, 3]
-		"""
-
 		do {
-			_ = try decoder.decode(A.self, from: tomlA)
+			let tomlTableForCodableStruct = try TOMLTable(string: tomlForCodableStruct)
+			tomlTableForCodableStruct["b"]!["c"]![1]!["invalidKey"] = "invalid"
+			_ = try decoder.decode(CodableStruct.self, from: tomlTableForCodableStruct)
 		} catch let error as UnexpectedKeysError {
-			XCTAssertEqual(error.keys, ["f", "d"])
+			XCTAssertEqual(error.keys.keys.first, "invalidKey")
+			XCTAssertEqual(["b", "c", "Index 1", "invalidKey"], error.keys["invalidKey"]?.map(\.stringValue))
 		} catch {
-			XCTFail("Expected to catch `UnexpectedKeysError` Instead caught \(error)")
+			XCTFail("Expected to catch `UnexpectedKeysError`. Instead caught \(error)")
 		}
 	}
 
