@@ -318,7 +318,6 @@ final class TOMLKitTests: XCTestCase {
 		tomlTableForCodableStruct["b"]!["c"]![1]!["invalidKey2"] = "invalid"
 		tomlTableForCodableStruct["b"]!["invalidKey3"] = 2352
 
-		// Check that invalidKey2 causes an error.
 		XCTAssertThrowsError(try decoder.decode(CodableStruct.self, from: tomlTableForCodableStruct), "", { error in
 			guard let error = error as? UnexpectedKeysError else {
 				XCTFail("Expected `UnexpectedKeysError`, found \(error)")
