@@ -54,9 +54,13 @@ jobs:
             #       copy "%SDKROOT%\usr\share\visualc.apinotes" "%VCToolsInstallDir%\include\visualc.apinotes"
             #       copy "%SDKROOT%\usr\share\winsdk.modulemap" "%UniversalCRTSdkDir%\Include\%UCRTVersion%\um\module.modulemap"
             - name: "Test"
+              env:
+                  # From https://github.com/tsolomko/SWCompression/blob/74ae7c2edc8389207ea58dcca8a86eaa91675584/azure-pipelines.yml#L137
+                  SDKROOT: 'C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk'
+                  SWIFTFLAGS: "--sdk $(SDKROOT) -Xswiftc -sdk -Xswiftc $(SDKROOT) -Xswiftc -resource-dir -Xswiftc $(SDKROOT)/usr/lib/swift -Xswiftc -I -Xswiftc $(SDKROOT)/usr/lib/swift -Xswiftc -L -Xswiftc $(SDKROOT)/usr/lib/swift/windows"
               run: |
-                  swift.exe build
-                  swift.exe test
+                  swift.exe build %SWIFTFLAGS%
+                  swift.exe test %SWIFTFLAGS%
 
     TestBuildingOnMacOS-11_0-ARM64:
         runs-on: "macos-11"
