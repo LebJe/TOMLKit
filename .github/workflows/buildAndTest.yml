@@ -34,6 +34,8 @@ jobs:
               run: "swift test"
     TestOnWindows10-x86_64:
         runs-on: "windows-latest"
+        env:
+            SDKROOT: 'C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk'
         steps:
             - uses: "actions/checkout@v2"
             - uses: "seanmiddleditch/gha-setup-vsdevenv@master"
@@ -57,10 +59,10 @@ jobs:
               env:
                   # From https://github.com/tsolomko/SWCompression/blob/74ae7c2edc8389207ea58dcca8a86eaa91675584/azure-pipelines.yml#L137
                   SDKROOT: 'C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk'
-                  SWIFTFLAGS: "--sdk $(SDKROOT) -Xswiftc -sdk -Xswiftc $(SDKROOT) -Xswiftc -resource-dir -Xswiftc $(SDKROOT)/usr/lib/swift -Xswiftc -I -Xswiftc $(SDKROOT)/usr/lib/swift -Xswiftc -L -Xswiftc $(SDKROOT)/usr/lib/swift/windows"
+                  SWIFTFLAGS: "--sdk ${{ env.SDKROOT }} -Xswiftc -sdk -Xswiftc ${{ env.SDKROOT }} -Xswiftc -resource-dir -Xswiftc ${{ env.SDKROOT }}/usr/lib/swift -Xswiftc -I -Xswiftc ${{ env.SDKROOT }}/usr/lib/swift -Xswiftc -L -Xswiftc ${{ env.SDKROOT }}/usr/lib/swift/windows"
               run: |
-                  swift.exe build %SWIFTFLAGS%
-                  swift.exe test %SWIFTFLAGS%
+                  swift.exe build $env:SWIFTFLAGS
+                  swift.exe test $env:SWIFTFLAGS
 
     TestBuildingOnMacOS-11_0-ARM64:
         runs-on: "macos-11"
