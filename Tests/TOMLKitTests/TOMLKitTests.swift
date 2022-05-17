@@ -310,16 +310,25 @@ final class TOMLKitTests: XCTestCase {
 
 	func testStrictDecoding() throws {
 		let decoder = TOMLDecoder(strictDecoding: true)
-		do {
-			let tomlTableForCodableStruct = try TOMLTable(string: tomlForCodableStruct)
-			tomlTableForCodableStruct["b"]!["c"]![1]!["invalidKey"] = "invalid"
-			_ = try decoder.decode(CodableStruct.self, from: tomlTableForCodableStruct)
-		} catch let error as UnexpectedKeysError {
-			XCTAssertEqual(error.keys.keys.first, "invalidKey")
-			XCTAssertEqual(["b", "c", "Index 1", "invalidKey"], error.keys["invalidKey"]?.map(\.stringValue))
-		} catch {
-			XCTFail("Expected to catch `UnexpectedKeysError`. Instead caught \(error)")
-		}
+
+		let tomlTableForCodableStruct = try TOMLTable(string: tomlForCodableStruct)
+
+		// Add invalid keys
+		tomlTableForCodableStruct["invalidKey1"] = false
+		tomlTableForCodableStruct["b"]!["c"]![1]!["invalidKey2"] = "invalid"
+		tomlTableForCodableStruct["b"]!["invalidKey3"] = 2352
+
+		// Check that invalidKey2 causes an error.
+		XCTAssertThrowsError(try decoder.decode(CodableStruct.self, from: tomlTableForCodableStruct), "", { error in
+			guard let error = error as? UnexpectedKeysError else {
+				XCTFail("Expected `UnexpectedKeysError`, found \(error)")
+				return
+			}
+			XCTAssertEqual(error.keys.keys.sorted(), ["invalidKey1", "invalidKey2", "invalidKey3"])
+			XCTAssertEqual(["invalidKey1"], error.keys["invalidKey1"]?.map(\.stringValue))
+			XCTAssertEqual(["b", "c", "Index 1", "invalidKey2"], error.keys["invalidKey2"]?.map(\.stringValue))
+			XCTAssertEqual(["b", "invalidKey3"], error.keys["invalidKey3"]?.map(\.stringValue))
+		})
 	}
 
 	func testMeasureEncoding() {
