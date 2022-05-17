@@ -58,7 +58,6 @@ jobs:
             - name: "Test"
               env:
                   # From https://github.com/tsolomko/SWCompression/blob/74ae7c2edc8389207ea58dcca8a86eaa91675584/azure-pipelines.yml#L137
-                  SDKROOT: 'C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk'
                   SWIFTFLAGS: "--sdk ${{ env.SDKROOT }} -Xswiftc -sdk -Xswiftc ${{ env.SDKROOT }} -Xswiftc -resource-dir -Xswiftc ${{ env.SDKROOT }}/usr/lib/swift -Xswiftc -I -Xswiftc ${{ env.SDKROOT }}/usr/lib/swift -Xswiftc -L -Xswiftc ${{ env.SDKROOT }}/usr/lib/swift/windows"
               run: |
                   swift.exe build $env:SWIFTFLAGS
