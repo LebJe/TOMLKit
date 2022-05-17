@@ -60,8 +60,7 @@ jobs:
                   # From https://github.com/tsolomko/SWCompression/blob/74ae7c2edc8389207ea58dcca8a86eaa91675584/azure-pipelines.yml#L137
                   SWIFTFLAGS: "--sdk ${{ env.SDKROOT }} -Xswiftc -sdk -Xswiftc ${{ env.SDKROOT }} -Xswiftc -resource-dir -Xswiftc ${{ env.SDKROOT }}/usr/lib/swift -Xswiftc -I -Xswiftc ${{ env.SDKROOT }}/usr/lib/swift -Xswiftc -L -Xswiftc ${{ env.SDKROOT }}/usr/lib/swift/windows"
               run: |
-                  swift.exe build $env:SWIFTFLAGS
-                  swift.exe test $env:SWIFTFLAGS
+                  swift.exe test --sdk C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk -Xswiftc -sdk -Xswiftc C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk -Xswiftc -resource-dir -Xswiftc C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk/usr/lib/swift -Xswiftc -I -Xswiftc C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk/usr/lib/swift -Xswiftc -L -Xswiftc C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk/usr/lib/swift/windows
 
     TestBuildingOnMacOS-11_0-ARM64:
         runs-on: "macos-11"
