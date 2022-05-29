@@ -42,6 +42,10 @@ jobs:
               with:
                   branch: "swift-5.5-release"
                   tag: "5.5-RELEASE"
+            - name: "Check Clang"
+              run: |
+                  clang++ --version
+                  clang --version
             - name: "Test"
               run: "swift test"
             # - uses: "seanmiddleditch/gha-setup-vsdevenv@master"
