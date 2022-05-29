@@ -38,7 +38,8 @@ jobs:
         #     SDKROOT: 'C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk'
         steps:
             - uses: "actions/checkout@v2"
-            - uses: compnerd/gha-setup-swift@main
+            - uses: "seanmiddleditch/gha-setup-vsdevenv@master"
+            - uses: "compnerd/gha-setup-swift@main"
               with:
                   branch: "swift-5.5-release"
                   tag: "5.5-RELEASE"
@@ -47,8 +48,8 @@ jobs:
                   clang++ --version
                   clang --version
             - name: "Test"
-              run: "swift test"
-            # - uses: "seanmiddleditch/gha-setup-vsdevenv@master"
+              run: "swift test -Xcc -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH -Xcxx -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH"
+
             # - name: "Install swift-5.6-RELEASE"
             #   run: |
             #       Install-Binary -Url "https://download.swift.org/swift-5.5.3-release/windows10/swift-5.5.3-RELEASE/swift-5.5.3-RELEASE-windows10.exe" -Name "installer.exe" -ArgumentList ("-q")
