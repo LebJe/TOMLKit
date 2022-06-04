@@ -37,24 +37,12 @@ jobs:
         steps:
             - uses: "actions/checkout@v2"
             - uses: "seanmiddleditch/gha-setup-vsdevenv@master"
-            - name: "Install swift-5.5.1-RELEASE"
-              run: |
-                  Install-Binary -Url "https://download.swift.org/swift-5.5.1-release/windows10/swift-5.5.1-RELEASE/swift-5.5.1-RELEASE-windows10.exe" -Name "installer.exe" -ArgumentList ("-q")
-            - name: "Set Environment Variables"
-              run: |
-                  echo "SDKROOT=C:\Library\Developer\Platforms\Windows.platform\Developer\SDKs\Windows.sdk" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-                  echo "DEVELOPER_DIR=C:\Library\Developer" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-            - name: "Adjust Paths"
-              run: echo "C:\Library\Developer\Toolchains\unknown-Asserts-development.xctoolchain\usr\bin;C:\Library\Swift-development\bin;C:\Library\icu-67\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-            - name: "Install Supporting Files"
-              shell: "cmd"
-              run: |
-                  copy "%SDKROOT%\usr\share\ucrt.modulemap" "%UniversalCRTSdkDir%\Include\%UCRTVersion%\ucrt\module.modulemap"
-                  copy "%SDKROOT%\usr\share\visualc.modulemap" "%VCToolsInstallDir%\include\module.modulemap"
-                  copy "%SDKROOT%\usr\share\visualc.apinotes" "%VCToolsInstallDir%\include\visualc.apinotes"
-                  copy "%SDKROOT%\usr\share\winsdk.modulemap" "%UniversalCRTSdkDir%\Include\%UCRTVersion%\um\module.modulemap"
+            - uses: "compnerd/gha-setup-swift@main"
+              with:
+                  branch: "swift-5.6-release"
+                  tag: "5.6-RELEASE"
             - name: "Test"
-              run: "swift test"
+              run: "swift test -Xcc -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH -Xcxx -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH"
     TestBuildingOnMacOS-11_0-ARM64:
         runs-on: "macos-11"
         steps:

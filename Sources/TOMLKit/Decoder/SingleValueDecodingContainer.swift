@@ -208,7 +208,13 @@ extension InternalTOMLDecoder.SVDC {
 	}
 
 	func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
-		let decoder = InternalTOMLDecoder(self.tomlValue, codingPath: self.codingPath, dataDecoder: self.dataDecoder)
+		let decoder = InternalTOMLDecoder(
+			self.tomlValue,
+			codingPath: self.codingPath,
+			dataDecoder: self.dataDecoder,
+			strictDecoding: self.strictDecoding,
+			notDecodedKeys: self.notDecodedKeys
+		)
 
 		if type is Data.Type {
 			if let data = self.dataDecoder(self.tomlValue) {

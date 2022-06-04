@@ -308,6 +308,28 @@ final class TOMLKitTests: XCTestCase {
 		}
 	}
 
+	func testStrictDecoding() throws {
+		let decoder = TOMLDecoder(strictDecoding: true)
+
+		let tomlTableForCodableStruct = try TOMLTable(string: tomlForCodableStruct)
+
+		// Add invalid keys
+		tomlTableForCodableStruct["invalidKey1"] = false
+		tomlTableForCodableStruct["b"]!["c"]![1]!["invalidKey2"] = "invalid"
+		tomlTableForCodableStruct["b"]!["invalidKey3"] = 2352
+
+		XCTAssertThrowsError(try decoder.decode(CodableStruct.self, from: tomlTableForCodableStruct), "", { error in
+			guard let error = error as? UnexpectedKeysError else {
+				XCTFail("Expected `UnexpectedKeysError`, found \(error)")
+				return
+			}
+			XCTAssertEqual(error.keys.keys.sorted(), ["invalidKey1", "invalidKey2", "invalidKey3"])
+			XCTAssertEqual(["invalidKey1"], error.keys["invalidKey1"]?.map(\.stringValue))
+			XCTAssertEqual(["b", "c", "Index 1", "invalidKey2"], error.keys["invalidKey2"]?.map(\.stringValue))
+			XCTAssertEqual(["b", "invalidKey3"], error.keys["invalidKey3"]?.map(\.stringValue))
+		})
+	}
+
 	func testMeasureEncoding() {
 		self.measure {
 			_ = try! TOMLEncoder().encode(CodableStruct())
