@@ -86,5 +86,6 @@ public struct TOMLDecoder {
 
 /// This Error is thrown when ``TOMLDecoder/strictDecoding`` is `true` and you try to decode a `struct` whose `CodingKey`s don't exactly match the keys of the TOML document.
 public struct UnexpectedKeysError: Error {
+	/// The keys of this `Dictionary` are the un-decoded TOML keys, and the values are the `CodingKey`'s that lead to the TOML keys.
 	public let keys: [String: [CodingKey]]
 }
