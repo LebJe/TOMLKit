@@ -45,6 +45,7 @@ To get started, go to ``TOMLKit/TOMLTable``.
 - ``TOMLKit/TOMLParseError``
 - ``TOMLKit/TOMLSourceRegion``
 - ``TOMLKit/TOMLSourcePosition``
+- ``TOMLKit/UnexpectedKeysError``
 
 ### Other
 

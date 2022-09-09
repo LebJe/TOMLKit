@@ -9,29 +9,20 @@ jobs:
     "GenerateDocumentation":
         runs-on: "macos-latest"
         steps:
-            - uses: "actions/checkout@v2"
+            - uses: "actions/checkout@v3"
             - name: "Clone swift-docc and swift-docc-render"
-              run: "gh repo clone apple/swift-docc && gh repo clone LebJe/swift-docc-render"
+              run: "gh repo clone LebJe/swift-docc-render"
               env:
                   GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
             - name: "Build swift-docc-render"
               run: "cd swift-docc-render/ && npm install && npm run build && cd .."
-            - name: "Cache DocC"
-              id: "cache-docc"
-              uses: "actions/cache@v2"
-              with:
-                  key: "TOMLKit-docc-build"
-                  path: "swift-docc/.build"
-            - name: "Build swift-docc"
-              if: "${{ !steps.cache-docc.outputs.cache-hit }}"
-              run: "swift build --product docc --package-path swift-docc -c release"
             - name: "Build TOMLKit"
               run: "swift build --target TOMLKit -Xswiftc -emit-symbol-graph -Xswiftc -emit-symbol-graph-dir -Xswiftc .build"
             - name: "Build documentation"
               run: |
                   export DOCC_HTML_DIR=swift-docc-render/dist
 
-                  ./swift-docc/.build/release/docc convert \
+                  xcrun docc convert \
                   Sources/TOMLKit/TOMLKit.docc \
                   --fallback-display-name TOMLKit \
                   --fallback-bundle-identifier com.LebJe.TOMKit \
@@ -40,7 +31,7 @@ jobs:
                   --enable-inherited-docs \
                   --output-dir docs
 
-                  ./swift-docc/.build/release/docc process-archive transform-for-static-hosting docs --hosting-base-path /TOMLKit
+                  xcrun docc process-archive transform-for-static-hosting docs --hosting-base-path /TOMLKit
             - name: "Deploy to GitHub Pages"
               uses: "peaceiris/actions-gh-pages@v3"
               with:
