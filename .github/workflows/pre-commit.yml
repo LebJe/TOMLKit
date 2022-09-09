@@ -6,7 +6,7 @@ jobs:
     PreCommit:
         runs-on: "macos-latest"
         steps:
-            - uses: "actions/checkout@v2"
+            - uses: "actions/checkout@v3"
             - name: "Checkout PR"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
