@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -	Added support for strict decoding: when `TOMLDecoder.strictDecoding` is `true`, `TOMLDecoder` will throw an `UnexpectedKeysError` if the decoded keys do not exactly match the `CodingKey`s of the struct.
 
+### Fixed
+
+-	Fix crash in TOMLKit (#12).
+
 ## [0.5.3](https://github.com/LebJe/TOMLKit/releases/tag/0.5.3) - 2022-04-26
 
 ### Changed
