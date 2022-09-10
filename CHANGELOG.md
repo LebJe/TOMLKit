@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
--	Fix crash in TOMLKit ([[#12](https://github.com/LebJe/TOMLKit/issues/12)).
+-	Fix crash in TOMLKit ([#12](https://github.com/LebJe/TOMLKit/issues/12)).
 
 ## [0.5.3](https://github.com/LebJe/TOMLKit/releases/tag/0.5.3) - 2022-04-26
 
