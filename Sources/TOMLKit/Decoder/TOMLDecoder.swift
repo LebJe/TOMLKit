@@ -10,7 +10,8 @@ import struct Foundation.Data
 ///
 /// ### Customizing Decoding
 ///
-/// By default, `Data` is decoded using Base64, but you can use another method by providing a function to ``TOMLDecoder/dataDecoder``:
+/// By default, `Data` is decoded using Base64, but you can use another method by providing a function to
+/// ``TOMLDecoder/dataDecoder``:
 /// ```swift
 /// let toml = "data = [83, 71, 86, 115, 98, 71, 56, 103, 86, 50, 57, 121, 98, 71, 81, 104]"
 ///
@@ -32,7 +33,8 @@ public struct TOMLDecoder {
 	/// The default decoding mechanism is [Base64](https://en.wikipedia.org/wiki/Base64).
 	public var dataDecoder: (TOMLValueConvertible) -> Data? = { $0.string != nil ? Data(base64Encoded: $0.string!) : nil }
 
-	/// When this is true, all the keys in the TOML document must be decoded, otherwise ``UnexpectedKeysError`` will be thrown.
+	/// When this is true, all the keys in the TOML document must be decoded, otherwise ``UnexpectedKeysError`` will be
+	/// thrown.
 	public var strictDecoding: Bool = false
 
 	public init(
@@ -48,7 +50,8 @@ public struct TOMLDecoder {
 	/// - Parameters:
 	///   - type: The type you want to convert `tomlString` to.
 	///   - tomlString: The `String` containing the TOML document.
-	/// - Throws: ``TOMLParseError`` or `DecodingError`. Can throw ``UnexpectedKeysError`` if ``TOMLDecoder/strictDecoding`` is `true`.
+	/// - Throws: ``TOMLParseError`` or `DecodingError`. Can throw ``UnexpectedKeysError`` if
+	/// ``TOMLDecoder/strictDecoding`` is `true`.
 	/// - Returns: The decoded type.
 	public func decode<T: Decodable>(_ type: T.Type, from tomlString: String) throws -> T {
 		let table = try TOMLTable(string: tomlString)
@@ -59,7 +62,8 @@ public struct TOMLDecoder {
 	/// - Parameters:
 	///   - type: The type you want to convert `table` to.
 	///   - table: The ``TOMLTable`` that you want to convert to `T`.
-	/// - Throws: ``TOMLParseError`` or `DecodingError`. Can throw ``UnexpectedKeysError`` if ``TOMLDecoder/strictDecoding`` is `true`.
+	/// - Throws: ``TOMLParseError`` or `DecodingError`. Can throw ``UnexpectedKeysError`` if
+	/// ``TOMLDecoder/strictDecoding`` is `true`.
 	/// - Returns: The decoded type.
 	public func decode<T: Decodable>(_ type: T.Type, from table: TOMLTable) throws -> T {
 		let notDecodedKeys = InternalTOMLDecoder.NotDecodedKeys()
@@ -84,8 +88,10 @@ public struct TOMLDecoder {
 	}
 }
 
-/// This Error is thrown when ``TOMLDecoder/strictDecoding`` is `true` and you try to decode a `struct` whose `CodingKey`s don't exactly match the keys of the TOML document.
+/// This Error is thrown when ``TOMLDecoder/strictDecoding`` is `true` and you try to decode a `struct` whose
+/// `CodingKey`s don't exactly match the keys of the TOML document.
 public struct UnexpectedKeysError: Error {
-	/// The keys of this `Dictionary` are the un-decoded TOML keys, and the values are the `CodingKey`'s that lead to the TOML keys.
+	/// The keys of this `Dictionary` are the un-decoded TOML keys, and the values are the `CodingKey`'s that lead to the
+	/// TOML keys.
 	public let keys: [String: [CodingKey]]
 }

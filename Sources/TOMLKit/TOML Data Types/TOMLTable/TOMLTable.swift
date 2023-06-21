@@ -18,7 +18,8 @@ import CTOML
 
 /// A [table](https://toml.io/en/v1.0.0#table) in a TOML document.
 ///
-/// TOML tables are key-value pairs, similar to a Swift `Dictionary`, but unlike a `Dictionary`, their values can be of any type.
+/// TOML tables are key-value pairs, similar to a Swift `Dictionary`, but unlike a `Dictionary`, their values can be of
+/// any type.
 /// They are either the root element in a document, or nested inside the root (or another) table.
 ///
 /// To create a ``TOMLTable`` with values, use one of the below methods:
@@ -55,7 +56,8 @@ import CTOML
 ///
 /// ### Inserting Values
 ///
-/// To insert values, make sure the value conforms to ``TOMLValueConvertible``, then use the ``TOMLTable/subscript(_:)-76dpr``, or the ``TOMLTable/insert(_:at:)`` method:
+/// To insert values, make sure the value conforms to ``TOMLValueConvertible``, then use the
+/// ``TOMLTable/subscript(_:)-76dpr``, or the ``TOMLTable/insert(_:at:)`` method:
 /// ```swift
 /// let table = TOMLTable()
 ///
@@ -230,7 +232,7 @@ public final class TOMLTable:
 	///   - string: An `Encodable` struct.
 	/// - Throws: ``EncodingError`` if an error occurs during encoding.
 	public convenience init<V: Encodable>(_ value: V) throws {
-		self.init(tablePointer: try TOMLEncoder().encode(value).tablePointer)
+		try self.init(tablePointer: TOMLEncoder().encode(value).tablePointer)
 	}
 
 	public required convenience init(dictionaryLiteral elements: (String, TOMLValueConvertible)...) {

@@ -18,7 +18,8 @@ import CTOML
 
 /// An [array](https://toml.io/en/v1.0.0#array) in a TOML document.
 ///
-/// TOML arrays are similar to Swift `Array`s. They can be nested inside another array, and their values can be of any type.
+/// TOML arrays are similar to Swift `Array`s. They can be nested inside another array, and their values can be of any
+/// type.
 ///
 ///
 /// To create an empty array, use the ``TOMLArray/init()`` initializer.
@@ -48,7 +49,8 @@ import CTOML
 ///
 /// ### Inserting Values
 ///
-/// To insert values, use the ``TOMLArray/subscript(_:)-6f1f``, the ``TOMLArray/append(_:)`` method, or the  ``TOMLArray/insert(_:at:)`` method:
+/// To insert values, use the ``TOMLArray/subscript(_:)-6f1f``, the ``TOMLArray/append(_:)`` method, or the 
+/// ``TOMLArray/insert(_:at:)`` method:
 ///
 /// ```swift
 /// let array = TOMLArray()

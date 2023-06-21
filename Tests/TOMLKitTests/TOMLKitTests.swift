@@ -4,7 +4,8 @@
 //
 //  The full text of the license can be found in the file named LICENSE.
 
-// Uncomment the `CustomDump` dependency in Package.swift, uncomment the following line, and use `XCTAssertNoDifference` when
+// Uncomment the `CustomDump` dependency in Package.swift, uncomment the following line, and use `XCTAssertNoDifference`
+// when
 // XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>"
 // import CustomDump
 import Checkit
@@ -225,14 +226,15 @@ final class TOMLKitTests: XCTestCase {
 
 	func testTOMLDecoder() throws {
 		// Uncomment the dependency in package.swift, and uncomment this line when
-		//  XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>" "<large CodableStruct> is not equal to <other large CodableStruct>"
+		//  XCTAssertEqual tells you "<huge TOMLTable> is not equal to <other huge TOMLTable>" "<large CodableStruct> is not
+		//  equal to <other large CodableStruct>"
 		// XCTAssertNoDifference(try TOMLDecoder().decode(CodableStruct.self, from: tomlForCodableStruct), CodableStruct())
 		XCTAssertEqual(try TOMLDecoder().decode(CodableStruct.self, from: tomlForCodableStruct), CodableStruct())
 	}
 
 	func testTOMLEncoder() throws {
 		XCTAssertEqual(
-			try TOMLTable(string: try TOMLEncoder().encode(CodableStruct())),
+			try TOMLTable(string: TOMLEncoder().encode(CodableStruct())),
 			try TOMLTable(string: tomlForCodableStruct)
 		)
 	}

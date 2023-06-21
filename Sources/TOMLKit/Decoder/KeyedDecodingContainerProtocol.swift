@@ -106,39 +106,39 @@ extension InternalTOMLDecoder.KDC {
 	}
 
 	func decode(_ type: Int8.Type, forKey key: Key) throws -> Int8 {
-		Int8(try self.decodeInt(key: key))
+		try Int8(self.decodeInt(key: key))
 	}
 
 	func decode(_ type: Int16.Type, forKey key: Key) throws -> Int16 {
-		Int16(try self.decodeInt(key: key))
+		try Int16(self.decodeInt(key: key))
 	}
 
 	func decode(_ type: Int32.Type, forKey key: Key) throws -> Int32 {
-		Int32(try self.decodeInt(key: key))
+		try Int32(self.decodeInt(key: key))
 	}
 
 	func decode(_ type: Int64.Type, forKey key: Key) throws -> Int64 {
-		Int64(try self.decodeInt(key: key))
+		try Int64(self.decodeInt(key: key))
 	}
 
 	func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
-		UInt(try self.decodeInt(key: key))
+		try UInt(self.decodeInt(key: key))
 	}
 
 	func decode(_ type: UInt8.Type, forKey key: Key) throws -> UInt8 {
-		UInt8(try self.decodeInt(key: key))
+		try UInt8(self.decodeInt(key: key))
 	}
 
 	func decode(_ type: UInt16.Type, forKey key: Key) throws -> UInt16 {
-		UInt16(try self.decodeInt(key: key))
+		try UInt16(self.decodeInt(key: key))
 	}
 
 	func decode(_ type: UInt32.Type, forKey key: Key) throws -> UInt32 {
-		UInt32(try self.decodeInt(key: key))
+		try UInt32(self.decodeInt(key: key))
 	}
 
 	func decode(_ type: UInt64.Type, forKey key: Key) throws -> UInt64 {
-		UInt64(try self.decodeInt(key: key))
+		try UInt64(self.decodeInt(key: key))
 	}
 
 	func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T: Decodable {
