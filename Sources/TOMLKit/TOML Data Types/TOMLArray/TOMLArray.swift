@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Jeff Lebrun
+// Copyright (c) 2023 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
@@ -49,7 +49,7 @@ import CTOML
 ///
 /// ### Inserting Values
 ///
-/// To insert values, use the ``TOMLArray/subscript(_:)-6f1f``, the ``TOMLArray/append(_:)`` method, or the 
+/// To insert values, use the ``TOMLArray/subscript(_:)-6f1f``, the ``TOMLArray/append(_:)`` method, or the
 /// ``TOMLArray/insert(_:at:)`` method:
 ///
 /// ```swift
