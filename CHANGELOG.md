@@ -5,15 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.5](https://github.com/LebJe/TOMLKit/releases/tag/0.5.5) - 2023-06-24
+
+### Changed
+
+-   TOMLKit requires iOS 13 instead of 14.
+
 ## [0.5.4](https://github.com/LebJe/TOMLKit/releases/tag/0.5.4) - 2022-09-10
 
 ### Added
 
--	Added support for strict decoding: when `TOMLDecoder.strictDecoding` is `true`, `TOMLDecoder` will throw an `UnexpectedKeysError` if the decoded keys do not exactly match the `CodingKey`s of the struct.
+-   Added support for strict decoding: when `TOMLDecoder.strictDecoding` is `true`, `TOMLDecoder` will throw an `UnexpectedKeysError` if the decoded keys do not exactly match the `CodingKey`s of the struct.
 
 ### Fixed
 
--	Fix crash in TOMLKit ([#12](https://github.com/LebJe/TOMLKit/issues/12)).
+-   Fix crash in TOMLKit ([#12](https://github.com/LebJe/TOMLKit/issues/12)).
 
 ## [0.5.3](https://github.com/LebJe/TOMLKit/releases/tag/0.5.3) - 2022-04-26
 

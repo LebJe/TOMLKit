@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Jeff Lebrun
+// Copyright (c) 2023 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
@@ -84,7 +84,8 @@ public struct FormatOptions: OptionSet {
 
 	/// Emit floating-point values with relaxed (human-friendly) precision.
 	///
-	/// - Warning: Setting this flag may cause serialized documents to no longer round-trip correctly since floats might have a less precise value upon being written out than they did when being read in. Use this flag at your own risk.
+	/// - Warning: Setting this flag may cause serialized documents to no longer round-trip correctly since floats might
+	/// have a less precise value upon being written out than they did when being read in. Use this flag at your own risk.
 	///
 	/// This documentation comment was taken from the [toml++ documentation](https://marzer.github.io/tomlplusplus/namespacetoml.html#a2102aa80bc57783d96180f36e1f64f6aa2023489f273b06937dd37c25b2cf2078).
 	public static let relaxedFloatPrecision = Self(rawValue: 1 << 11)

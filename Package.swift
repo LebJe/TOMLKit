@@ -6,7 +6,7 @@ let package = Package(
 	name: "TOMLKit",
 	platforms: [
 		.macOS(.v10_15),
-		.iOS(.v14),
+		.iOS(.v13),
 		.watchOS(.v6),
 		.tvOS(.v12),
 	],

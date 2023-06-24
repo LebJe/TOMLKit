@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Jeff Lebrun
+// Copyright (c) 2023 Jeff Lebrun
 //
 //  Licensed under the MIT License.
 //
@@ -44,7 +44,8 @@ public struct TOMLEncoder {
 		.indentations,
 	]
 
-	/// Used to encode instances of `Data` into a type conforming to `TOMLValueConvertible` that can be inserted into a TOML document.
+	/// Used to encode instances of `Data` into a type conforming to `TOMLValueConvertible` that can be inserted into a
+	/// TOML document.
 	///
 	/// The default `Data` encoding is [Base64](https://en.wikipedia.org/wiki/Base64).
 	public var dataEncoder: (Data) -> TOMLValueConvertible = { $0.base64EncodedString() }
