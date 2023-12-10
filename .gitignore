@@ -10,3 +10,4 @@ Sources/TOMLKit/TOMLKit.docc/.docc-build
 TOMLKit.doccarchive
 docs/
 .vscode
+node_modules

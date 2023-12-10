@@ -184,7 +184,7 @@ public final class TOMLTable:
 	}
 
 	/// A pointer to the underlying `toml::table`.
-	internal var tablePointer: OpaquePointer
+	var tablePointer: OpaquePointer
 
 	/// The amount of elements in the table.
 	public var count: Int { tableSize(self.tablePointer) }

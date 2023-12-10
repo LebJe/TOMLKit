@@ -1,16 +1,15 @@
 name: "Run Pre-Commit"
 
-on: "pull_request"
+on:
+    push:
+        branches:
+            - "main"
 
 jobs:
     PreCommit:
         runs-on: "macos-latest"
         steps:
-            - uses: "actions/checkout@v3"
-            - name: "Checkout PR"
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: "gh pr checkout ${{ github.event.pull_request.number }}"
+            - uses: "actions/checkout@v4"
             - name: "Install Dependencies"
               run: "brew bundle"
             - uses: "LebJe/pre-commit-composite-action@0.0.1"
