@@ -10,10 +10,10 @@ jobs:
         runs-on: "macos-latest"
         steps:
             - uses: "actions/checkout@v4"
-            - name: "Clone swift-docc-render"
-              run: "gh repo clone LebJe/swift-docc-render"
-              env:
-                  GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+            # - name: "Clone swift-docc-render"
+            #   run: "gh repo clone LebJe/swift-docc-render"
+            #   env:
+            #       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
             # - name: "Build swift-docc-render"
             #   run: "cd swift-docc-render/ && npm install && npm run build && cd .."
             - name: "Build TOMLKit"
