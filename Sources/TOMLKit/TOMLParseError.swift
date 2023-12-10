@@ -16,12 +16,12 @@ public struct TOMLSourcePosition: Equatable, CustomDebugStringConvertible {
 
 	public var debugDescription: String { "line \(self.line), column \(self.column)" }
 
-	internal init(line: Int, column: Int) {
+	init(line: Int, column: Int) {
 		self.line = line
 		self.column = column
 	}
 
-	internal init(cTOMLSourcePosition: CTOMLSourcePosition) {
+	init(cTOMLSourcePosition: CTOMLSourcePosition) {
 		self.line = Int(cTOMLSourcePosition.line)
 		self.column = Int(cTOMLSourcePosition.column)
 	}
@@ -31,12 +31,12 @@ public struct TOMLSourceRegion: Equatable, CustomDebugStringConvertible {
 	public let begin: TOMLSourcePosition
 	public let end: TOMLSourcePosition
 
-	internal init(begin: TOMLSourcePosition, end: TOMLSourcePosition) {
+	init(begin: TOMLSourcePosition, end: TOMLSourcePosition) {
 		self.begin = begin
 		self.end = end
 	}
 
-	internal init(cBegin: CTOMLSourcePosition, cEnd: CTOMLSourcePosition) {
+	init(cBegin: CTOMLSourcePosition, cEnd: CTOMLSourcePosition) {
 		self.begin = .init(cTOMLSourcePosition: cBegin)
 		self.end = .init(cTOMLSourcePosition: cEnd)
 	}
@@ -56,7 +56,7 @@ public struct TOMLParseError: Error, CustomDebugStringConvertible {
 	/// This documentation comment was taken from the [toml++ documentation](https://marzer.github.io/tomlplusplus/classtoml_1_1parse__error.html#a8168b4941305654cf4ba8fc96efd0514).
 	public let source: TOMLSourceRegion
 
-	internal init(cTOMLParseError: CTOMLParseError) {
+	init(cTOMLParseError: CTOMLParseError) {
 		self.description = String(cString: cTOMLParseError.description)
 		self.source = TOMLSourceRegion(cBegin: cTOMLParseError.source.begin, cEnd: cTOMLParseError.source.end)
 	}

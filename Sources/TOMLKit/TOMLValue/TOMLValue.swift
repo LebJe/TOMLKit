@@ -29,9 +29,9 @@ public struct TOMLValue:
 	TOMLValueConvertible
 {
 	/// The pointer to the underlying `toml::node`.
-	internal let tomlValuePointer: OpaquePointer
+	let tomlValuePointer: OpaquePointer
 
-	internal var tomlInt: TOMLInt?
+	var tomlInt: TOMLInt?
 
 	public var type: TOMLType {
 		nodeType(self.tomlValuePointer).tomlType
