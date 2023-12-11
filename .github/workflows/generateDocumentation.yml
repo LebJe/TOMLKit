@@ -7,33 +7,7 @@ on:
 
 jobs:
     "GenerateDocumentation":
-        runs-on: "macos-latest"
-        steps:
-            - uses: "actions/checkout@v4"
-            # - name: "Clone swift-docc-render"
-            #   run: "gh repo clone LebJe/swift-docc-render"
-            #   env:
-            #       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-            # - name: "Build swift-docc-render"
-            #   run: "cd swift-docc-render/ && npm install && npm run build && cd .."
-            - name: "Build TOMLKit"
-              run: "swift build --target TOMLKit -Xswiftc -emit-symbol-graph -Xswiftc -emit-symbol-graph-dir -Xswiftc .build"
-            - name: "Build documentation"
-              run: |
-                  #export DOCC_HTML_DIR=swift-docc-render/dist
-
-                  xcrun docc convert \
-                  Sources/TOMLKit/TOMLKit.docc \
-                  --fallback-display-name TOMLKit \
-                  --fallback-bundle-identifier com.LebJe.TOMKit \
-                  --fallback-bundle-version 1 \
-                  --additional-symbol-graph-dir .build \
-                  --enable-inherited-docs \
-                  --output-dir docs
-
-                  xcrun docc process-archive transform-for-static-hosting docs --hosting-base-path /TOMLKit
-            - name: "Deploy to GitHub Pages"
-              uses: "peaceiris/actions-gh-pages@v3"
-              with:
-                  github_token: "${{ secrets.GITHUB_TOKEN }}"
-                  publish_dir: "docs"
+        uses: LebJe/SwiftWorkflows/.github/workflows/generateDocumentation.yml@main
+        with:
+            TargetName: "TOMLKit"
+            DoccBundlePath: "Sources/TOMLKit/TOMLKit.docc"

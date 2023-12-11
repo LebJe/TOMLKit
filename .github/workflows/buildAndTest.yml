@@ -3,49 +3,5 @@ name: "Build and Test"
 on: ["push", "pull_request"]
 
 jobs:
-    TestOnMacOS-Latest-x86_64:
-        runs-on: "macos-latest"
-        steps:
-            - uses: "actions/checkout@v4"
-            - name: "Run tests"
-              run: "swift test"
-    # TestOnUbuntu-20_04-ARM:
-    #   runs-on: ubuntu-latest
-    #   steps:
-    #     - uses: actions/checkout@v2
-    #     - uses: uraimo/run-on-arch-action@v2.0.7
-    #       with:
-    #         arch: aarch64
-    #         distro: ubuntu20.04
-    #         githubToken: ${{ secrets.GITHUB_TOKEN }}
-    #         run: |
-    #           export DEBIAN_FRONTEND=noninteractive
-    #           apt update -q
-    #           apt install -yq curl sudo
-    #           curl -s https://packagecloud.io/install/repositories/swift-arm/release/script.deb.sh | sudo bash
-    #           apt install -yq swiftlang
-    #           apt update -yq
-    #           swift test
-    TestOnUbuntu-20_04-x86_64:
-        runs-on: "ubuntu-latest"
-        steps:
-            - uses: "actions/checkout@v4"
-            - name: "Run tests"
-              run: "swift test"
-    TestOnWindows10-x86_64:
-        runs-on: "windows-latest"
-        steps:
-            - uses: "actions/checkout@v4"
-            - uses: "seanmiddleditch/gha-setup-vsdevenv@master"
-            - uses: "compnerd/gha-setup-swift@main"
-              with:
-                  branch: "swift-5.8-release"
-                  tag: "5.8-RELEASE"
-            - name: "Test"
-              run: "swift test -Xcc -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH -Xcxx -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH"
-    TestBuildingOnMacOS-Latest-ARM64:
-        runs-on: "macos-latest"
-        steps:
-            - uses: "actions/checkout@v4"
-            - name: "Run tests"
-              run: "swift build --arch arm64"
+    "BuildAndTest":
+        uses: LebJe/SwiftWorkflows/.github/workflows/buildAndTest.yml@main
