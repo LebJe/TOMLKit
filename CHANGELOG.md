@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0](https://github.com/LebJe/TOMLKit/releases/tag/0.6.0) - 2024-01-03
+
+### Changed
+
+-   Updated to [v3.4.0](https://github.com/marzer/tomlplusplus/releases/tag/v3.4.0) of tomlplusplus.
+
 ## [0.5.6](https://github.com/LebJe/TOMLKit/releases/tag/0.5.6) - 2023-12-10
 
 ### Fixed
