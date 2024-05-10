@@ -168,9 +168,9 @@ extension InternalTOMLDecoder.UDC {
 				strictDecoding: self.strictDecoding,
 				notDecodedKeys: self.notDecodedKeys
 			)
-            let decodable = try T(from: decoder)
-            self.currentIndex += 1
-            return decodable
+			let decodable = try T(from: decoder)
+			self.currentIndex += 1
+			return decodable
 		}
 	}
 
@@ -198,8 +198,8 @@ extension InternalTOMLDecoder.UDC {
 				notDecodedKeys: self.notDecodedKeys
 			)
 		)
-        self.currentIndex += 1
-        return container
+		self.currentIndex += 1
+		return container
 	}
 
 	func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
@@ -222,8 +222,8 @@ extension InternalTOMLDecoder.UDC {
 			strictDecoding: self.strictDecoding,
 			notDecodedKeys: self.notDecodedKeys
 		)
-        self.currentIndex += 1
-        return container
+		self.currentIndex += 1
+		return container
 	}
 
 	func superDecoder() throws -> Decoder {
