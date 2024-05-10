@@ -447,4 +447,18 @@ final class TOMLKitTests: XCTestCase {
 			XCTFail("DecodingError did not occur.")
 		}
 	}
+    
+    func testFailingToDecodingDateFromUDC() throws {
+        let udc = InternalTOMLDecoder.UDC(
+            ["Not a date"],
+            codingPath: [],
+            userInfo: [:],
+            dataDecoder: { $0.string != nil ? Data(base64Encoded: $0.string!) : nil },
+            strictDecoding: false,
+            notDecodedKeys: InternalTOMLDecoder.NotDecodedKeys()
+        )
+        
+        XCTAssertThrowsError(try udc.decode(Date.self))
+        XCTAssertEqual(udc.currentIndex, 0)
+    }
 }

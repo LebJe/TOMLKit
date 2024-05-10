@@ -168,8 +168,9 @@ extension InternalTOMLDecoder.UDC {
 				strictDecoding: self.strictDecoding,
 				notDecodedKeys: self.notDecodedKeys
 			)
-			self.currentIndex += 1
-			return try T(from: decoder)
+            let decodable = try T(from: decoder)
+            self.currentIndex += 1
+            return decodable
 		}
 	}
 
