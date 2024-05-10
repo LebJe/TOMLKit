@@ -448,7 +448,7 @@ final class TOMLKitTests: XCTestCase {
 		}
 	}
     
-    func testFailingToDecodingDateFromUDC() throws {
+    func testFailingToDecodingDateFromUDCShouldNotIncreaseIndex() throws {
         let udc = InternalTOMLDecoder.UDC(
             ["Not a date"],
             codingPath: [],
@@ -462,7 +462,7 @@ final class TOMLKitTests: XCTestCase {
         XCTAssertEqual(udc.currentIndex, 0)
     }
     
-    func testDecodingObjectFromArray() throws {
+    func testDecodingObjectFromUDCShouldIncreaseIndex() throws {
         struct StringCodingKey: CodingKey, Equatable {
             var stringValue: String
             
@@ -488,7 +488,7 @@ final class TOMLKitTests: XCTestCase {
         XCTAssertEqual(udc.currentIndex, 1)
     }
     
-    func testDecodingArrayFromArray() throws {
+    func testDecodingArrayFromUDCShouldIncreaseIndex() throws {
         let udc = InternalTOMLDecoder.UDC(
             [["value"]],
             codingPath: [],
