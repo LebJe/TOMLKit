@@ -461,4 +461,44 @@ final class TOMLKitTests: XCTestCase {
         XCTAssertThrowsError(try udc.decode(Date.self))
         XCTAssertEqual(udc.currentIndex, 0)
     }
+    
+    func testDecodingObjectFromArray() throws {
+        struct StringCodingKey: CodingKey, Equatable {
+            var stringValue: String
+            
+            init(stringValue: String) {
+                self.stringValue = stringValue
+            }
+            
+            var intValue: Int? { nil }
+            init?(intValue: Int) { nil }
+        }
+
+        
+        let udc = InternalTOMLDecoder.UDC(
+            [TOMLTable(["key": "value"], inline: false)],
+            codingPath: [],
+            userInfo: [:],
+            dataDecoder: { $0.string != nil ? Data(base64Encoded: $0.string!) : nil },
+            strictDecoding: false,
+            notDecodedKeys: InternalTOMLDecoder.NotDecodedKeys()
+        )
+        
+        let _ = try udc.nestedContainer(keyedBy: StringCodingKey.self)
+        XCTAssertEqual(udc.currentIndex, 1)
+    }
+    
+    func testDecodingArrayFromArray() throws {
+        let udc = InternalTOMLDecoder.UDC(
+            [["value"]],
+            codingPath: [],
+            userInfo: [:],
+            dataDecoder: { $0.string != nil ? Data(base64Encoded: $0.string!) : nil },
+            strictDecoding: false,
+            notDecodedKeys: InternalTOMLDecoder.NotDecodedKeys()
+        )
+        
+        let _ = try udc.nestedUnkeyedContainer()
+        XCTAssertEqual(udc.currentIndex, 1)
+    }
 }
