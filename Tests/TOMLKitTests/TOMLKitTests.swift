@@ -497,7 +497,46 @@ final class TOMLKitTests: XCTestCase {
 	// decoding attempts, breaking the common 'try one thing then retry another'
 	// decoding pattern. This bug was specific to decoders with
 	// `strictDecoding: true`.
-	func testRetry() throws {
+	func testRetryKeyedOrDictionary() throws {
+		enum StructOrDictionary: Decodable, Equatable {
+			case `struct`(value: Int)
+			case dictionary([String: Int])
+
+			enum CodingKeys: String, CodingKey {
+				case value
+			}
+
+			init(from decoder: Decoder) throws {
+				if let container = try? decoder.container(keyedBy: CodingKeys.self) {
+					if let value = try? container.decode(Int.self, forKey: .value) {
+						self = .struct(value: value)
+					}
+				}
+
+				if let container = try? decoder.singleValueContainer() {
+					self = try .dictionary(container.decode([String: Int].self))
+				} else {
+					throw DecodingError.dataCorrupted(.init(
+						codingPath: [],
+						debugDescription: "Expected int or keyedInt"
+					))
+				}
+			}
+		}
+		
+		let toml = "other_value = 1"
+
+		// Before the bug got fixed, this line would throw an unused key error.
+		let value = try TOMLDecoder(strictDecoding: true).decode(StructOrDictionary.self, from: toml)
+
+		// We don't actually expect this to fail, it's not the point of the test, but
+		// might as well assert it just in case.
+		XCTAssertEqual(value, .dictionary(["other_value": 1]))
+	}
+
+	// This is related to the test above, but tests for a different aspect of the
+	// bug (I originally fixed one but not the other so they are kind of independent).
+	func testRetryKeyedOrInt() throws {
 		struct SimpleCodableStruct: Codable, Equatable {
 			var value: Int
 		}
