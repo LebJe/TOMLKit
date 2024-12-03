@@ -12,6 +12,7 @@ final class InternalTOMLDecoder: Decoder {
 	var dataDecoder: (TOMLValueConvertible) -> Data?
 	var strictDecoding: Bool = false
 	var notDecodedKeys: NotDecodedKeys
+	let originalNotDecodedKeys: [String: [CodingKey]]
 
 	let tomlValue: TOMLValue
 	init(
@@ -28,6 +29,7 @@ final class InternalTOMLDecoder: Decoder {
 		self.dataDecoder = dataDecoder
 		self.strictDecoding = strictDecoding
 		self.notDecodedKeys = notDecodedKeys
+		self.originalNotDecodedKeys = notDecodedKeys.keys
 	}
 
 	func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
@@ -42,6 +44,10 @@ final class InternalTOMLDecoder: Decoder {
 			)
 		}
 
+		// Assume that any previous container creation was related to a failed decoding
+		// attempt, and reset the not-decoded keys back to the value that the parent
+		// decoder passed to us.
+		self.notDecodedKeys.keys = self.originalNotDecodedKeys
 		return KeyedDecodingContainer<Key>(
 			KDC(
 				table: table,
@@ -64,6 +70,11 @@ final class InternalTOMLDecoder: Decoder {
 				)
 			)
 		}
+
+		// Assume that any previous container creation was related to a failed decoding
+		// attempt, and reset the not-decoded keys back to the value that the parent
+		// decoder passed to us.
+		self.notDecodedKeys.keys = self.originalNotDecodedKeys
 		return UDC(
 			array,
 			codingPath: self.codingPath,
@@ -75,7 +86,11 @@ final class InternalTOMLDecoder: Decoder {
 	}
 
 	func singleValueContainer() throws -> SingleValueDecodingContainer {
-		SVDC(
+		// Assume that any previous container creation was related to a failed decoding
+		// attempt, and reset the not-decoded keys back to the value that the parent
+		// decoder passed to us.
+		self.notDecodedKeys.keys = self.originalNotDecodedKeys
+		return SVDC(
 			self.tomlValue,
 			codingPath: self.codingPath,
 			dataDecoder: self.dataDecoder,
