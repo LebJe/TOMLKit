@@ -228,13 +228,24 @@ extension InternalTOMLDecoder.KDC {
 						codingPath: self.codingPath + key,
 						dataDecoder: self.dataDecoder,
 						strictDecoding: self.strictDecoding,
-						notDecodedKeys: self.notDecodedKeys
+						notDecodedKeys: InternalTOMLDecoder.NotDecodedKeys()
 					)
 
 					self.decodedKeys.append(key.stringValue)
 
-					return try T(from: decoder)
+					let decodedValue = try T(from: decoder)
+
+					// Only propagate not-decoded keys if the decoding was successful.
+					// Otherwise `Decodable` implementations that attempt multiple
+					// decoding strategies in succession (trying the next if the
+					// previous one failed), don't work.
+					for (key, path) in decoder.notDecodedKeys.keys {
+						self.notDecodedKeys.keys[key] = path
+					}
+
+					return decodedValue
 				}
+
 		}
 	}
 
