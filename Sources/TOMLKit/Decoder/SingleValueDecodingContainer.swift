@@ -213,12 +213,13 @@ extension InternalTOMLDecoder.SVDC {
 			codingPath: self.codingPath,
 			dataDecoder: self.dataDecoder,
 			strictDecoding: self.strictDecoding,
-			notDecodedKeys: self.notDecodedKeys
+			notDecodedKeys: InternalTOMLDecoder.NotDecodedKeys()
 		)
 
+		let decodedValue: T
 		if type is Data.Type {
 			if let data = self.dataDecoder(self.tomlValue) {
-				return data as! T
+				decodedValue = data as! T
 			} else {
 				throw DecodingError.dataCorrupted(DecodingError.Context(
 					codingPath: self.codingPath,
@@ -226,7 +227,17 @@ extension InternalTOMLDecoder.SVDC {
 				))
 			}
 		} else {
-			return try T(from: decoder)
+			decodedValue = try T(from: decoder)
 		}
+
+		// Only propagate not-decoded keys if the decoding was successful.
+		// Otherwise `Decodable` implementations that attempt multiple
+		// decoding strategies in succession (trying the next if the
+		// previous one failed), don't work.
+		for (key, path) in decoder.notDecodedKeys.keys {
+			self.notDecodedKeys.keys[key] = path
+		}
+
+		return decodedValue
 	}
 }

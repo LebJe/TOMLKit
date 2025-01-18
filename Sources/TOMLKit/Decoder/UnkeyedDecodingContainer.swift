@@ -166,11 +166,21 @@ extension InternalTOMLDecoder.UDC {
 				codingPath: self.codingPath + TOMLCodingKey(index: self.currentIndex),
 				dataDecoder: self.dataDecoder,
 				strictDecoding: self.strictDecoding,
-				notDecodedKeys: self.notDecodedKeys
+				notDecodedKeys: InternalTOMLDecoder.NotDecodedKeys()
 			)
-			let decodable = try T(from: decoder)
+
+			let decodedValue = try T(from: decoder)
 			self.currentIndex += 1
-			return decodable
+
+			// Only propagate not-decoded keys if the decoding was successful.
+			// Otherwise `Decodable` implementations that attempt multiple
+			// decoding strategies in succession (trying the next if the
+			// previous one failed), don't work.
+			for (key, path) in decoder.notDecodedKeys.keys {
+				self.notDecodedKeys.keys[key] = path
+			}
+
+			return decodedValue
 		}
 	}
 
