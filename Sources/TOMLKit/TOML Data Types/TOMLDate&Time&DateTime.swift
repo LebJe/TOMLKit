@@ -9,7 +9,9 @@ import CTOML
 #if canImport(Darwin)
 	import Darwin.C
 #elseif canImport(Glibc)
-	import Glibc
+    import Glibc
+#elseif canImport(Musl)
+    import Musl
 #elseif canImport(ucrt)
 	import ucrt
 #else
