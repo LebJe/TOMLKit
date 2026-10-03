@@ -93,6 +93,7 @@ final class InternalTOMLDecoder: Decoder {
 		return SVDC(
 			self.tomlValue,
 			codingPath: self.codingPath,
+			userInfo: self.userInfo,
 			dataDecoder: self.dataDecoder,
 			strictDecoding: self.strictDecoding,
 			notDecodedKeys: self.notDecodedKeys

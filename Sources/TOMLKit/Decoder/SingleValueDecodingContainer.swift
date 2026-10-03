@@ -210,6 +210,7 @@ extension InternalTOMLDecoder.SVDC {
 	func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
 		let decoder = InternalTOMLDecoder(
 			self.tomlValue,
+			userInfo: self.userInfo,
 			codingPath: self.codingPath,
 			dataDecoder: self.dataDecoder,
 			strictDecoding: self.strictDecoding,
